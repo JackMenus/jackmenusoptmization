@@ -1,0 +1,265 @@
+{
+  "id": "alg-dsl-204c8a5bde",
+  "version": 3,
+  "created": "2026-10-19T16:35:42+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g1-4",
+    "population": 30,
+    "offspring": 30,
+    "init": {
+      "op": "opposition"
+    },
+    "repair": {
+      "op": "project"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "best"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "arithmetic_cx"
+            },
+            {
+              "op": "if",
+              "cond": {
+                "pred": "success_rate",
+                "lt": 0.04
+              },
+              "then": {
+                "op": "gaussian",
+                "sigma": 0.0042
+              },
+              "else": {
+                "op": "gaussian",
+                "sigma": 0.3183,
+                "rate": 0.09
+              }
+            }
+          ]
+        },
+        "survival": {
+          "op": "threshold",
+          "tau": 0.0118
+        },
+        "step": {
+          "op": "decay",
+          "rate": 0.9934,
+          "floor": 0.001
+        },
+        "until": {
+          "pred": "evals_fraction",
+          "ge": 0.4
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "random"
+        },
+        "variation": {
+          "op": "if",
+          "cond": {
+            "pred": "success_rate",
+            "lt": 0.14
+          },
+          "then": {
+            "op": "seq",
+            "children": [
+              {
+                "op": "de_best1"
+              },
+              {
+                "op": "seq",
+                "children": [
+                  {
+                    "op": "toward_best",
+                    "w": 0.391
+                  },
+                  {
+                    "op": "prob",
+                    "p": 0.28,
+                    "child": {
+                      "op": "uniform_reset"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "else": {
+            "op": "seq",
+            "children": [
+              {
+                "op": "uniform_cx"
+              },
+              {
+                "op": "uniform_reset"
+              }
+            ]
+          }
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "decay",
+          "rate": 0.9811,
+          "floor": 0.001
+        }
+      }
+    ],
+    "restart": null,
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.11,
+      "step0": 0.0056
+    }
+  },
+  "parents": [
+    "alg-dsl-9b5973b42a"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: appended a new final stage (multi-stage composition)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:35:42+00:00",
+      "operation": "appended a new final stage (multi-stage composition)",
+      "parents": [
+        "alg-dsl-9b5973b42a"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:35:43+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-19T16:36:31+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 30,
+    "offspring": 30,
+    "stages.0.variation.children.1.cond.lt": 0.04,
+    "stages.0.variation.children.1.then.sigma": 0.0042,
+    "stages.0.variation.children.1.else.sigma": 0.3183,
+    "stages.0.variation.children.1.else.rate": 0.09,
+    "stages.0.survival.tau": 0.0118,
+    "stages.0.step.rate": 0.9934,
+    "stages.0.step.floor": 0.001,
+    "stages.0.until.ge": 0.4,
+    "stages.1.variation.cond.lt": 0.14,
+    "stages.1.variation.then.children.1.children.0.w": 0.391,
+    "stages.1.variation.then.children.1.children.1.p": 0.28,
+    "stages.1.step.rate": 0.9811,
+    "stages.1.step.floor": 0.001,
+    "refine.evals_fraction": 0.11,
+    "refine.step0": 0.0056
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 15, 'stages': 2, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=1.3279672455528686e-11"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=79, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3127,
+    "seconds": 0.696
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 4000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 24,
+        "mean_score": 0.0012277148714303786,
+        "median_score": 2.2896755262099284e-07,
+        "std_score": 0.002409264165822999,
+        "iqr_score": 0.000373830606889648,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.5,
+        "median_gap": 1.4641426970829485e-06,
+        "mean_runtime_s": 0.4995284010832961,
+        "mean_evaluations": 4000.0,
+        "runtime_per_eval_ms": 0.12488210027082403,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "de",
+      "per_family": {
+        "rastrigin": {
+          "alg-dsl-204c8a5bde": 4.869749999048806e-12
+        },
+        "ackley": {
+          "alg-dsl-204c8a5bde": 5.151821154941164e-07
+        },
+        "styblinski_tang": {
+          "alg-dsl-204c8a5bde": 5.98460100052277e-13
+        },
+        "rosenbrock": {
+          "alg-dsl-204c8a5bde": 0.004910344298137809
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite continuous_multimodal"
+  ],
+  "status": "validated",
+  "train_score": 0.0012277148714303786
+}

@@ -1,0 +1,91 @@
+{
+  "id": "ope-dsl-2d4d078e24",
+  "version": 1,
+  "created": "2026-10-19T16:45:57+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "de_current_to_pbest",
+        "CR": 0.095,
+        "p": 0.11
+      },
+      {
+        "op": "per_type",
+        "binary": {
+          "op": "if",
+          "cond": {
+            "pred": "stagnation",
+            "ge": 35
+          },
+          "then": {
+            "op": "uniform_reset",
+            "rate": 0.34
+          },
+          "else": {
+            "op": "bit_flip",
+            "rate": 0.54
+          }
+        },
+        "categorical": {
+          "op": "uniform_reset",
+          "rate": 0.08
+        },
+        "integer": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "integer_step",
+              "max_step": 1
+            },
+            {
+              "op": "integer_step",
+              "rate": 0.26
+            }
+          ],
+          "weights": [
+            0.31,
+            0.2
+          ]
+        },
+        "real": {
+          "op": "cauchy",
+          "sigma": 0.0042
+        }
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:45:57+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.CR": 0.095,
+    "children.0.p": 0.11,
+    "children.1.binary.cond.ge": 35,
+    "children.1.binary.then.rate": 0.34,
+    "children.1.binary.else.rate": 0.54,
+    "children.1.categorical.rate": 0.08,
+    "children.1.integer.children.0.max_step": 1,
+    "children.1.integer.children.1.rate": 0.26,
+    "children.1.real.sigma": 0.0042
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

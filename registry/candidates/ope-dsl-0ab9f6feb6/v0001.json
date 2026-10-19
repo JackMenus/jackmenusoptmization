@@ -1,0 +1,94 @@
+{
+  "id": "ope-dsl-0ab9f6feb6",
+  "version": 1,
+  "created": "2026-10-19T16:45:32+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "de_best1",
+        "F": 1.447,
+        "CR": 0.234
+      },
+      {
+        "op": "per_type",
+        "binary": {
+          "op": "uniform_reset"
+        },
+        "categorical": {
+          "op": "categorical_reset",
+          "rate": 0.43
+        },
+        "integer": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "integer_step",
+              "max_step": 3
+            },
+            {
+              "op": "prob",
+              "p": 0.39,
+              "child": {
+                "op": "gaussian",
+                "sigma": 0.0903,
+                "rate": 0.14
+              }
+            }
+          ]
+        },
+        "real": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "gaussian",
+              "sigma": 0.0018
+            },
+            {
+              "op": "prob",
+              "p": 0.1,
+              "child": {
+                "op": "cauchy",
+                "sigma": 0.0182
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:45:32+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.F": 1.447,
+    "children.0.CR": 0.234,
+    "children.1.categorical.rate": 0.43,
+    "children.1.integer.children.0.max_step": 3,
+    "children.1.integer.children.1.p": 0.39,
+    "children.1.integer.children.1.child.sigma": 0.0903,
+    "children.1.integer.children.1.child.rate": 0.14,
+    "children.1.real.children.0.sigma": 0.0018,
+    "children.1.real.children.1.p": 0.1,
+    "children.1.real.children.1.child.sigma": 0.0182
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

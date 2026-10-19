@@ -1,0 +1,67 @@
+{
+  "id": "ope-dsl-dd2a87cd69",
+  "version": 1,
+  "created": "2026-10-19T16:35:41+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "evals_fraction",
+      "ge": 0.3
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "copy"
+        },
+        {
+          "op": "cauchy"
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "blend_cx",
+          "alpha": 0.083
+        },
+        {
+          "op": "uniform_reset",
+          "rate": 0.49
+        }
+      ]
+    }
+  },
+  "parents": [
+    "ope-dsl-6a3aa08ba8"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: perturbed uniform_reset.rate at else/children/1",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:35:41+00:00",
+      "operation": "perturbed uniform_reset.rate at else/children/1",
+      "parents": [
+        "ope-dsl-6a3aa08ba8"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 0.3,
+    "else.children.0.alpha": 0.083,
+    "else.children.1.rate": 0.49
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

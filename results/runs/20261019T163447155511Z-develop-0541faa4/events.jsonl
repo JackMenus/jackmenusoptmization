@@ -1,0 +1,70 @@
+{"t": 1792427687.1698, "event": "run_started", "kind": "develop", "config_hash": "0541faa4"}
+{"t": 1792427687.2889, "event": "development_started", "suite": "continuous_multimodal", "types": ["real"], "baselines": ["random_search", "cmaes", "de", "nelder_mead"], "isolation": {"available": true, "checks": {"network_blocked": true, "usr_readonly": true, "root_listing": ["bin", "dev", "lib", "lib64", "proc", "runner", "sbin", "tmp", "usr"], "host_paths_hidden": true, "env_empty": true, "no_capabilities": true, "no_new_privs": true, "outside_uid": 65534, "pid_namespace": true, "rlimit_as": 1073741824, "rlimit_cpu": 120}, "reason": "", "mechanism": "linux namespaces (user, mount, pid, net, ipc, uts) + pivot_root + capability drop + rlimits"}, "notes": [], "features": {"n_problems": 8, "types": ["real"], "kinds": ["continuous"], "kind": "continuous", "max_dim": 6, "any_constraints": false, "any_noise": false, "has_repair": false, "feasible_fraction": 1.0, "ruggedness": 0.20935690167034998, "smoothness": 0.79064309832965, "eval_cost_s": 3.6937084377086646e-05, "error_fraction": 0.0}}
+{"t": 1792427692.6396, "event": "train_baselines", "summary": {"random_search": {"runs": 24, "mean_score": 0.9541825074030066, "median_score": 1.0, "std_score": 0.23950641335991257, "iqr_score": 0.16837659859239174, "feasibility_rate": 1.0, "failure_rate": 0.0, "solved_rate": 0.0, "median_gap": 32.0379024167174, "mean_runtime_s": 0.13102070858339707, "mean_evaluations": 4000.0, "runtime_per_eval_ms": 0.03275517714584927, "not_applicable_runs": 0}, "cmaes": {"runs": 24, "mean_score": 0.1503148013168975, "median_score": 0.008454552134571426, "std_score": 0.23182312759281537, "iqr_score": 0.22341880111755044, "feasibility_rate": 1.0, "failure_rate": 0.0, "solved_rate": 0.4166666666666667, "median_gap": 2.9819293075584365, "mean_runtime_s": 0.26998585429167105, "mean_evaluations": 4000.0, "runtime_per_eval_ms": 0.06749646357291776, "not_applicable_runs": 0}, "de": {"runs": 24, "mean_score": 0.11500109978200512, "median_score": 0.0033919867058947468, "std_score": 0.2016461526999844, "iqr_score": 0.09391982226925323, "feasibility_rate": 1.0, "failure_rate": 0.0, "solved_rate": 0.0, "median_gap": 0.7718066339883101, "mean_runtime_s": 0.418109777416646, "mean_evaluations": 4000.0, "runtime_per_eval_ms": 0.1045274443541615, "not_applicable_runs": 0}, "nelder_mead": {"runs": 24, "mean_score": 0.3034829437927874, "median_score": 0.2812116646587302, "std_score": 0.27991007055036426, "iqr_score": 0.32069080359947444, "feasibility_rate": 1.0, "failure_rate": 0.0, "solved_rate": 0.25, "median_gap": 3.4690579189123447, "mean_runtime_s": 0.0597621823333346, "mean_evaluations": 802.375, "runtime_per_eval_ms": 0.07448161063509531, "not_applicable_runs": 0}}}
+{"t": 1792427693.3745, "event": "validation", "candidate": "alg-dsl-1f167afaad", "passed": true, "failed": []}
+{"t": 1792427694.1093, "event": "validation", "candidate": "ope-dsl-bf4d477e21", "passed": true, "failed": []}
+{"t": 1792427694.8811, "event": "validation", "candidate": "alg-dsl-4b123c4470", "passed": true, "failed": []}
+{"t": 1792427695.5126, "event": "validation", "candidate": "alg-dsl-9b5973b42a", "passed": true, "failed": []}
+{"t": 1792427696.2111, "event": "validation", "candidate": "ope-dsl-6a3aa08ba8", "passed": true, "failed": []}
+{"t": 1792427696.9392, "event": "validation", "candidate": "alg-dsl-26245e9ec0", "passed": true, "failed": []}
+{"t": 1792427697.7128, "event": "validation", "candidate": "alg-dsl-8306f0643a", "passed": true, "failed": []}
+{"t": 1792427698.4591, "event": "validation", "candidate": "alg-dsl-1c1e7eed70", "passed": true, "failed": []}
+{"t": 1792427700.3767, "event": "validation", "candidate": "ope-pyt-69c8a36dc2", "passed": true, "failed": []}
+{"t": 1792427700.4618, "event": "validation", "candidate": "ope-pyt-a72ed30b90", "passed": false, "failed": ["interface"]}
+{"t": 1792427737.6723, "event": "generation", "generation": 0, "proposed": 10, "rejected": 1, "validated": 9, "benchmarked": 9, "duplicates": 0, "best_train_score": 0.0012085646723061696, "best_candidate": "alg-dsl-9b5973b42a", "best_baseline_train_score": 0.11500109978200512, "ledger": {"total_limit": 12000000, "used_total": 1199979, "used_by_category": {"analysis": 640, "train_baselines": 307257, "validation": 28082, "train": 864000}, "category_limits": {"test": 2400000, "model_calls": 0, "analysis": null, "validation": null, "train": null, "selection": null, "train_baselines": null}, "wall_time_s": 50.502, "max_wall_time": 5400}}
+{"t": 1792427738.762, "event": "validation", "candidate": "alg-dsl-f170d35b6b", "passed": true, "failed": []}
+{"t": 1792427739.4861, "event": "validation", "candidate": "alg-dsl-e48fb757df", "passed": true, "failed": []}
+{"t": 1792427740.1986, "event": "validation", "candidate": "alg-dsl-9a9d617d84", "passed": true, "failed": []}
+{"t": 1792427740.8088, "event": "validation", "candidate": "alg-dsl-495688874f", "passed": true, "failed": []}
+{"t": 1792427741.5864, "event": "validation", "candidate": "alg-dsl-e46f88cbd6", "passed": true, "failed": []}
+{"t": 1792427742.2576, "event": "validation", "candidate": "ope-dsl-dd2a87cd69", "passed": true, "failed": []}
+{"t": 1792427742.9908, "event": "validation", "candidate": "alg-dsl-7344ab9dac", "passed": true, "failed": []}
+{"t": 1792427743.6916, "event": "validation", "candidate": "alg-dsl-204c8a5bde", "passed": true, "failed": []}
+{"t": 1792427745.4312, "event": "validation", "candidate": "ope-pyt-743bcaf1f6", "passed": true, "failed": []}
+{"t": 1792427747.2069, "event": "validation", "candidate": "ope-pyt-b6dd99bc33", "passed": true, "failed": []}
+{"t": 1792427791.3428, "event": "generation", "generation": 1, "proposed": 10, "rejected": 0, "validated": 10, "benchmarked": 10, "duplicates": 0, "best_train_score": 0.0012085646723061696, "best_candidate": "alg-dsl-9b5973b42a", "best_baseline_train_score": 0.11500109978200512, "ledger": {"total_limit": 12000000, "used_total": 2191157, "used_by_category": {"analysis": 640, "train_baselines": 307257, "validation": 59260, "train": 1824000}, "category_limits": {"test": 2400000, "model_calls": 0, "analysis": null, "validation": null, "train": null, "selection": null, "train_baselines": null}, "wall_time_s": 104.173, "max_wall_time": 5400}}
+{"t": 1792427792.1745, "event": "validation", "candidate": "alg-dsl-86b0bb69f8", "passed": true, "failed": []}
+{"t": 1792427792.9421, "event": "validation", "candidate": "alg-dsl-5386a927f3", "passed": true, "failed": []}
+{"t": 1792427793.6626, "event": "validation", "candidate": "ope-dsl-a23b1ddf51", "passed": true, "failed": []}
+{"t": 1792427794.2848, "event": "validation", "candidate": "alg-dsl-3e2613ff63", "passed": true, "failed": []}
+{"t": 1792427795.1601, "event": "validation", "candidate": "alg-dsl-af297610f8", "passed": true, "failed": []}
+{"t": 1792427795.9102, "event": "validation", "candidate": "alg-dsl-f90f0f91f0", "passed": true, "failed": []}
+{"t": 1792427796.5755, "event": "validation", "candidate": "alg-dsl-f587894dcb", "passed": true, "failed": []}
+{"t": 1792427797.28, "event": "validation", "candidate": "alg-dsl-228bec2a1e", "passed": true, "failed": []}
+{"t": 1792427797.3758, "event": "validation", "candidate": "ope-pyt-6c20228341", "passed": false, "failed": ["interface"]}
+{"t": 1792427799.6266, "event": "validation", "candidate": "ope-pyt-419a563fd9", "passed": true, "failed": []}
+{"t": 1792427834.2304, "event": "generation", "generation": 2, "proposed": 10, "rejected": 1, "validated": 9, "benchmarked": 9, "duplicates": 0, "best_train_score": 0.0012085646723061696, "best_candidate": "alg-dsl-9b5973b42a", "best_baseline_train_score": 0.11500109978200512, "ledger": {"total_limit": 12000000, "used_total": 3083215, "used_by_category": {"analysis": 640, "train_baselines": 307257, "validation": 87318, "train": 2688000}, "category_limits": {"test": 2400000, "model_calls": 0, "analysis": null, "validation": null, "train": null, "selection": null, "train_baselines": null}, "wall_time_s": 147.06, "max_wall_time": 5400}}
+{"t": 1792427835.0756, "event": "validation", "candidate": "alg-dsl-0c40479a7d", "passed": true, "failed": []}
+{"t": 1792427835.8417, "event": "validation", "candidate": "alg-dsl-3d4646001e", "passed": true, "failed": []}
+{"t": 1792427836.4709, "event": "validation", "candidate": "ope-dsl-ec59457094", "passed": true, "failed": []}
+{"t": 1792427837.3147, "event": "validation", "candidate": "alg-dsl-03b6184ea3", "passed": true, "failed": []}
+{"t": 1792427837.9741, "event": "validation", "candidate": "alg-dsl-ae8b1f11f2", "passed": true, "failed": []}
+{"t": 1792427838.6011, "event": "validation", "candidate": "alg-dsl-23e491ab69", "passed": true, "failed": []}
+{"t": 1792427839.3303, "event": "validation", "candidate": "alg-dsl-8e217cdd7d", "passed": true, "failed": []}
+{"t": 1792427840.0031, "event": "validation", "candidate": "alg-dsl-545d15f7a5", "passed": true, "failed": []}
+{"t": 1792427841.7902, "event": "validation", "candidate": "ope-pyt-8a2643a783", "passed": true, "failed": []}
+{"t": 1792427841.8782, "event": "validation", "candidate": "ope-pyt-427f97ccb1", "passed": false, "failed": ["interface"]}
+{"t": 1792427874.1939, "event": "generation", "generation": 3, "proposed": 10, "rejected": 1, "validated": 9, "benchmarked": 9, "duplicates": 0, "best_train_score": 0.000695532095599033, "best_candidate": "alg-dsl-ae8b1f11f2", "best_baseline_train_score": 0.11500109978200512, "ledger": {"total_limit": 12000000, "used_total": 3975306, "used_by_category": {"analysis": 640, "train_baselines": 307257, "validation": 115409, "train": 3552000}, "category_limits": {"test": 2400000, "model_calls": 0, "analysis": null, "validation": null, "train": null, "selection": null, "train_baselines": null}, "wall_time_s": 187.024, "max_wall_time": 5400}}
+{"t": 1792427875.2183, "event": "validation", "candidate": "alg-dsl-b1c8d7d9fd", "passed": true, "failed": []}
+{"t": 1792427876.0076, "event": "validation", "candidate": "alg-dsl-c81dd839fa", "passed": true, "failed": []}
+{"t": 1792427876.7219, "event": "validation", "candidate": "ope-dsl-7bcb387647", "passed": true, "failed": []}
+{"t": 1792427877.3659, "event": "validation", "candidate": "alg-dsl-919ebcd591", "passed": true, "failed": []}
+{"t": 1792427878.0366, "event": "validation", "candidate": "alg-dsl-467c76914f", "passed": true, "failed": []}
+{"t": 1792427878.6798, "event": "validation", "candidate": "alg-dsl-b3d8eb36a5", "passed": true, "failed": []}
+{"t": 1792427879.3801, "event": "validation", "candidate": "alg-dsl-7508462a91", "passed": true, "failed": []}
+{"t": 1792427880.0824, "event": "validation", "candidate": "alg-dsl-af7e12e16c", "passed": true, "failed": []}
+{"t": 1792427880.1654, "event": "validation", "candidate": "ope-pyt-15b6700eb9", "passed": false, "failed": ["interface"]}
+{"t": 1792427882.0323, "event": "validation", "candidate": "ope-pyt-1ff3f20d52", "passed": true, "failed": []}
+{"t": 1792427916.9664, "event": "generation", "generation": 4, "proposed": 10, "rejected": 1, "validated": 9, "benchmarked": 9, "duplicates": 0, "best_train_score": 0.000695532095599033, "best_candidate": "alg-dsl-ae8b1f11f2", "best_baseline_train_score": 0.11500109978200512, "ledger": {"total_limit": 12000000, "used_total": 4867378, "used_by_category": {"analysis": 640, "train_baselines": 307257, "validation": 143481, "train": 4416000}, "category_limits": {"test": 2400000, "model_calls": 0, "analysis": null, "validation": null, "train": null, "selection": null, "train_baselines": null}, "wall_time_s": 229.796, "max_wall_time": 5400}}
+{"t": 1792427917.67, "event": "validation", "candidate": "ope-dsl-98f77750c0", "passed": true, "failed": []}
+{"t": 1792427918.586, "event": "validation", "candidate": "ope-dsl-022661f36e", "passed": true, "failed": []}
+{"t": 1792427919.3197, "event": "validation", "candidate": "alg-dsl-5a78a83b4a", "passed": true, "failed": []}
+{"t": 1792427920.025, "event": "validation", "candidate": "alg-dsl-1f4a4c6fe5", "passed": true, "failed": []}
+{"t": 1792427920.6655, "event": "validation", "candidate": "alg-dsl-edf32cf65f", "passed": true, "failed": []}
+{"t": 1792427921.3756, "event": "validation", "candidate": "alg-dsl-2c17b22b1e", "passed": true, "failed": []}
+{"t": 1792427922.0678, "event": "validation", "candidate": "alg-dsl-d61b48f07f", "passed": true, "failed": []}
+{"t": 1792427922.791, "event": "validation", "candidate": "alg-dsl-a688ed739e", "passed": true, "failed": []}
+{"t": 1792427922.8824, "event": "validation", "candidate": "ope-pyt-cd85019e59", "passed": false, "failed": ["interface"]}
+{"t": 1792427924.5323, "event": "validation", "candidate": "ope-pyt-4c43d23eb8", "passed": true, "failed": []}
+{"t": 1792427956.6104, "event": "generation", "generation": 5, "proposed": 10, "rejected": 1, "validated": 9, "benchmarked": 9, "duplicates": 0, "best_train_score": 0.000695532095599033, "best_candidate": "alg-dsl-ae8b1f11f2", "best_baseline_train_score": 0.11500109978200512, "ledger": {"total_limit": 12000000, "used_total": 5759477, "used_by_category": {"analysis": 640, "train_baselines": 307257, "validation": 171580, "train": 5280000}, "category_limits": {"test": 2400000, "model_calls": 0, "analysis": null, "validation": null, "train": null, "selection": null, "train_baselines": null}, "wall_time_s": 269.44, "max_wall_time": 5400}}
+{"t": 1792427972.7896, "event": "selection", "decision": "no retained candidate beat the best baseline 'cmaes' on the validation split at alpha=0.05; the baselines are retained for ordinary use"}

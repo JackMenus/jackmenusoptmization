@@ -1,0 +1,167 @@
+{
+  "id": "alg-dsl-cbbb9df972",
+  "version": 2,
+  "created": "2026-10-19T16:40:39+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g0-7",
+    "population": 20,
+    "offspring": 10,
+    "init": {
+      "op": "opposition"
+    },
+    "repair": {
+      "op": "reflect"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "best"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "de_current_to_pbest",
+              "F": 1.025,
+              "CR": 0.106,
+              "p": 0.339
+            },
+            {
+              "op": "per_type",
+              "binary": {
+                "op": "if",
+                "cond": {
+                  "pred": "feasible_fraction",
+                  "lt": 0.21
+                },
+                "then": {
+                  "op": "uniform_reset",
+                  "rate": 0.44
+                },
+                "else": {
+                  "op": "bit_flip",
+                  "rate": 0.07
+                }
+              },
+              "integer": {
+                "op": "integer_step",
+                "max_step": 4
+              }
+            }
+          ]
+        },
+        "survival": {
+          "op": "plus"
+        },
+        "step": {
+          "op": "decay",
+          "rate": 0.9807,
+          "floor": 0.001
+        }
+      }
+    ],
+    "restart": {
+      "op": "stagnation",
+      "patience": 35,
+      "keep_best": 2,
+      "reinit": "lhs",
+      "scale": 0.476
+    },
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.17,
+      "step0": 0.0821
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:40:39+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:40:40+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 20,
+    "offspring": 10,
+    "stages.0.variation.children.0.F": 1.025,
+    "stages.0.variation.children.0.CR": 0.106,
+    "stages.0.variation.children.0.p": 0.339,
+    "stages.0.variation.children.1.binary.cond.lt": 0.21,
+    "stages.0.variation.children.1.binary.then.rate": 0.44,
+    "stages.0.variation.children.1.binary.else.rate": 0.07,
+    "stages.0.variation.children.1.integer.max_step": 4,
+    "stages.0.step.rate": 0.9807,
+    "stages.0.step.floor": 0.001,
+    "restart.patience": 35,
+    "restart.keep_best": 2,
+    "restart.scale": 0.476,
+    "refine.evals_fraction": 0.17,
+    "refine.step0": 0.0821
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 7, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.302s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=71, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3121,
+    "seconds": 0.993
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite discrete_combinatorial"
+  ],
+  "status": "validated"
+}

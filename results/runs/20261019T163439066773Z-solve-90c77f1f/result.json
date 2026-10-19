@@ -1,0 +1,304 @@
+{
+  "problem": "pd_control-s0",
+  "solver": "cmaes",
+  "solver_version": "1.0.0",
+  "status": "feasible_discretized_only",
+  "x": [
+    24.999999554098586,
+    6.917998151085092
+  ],
+  "x_decoded": {
+    "kp": 24.999999554098586,
+    "kd": 6.917998151085092
+  },
+  "objective": 0.29737705624561045,
+  "feasible": true,
+  "constraint_violations": {
+    "overshoot": 0.0,
+    "actuator": 0.0
+  },
+  "max_violation": 0.0,
+  "n_evaluations": 800,
+  "n_gradient_evaluations": 0,
+  "n_verification_evaluations": 1,
+  "runtime_s": 5.059371663000093,
+  "seed": 0,
+  "termination_reason": "budget_evaluations",
+  "history": [
+    [
+      1,
+      0.2053369030260819,
+      false
+    ],
+    [
+      2,
+      0.27433120924081444,
+      false
+    ],
+    [
+      4,
+      0.38393783379741153,
+      false
+    ],
+    [
+      6,
+      1.4605709253673003,
+      true
+    ],
+    [
+      9,
+      0.4177975212589721,
+      true
+    ],
+    [
+      42,
+      0.3595638820524801,
+      true
+    ],
+    [
+      46,
+      0.32277677599209526,
+      true
+    ],
+    [
+      81,
+      0.31852828254654114,
+      true
+    ],
+    [
+      98,
+      0.3052153232091059,
+      true
+    ],
+    [
+      133,
+      0.3016811104054719,
+      true
+    ],
+    [
+      161,
+      0.3014969834061189,
+      true
+    ],
+    [
+      173,
+      0.3011147504747407,
+      true
+    ],
+    [
+      187,
+      0.299161075350399,
+      true
+    ],
+    [
+      202,
+      0.2990594393821795,
+      true
+    ],
+    [
+      230,
+      0.2988406490472542,
+      true
+    ],
+    [
+      238,
+      0.2985258369008834,
+      true
+    ],
+    [
+      259,
+      0.2984594960875107,
+      true
+    ],
+    [
+      277,
+      0.29817363836772226,
+      true
+    ],
+    [
+      288,
+      0.29796085158685776,
+      true
+    ],
+    [
+      289,
+      0.29793821545031746,
+      true
+    ],
+    [
+      292,
+      0.2977916480528365,
+      true
+    ],
+    [
+      307,
+      0.297682222187117,
+      true
+    ],
+    [
+      321,
+      0.2975752788812905,
+      true
+    ],
+    [
+      357,
+      0.29740864100813746,
+      true
+    ],
+    [
+      445,
+      0.2974057104976471,
+      true
+    ],
+    [
+      460,
+      0.2973902350608149,
+      true
+    ],
+    [
+      467,
+      0.29738246381776196,
+      true
+    ],
+    [
+      475,
+      0.29738164342775275,
+      true
+    ],
+    [
+      517,
+      0.2973802073195498,
+      true
+    ],
+    [
+      569,
+      0.2973801768294991,
+      true
+    ],
+    [
+      570,
+      0.2973801082369263,
+      true
+    ],
+    [
+      571,
+      0.29737975165117053,
+      true
+    ],
+    [
+      573,
+      0.2973783615640506,
+      true
+    ],
+    [
+      604,
+      0.29737791814509246,
+      true
+    ],
+    [
+      619,
+      0.29737780263592184,
+      true
+    ],
+    [
+      636,
+      0.2973776105712903,
+      true
+    ],
+    [
+      651,
+      0.2973775506847422,
+      true
+    ],
+    [
+      673,
+      0.29737739082408754,
+      true
+    ],
+    [
+      682,
+      0.2973773527109778,
+      true
+    ],
+    [
+      690,
+      0.29737733785235937,
+      true
+    ],
+    [
+      692,
+      0.2973773321862075,
+      true
+    ],
+    [
+      711,
+      0.29737726945601195,
+      true
+    ],
+    [
+      715,
+      0.29737721986668825,
+      true
+    ],
+    [
+      721,
+      0.2973771577216212,
+      true
+    ],
+    [
+      733,
+      0.29737705624561045,
+      true
+    ]
+  ],
+  "guarantees": [
+    {
+      "kind": "feasibility_verified_at_sample_points_only",
+      "statement": "Feasible for the problem as defined (constraints evaluated on the simulation's sample grid), but the independent re-simulation on a denser grid with tighter tolerances found constraint violations. Feasibility of the underlying continuous-time system is NOT established.",
+      "method": "sampled: 1200 points of a re-integration with rtol=1e-07",
+      "tolerance": null,
+      "assumptions": [
+        "{'feasible': False, 'scope': 'sampled: 1200 points of a re-integration with rtol=1e-07', 'max_constraint_values': {'overshoot': 0.00020330712717298027, 'actuator': -4.4590141357048196e-07}, 'objective_dense': 0.2973758704986272}"
+      ],
+      "point": null
+    },
+    {
+      "kind": "heuristic_best_found",
+      "statement": "Best feasible solution found within the budget. No global (or proven local) optimality is claimed.",
+      "method": "",
+      "tolerance": null,
+      "assumptions": [],
+      "point": null
+    }
+  ],
+  "assumptions": [
+    "objective declared deterministic",
+    "constraint 'overshoot' (ineq) satisfied when g(x) <= 1e-06",
+    "constraint 'actuator' (ineq) satisfied when g(x) <= 1e-06",
+    "objective/constraints computed by numerical simulation; accuracy limited by the integrator/discretisation"
+  ],
+  "operator_versions": {
+    "cmaes": "1.0.0"
+  },
+  "sense": "min",
+  "noise": null,
+  "diagnostics": {
+    "iterations": 133,
+    "n_errors": 0,
+    "n_nonfinite": 0,
+    "n_domain_rejections": 0,
+    "n_feasible_evaluations": 568,
+    "verifier": {
+      "feasible": false,
+      "scope": "sampled: 1200 points of a re-integration with rtol=1e-07",
+      "max_constraint_values": {
+        "overshoot": 0.00020330712717298027,
+        "actuator": -4.4590141357048196e-07
+      },
+      "objective_dense": 0.2973758704986272
+    }
+  },
+  "messages": [
+    "independent verifier rejected the reported point: {'feasible': False, 'scope': 'sampled: 1200 points of a re-integration with rtol=1e-07', 'max_constraint_values': {'overshoot': 0.00020330712717298027, 'actuator': -4.4590141357048196e-07}, 'objective_dense': 0.2973758704986272}"
+  ]
+}

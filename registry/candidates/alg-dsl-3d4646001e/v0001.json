@@ -1,0 +1,154 @@
+{
+  "id": "alg-dsl-3d4646001e",
+  "version": 1,
+  "created": "2026-10-19T16:37:15+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g3-1",
+    "population": 10,
+    "offspring": 10,
+    "init": {
+      "op": "lhs"
+    },
+    "repair": {
+      "op": "project"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "best"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "sbx",
+              "eta": 32.601
+            },
+            {
+              "op": "gaussian",
+              "sigma": 0.0346
+            }
+          ]
+        },
+        "survival": {
+          "op": "comma"
+        },
+        "step": {
+          "op": "constant"
+        },
+        "until": {
+          "pred": "evals_fraction",
+          "ge": 0.49
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "best"
+        },
+        "variation": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "de_best1",
+                  "F": 0.555,
+                  "CR": 0.366
+                },
+                {
+                  "op": "uniform_reset",
+                  "rate": 0.44
+                }
+              ]
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "de_current_to_pbest",
+                  "F": 1.008,
+                  "CR": 0.466,
+                  "p": 0.49
+                },
+                {
+                  "op": "if",
+                  "cond": {
+                    "pred": "stagnation",
+                    "ge": 22
+                  },
+                  "then": {
+                    "op": "gaussian",
+                    "sigma": 0.1556,
+                    "rate": 0.4
+                  },
+                  "else": {
+                    "op": "toward_best",
+                    "w": 0.934
+                  }
+                }
+              ]
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "survival": {
+          "op": "threshold",
+          "tau": 0.0164
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:37:15+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 10,
+    "offspring": 10,
+    "stages.0.variation.children.0.eta": 32.601,
+    "stages.0.variation.children.1.sigma": 0.0346,
+    "stages.0.until.ge": 0.49,
+    "stages.1.variation.children.0.children.0.F": 0.555,
+    "stages.1.variation.children.0.children.0.CR": 0.366,
+    "stages.1.variation.children.0.children.1.rate": 0.44,
+    "stages.1.variation.children.1.children.0.F": 1.008,
+    "stages.1.variation.children.1.children.0.CR": 0.466,
+    "stages.1.variation.children.1.children.0.p": 0.49,
+    "stages.1.variation.children.1.children.1.cond.ge": 22,
+    "stages.1.variation.children.1.children.1.then.sigma": 0.1556,
+    "stages.1.variation.children.1.children.1.then.rate": 0.4,
+    "stages.1.variation.children.1.children.1.else.w": 0.934,
+    "stages.1.survival.tau": 0.0164
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

@@ -1,0 +1,113 @@
+{
+  "id": "alg-dsl-26bfd13429",
+  "version": 1,
+  "created": "2026-10-19T16:46:56+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g5-2",
+    "population": 30,
+    "offspring": 30,
+    "init": {
+      "op": "opposition"
+    },
+    "repair": {
+      "op": "project"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "random"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "sbx"
+            },
+            {
+              "op": "per_type",
+              "binary": {
+                "op": "bit_flip"
+              },
+              "categorical": {
+                "op": "uniform_reset",
+                "rate": 0.27
+              },
+              "integer": {
+                "op": "seq",
+                "children": [
+                  {
+                    "op": "gaussian"
+                  },
+                  {
+                    "op": "prob",
+                    "p": 0.48,
+                    "child": {
+                      "op": "uniform_reset"
+                    }
+                  }
+                ]
+              },
+              "real": {
+                "op": "gaussian",
+                "rate": 0.49
+              }
+            }
+          ]
+        },
+        "survival": {
+          "op": "plus"
+        },
+        "step": {
+          "op": "one_fifth",
+          "factor": 1.17,
+          "target": 0.14
+        }
+      }
+    ],
+    "restart": {
+      "op": "stagnation",
+      "patience": 47,
+      "keep_best": 1,
+      "reinit": "around_best",
+      "scale": 0.303
+    },
+    "refine": null
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:46:56+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 30,
+    "offspring": 30,
+    "stages.0.variation.children.1.categorical.rate": 0.27,
+    "stages.0.variation.children.1.integer.children.1.p": 0.48,
+    "stages.0.variation.children.1.real.rate": 0.49,
+    "stages.0.step.factor": 1.17,
+    "stages.0.step.target": 0.14,
+    "restart.patience": 47,
+    "restart.keep_best": 1,
+    "restart.scale": 0.303
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

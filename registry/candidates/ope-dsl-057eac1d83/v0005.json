@@ -1,0 +1,197 @@
+{
+  "id": "ope-dsl-057eac1d83",
+  "version": 5,
+  "created": "2026-10-19T16:45:35+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "stagnation",
+      "ge": 5
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_rand1",
+          "F": 0.893,
+          "CR": 0.279
+        },
+        {
+          "op": "type_aware",
+          "sigma": 0.3108
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "arithmetic_cx"
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "type_aware",
+            "sigma": 0.2228
+          },
+          "categorical": {
+            "op": "repeat",
+            "n": 3,
+            "child": {
+              "op": "categorical_reset",
+              "rate": 0.2
+            }
+          },
+          "integer": {
+            "op": "gaussian",
+            "sigma": 0.0599
+          },
+          "real": {
+            "op": "cauchy",
+            "sigma": 0.4498,
+            "rate": 0.06
+          }
+        }
+      ]
+    }
+  },
+  "parents": [
+    "ope-dsl-ddba137ae4"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: replaced subtree at then/children/0 (de_best1 -> de_rand1)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:45:35+00:00",
+      "operation": "replaced subtree at then/children/0 (de_best1 -> de_rand1)",
+      "parents": [
+        "ope-dsl-ddba137ae4"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:45:36+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-19T16:45:55+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 4,
+      "time": "2026-10-19T16:45:55+00:00",
+      "operation": "status -> retained",
+      "generation": 2
+    },
+    {
+      "version": 5,
+      "time": "2026-10-19T16:46:53+00:00",
+      "operation": "status -> discarded",
+      "generation": 4
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 5,
+    "then.children.0.F": 0.893,
+    "then.children.0.CR": 0.279,
+    "then.children.1.sigma": 0.3108,
+    "else.children.1.binary.sigma": 0.2228,
+    "else.children.1.categorical.n": 3,
+    "else.children.1.categorical.child.rate": 0.2,
+    "else.children.1.integer.sigma": 0.0599,
+    "else.children.1.real.sigma": 0.4498,
+    "else.children.1.real.rate": 0.06
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 12, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.007911070686358684"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=90, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3121,
+    "seconds": 1.033
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 3000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 12,
+        "mean_score": 0.08797467945650485,
+        "median_score": 0.034239578739190805,
+        "std_score": 0.1453418665412295,
+        "iqr_score": 0.09515491879076059,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 1.2687454011493218,
+        "mean_runtime_s": 0.5779735135000313,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.19265783783334378,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "hybrid",
+      "per_family": {
+        "mixed_rastrigin": {
+          "ope-dsl-057eac1d83": 0.17462108893687142
+        },
+        "mixed_constrained": {
+          "ope-dsl-057eac1d83": 0.001328269976138276
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite mixed"
+  ],
+  "status": "discarded",
+  "train_score": 0.08797467945650485
+}

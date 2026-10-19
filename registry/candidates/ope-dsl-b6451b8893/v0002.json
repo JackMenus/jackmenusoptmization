@@ -1,0 +1,132 @@
+{
+  "id": "ope-dsl-b6451b8893",
+  "version": 2,
+  "created": "2026-10-19T16:46:55+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "copy"
+      },
+      {
+        "op": "per_type",
+        "binary": {
+          "op": "bit_flip",
+          "rate": 0.24
+        },
+        "categorical": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "uniform_reset"
+            },
+            {
+              "op": "categorical_reset",
+              "rate": 0.56
+            }
+          ],
+          "weights": [
+            0.36,
+            0.82
+          ]
+        },
+        "integer": {
+          "op": "integer_step"
+        },
+        "real": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "gaussian",
+              "sigma": 0.0077,
+              "rate": 0.15
+            },
+            {
+              "op": "cauchy"
+            }
+          ],
+          "weights": [
+            0.67,
+            0.64
+          ]
+        }
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:46:55+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:46:56+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.1.binary.rate": 0.24,
+    "children.1.categorical.children.1.rate": 0.56,
+    "children.1.real.children.0.sigma": 0.0077,
+    "children.1.real.children.0.rate": 0.15
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 11, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.05156143434001476"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.302s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=85, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3117,
+    "seconds": 1.037
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite mixed"
+  ],
+  "status": "validated"
+}

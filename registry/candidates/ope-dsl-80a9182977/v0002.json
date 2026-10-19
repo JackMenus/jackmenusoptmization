@@ -1,0 +1,158 @@
+{
+  "id": "ope-dsl-80a9182977",
+  "version": 2,
+  "created": "2026-10-19T16:42:01+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "mix",
+    "children": [
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_rand1",
+            "F": 0.574,
+            "CR": 0.481
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "if",
+              "cond": {
+                "pred": "stagnation",
+                "ge": 39
+              },
+              "then": {
+                "op": "bit_flip",
+                "rate": 0.33
+              },
+              "else": {
+                "op": "uniform_reset",
+                "rate": 0.27
+              }
+            },
+            "integer": {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "uniform_reset"
+                },
+                {
+                  "op": "prob",
+                  "p": 0.1,
+                  "child": {
+                    "op": "gaussian"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_current_to_pbest",
+            "F": 1.309,
+            "CR": 0.854
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "uniform_reset"
+            },
+            "integer": {
+              "op": "gaussian",
+              "sigma": 0.0057
+            }
+          }
+        ]
+      }
+    ],
+    "weights": [
+      0.5,
+      0.5
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:42:01+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:42:02+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.children.0.F": 0.574,
+    "children.0.children.0.CR": 0.481,
+    "children.0.children.1.binary.cond.ge": 39,
+    "children.0.children.1.binary.then.rate": 0.33,
+    "children.0.children.1.binary.else.rate": 0.27,
+    "children.0.children.1.integer.children.1.p": 0.1,
+    "children.1.children.0.F": 1.309,
+    "children.1.children.0.CR": 0.854,
+    "children.1.children.1.integer.sigma": 0.0057
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 16, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.305s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=96, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3114,
+    "seconds": 1.282
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite discrete_combinatorial"
+  ],
+  "status": "validated"
+}

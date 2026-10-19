@@ -1,0 +1,100 @@
+{
+  "id": "alg-dsl-228bec2a1e",
+  "version": 1,
+  "created": "2026-10-19T16:36:36+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g2-4",
+    "population": 30,
+    "offspring": 30,
+    "init": {
+      "op": "opposition"
+    },
+    "repair": {
+      "op": "project"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "best"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "arithmetic_cx"
+            },
+            {
+              "op": "if",
+              "cond": {
+                "pred": "success_rate",
+                "lt": 0.04
+              },
+              "then": {
+                "op": "gaussian",
+                "sigma": 0.0042
+              },
+              "else": {
+                "op": "gaussian",
+                "sigma": 0.3183,
+                "rate": 0.09
+              }
+            }
+          ]
+        },
+        "survival": {
+          "op": "threshold",
+          "tau": 0.0118
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": null,
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.11,
+      "step0": 0.0056
+    }
+  },
+  "parents": [
+    "alg-dsl-9b5973b42a"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: stage 0: new step constant",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:36:36+00:00",
+      "operation": "stage 0: new step constant",
+      "parents": [
+        "alg-dsl-9b5973b42a"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 30,
+    "offspring": 30,
+    "stages.0.variation.children.1.cond.lt": 0.04,
+    "stages.0.variation.children.1.then.sigma": 0.0042,
+    "stages.0.variation.children.1.else.sigma": 0.3183,
+    "stages.0.variation.children.1.else.rate": 0.09,
+    "stages.0.survival.tau": 0.0118,
+    "refine.evals_fraction": 0.11,
+    "refine.step0": 0.0056
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

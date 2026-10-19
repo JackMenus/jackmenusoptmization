@@ -1,0 +1,5 @@
+[hybrid 1.0.0] rastrigin-d8-s3: status=feasible objective=4.974795285 feasible=True max_violation=0 evals=16007 time=0.968s termination=completed guarantees=[first_order_stationary_point, feasibility_verified, heuristic_best_found]
+  - first_order_stationary_point: First-order stationarity on the box: ||P(x - grad f) - x||_inf = 1.39e-06 <= 1e-05 (analytic gradient). Stationarity is necessary, not sufficient, for a local minimum; no local optimality is proven.
+  - feasibility_verified: The reported point satisfies every original constraint within its stated tolerance at verification.
+  - heuristic_best_found: Best feasible solution found within the budget. No global (or proven local) optimality is claimed.
+run record: runs/20261019T163430032260Z-solve-304f1817

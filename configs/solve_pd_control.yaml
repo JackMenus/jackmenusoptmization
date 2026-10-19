@@ -1,0 +1,7 @@
+kind: solve
+# Continuous-time ODE simulation: feasibility is checked on the simulation grid and re-checked densely
+problem: {benchmark: pd_control, seed: 0}
+solver: cmaes
+budget: {max_evaluations: 800}
+checkpoint_every: 5
+runs_dir: runs

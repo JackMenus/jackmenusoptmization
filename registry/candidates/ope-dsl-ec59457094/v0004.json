@@ -1,0 +1,158 @@
+{
+  "id": "ope-dsl-ec59457094",
+  "version": 4,
+  "created": "2026-10-19T16:37:15+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "arithmetic_cx"
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "toward_best",
+            "w": 0.405
+          },
+          {
+            "op": "prob",
+            "p": 0.21,
+            "child": {
+              "op": "cauchy",
+              "sigma": 0.0021
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:37:15+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:37:16+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-19T16:37:54+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 4,
+      "time": "2026-10-19T16:37:54+00:00",
+      "operation": "status -> discarded",
+      "generation": 3
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.1.children.0.w": 0.405,
+    "children.1.children.1.p": 0.21,
+    "children.1.children.1.child.sigma": 0.0021
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 6, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=5.9243682216331476e-09"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=40, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3125,
+    "seconds": 0.626
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 4000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 24,
+        "mean_score": 0.09044476220217061,
+        "median_score": 0.007575872393748794,
+        "std_score": 0.1553601758556474,
+        "iqr_score": 0.09115552784208747,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.041666666666666664,
+        "median_gap": 1.5935060752107488,
+        "mean_runtime_s": 0.5240643507082913,
+        "mean_evaluations": 4000.0,
+        "runtime_per_eval_ms": 0.13101608767707282,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "de",
+      "per_family": {
+        "rastrigin": {
+          "ope-dsl-ec59457094": 0.07338004480715482
+        },
+        "ackley": {
+          "ope-dsl-ec59457094": 0.0028650226785968333
+        },
+        "styblinski_tang": {
+          "ope-dsl-ec59457094": 0.27933550114457034
+        },
+        "rosenbrock": {
+          "ope-dsl-ec59457094": 0.00619848017836044
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite continuous_multimodal"
+  ],
+  "status": "discarded",
+  "train_score": 0.09044476220217061
+}

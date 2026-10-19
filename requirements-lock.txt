@@ -1,0 +1,6 @@
+# Exact versions the test suite and experiments were run with (Python 3.13.16, Linux x86_64).
+numpy==2.5.3
+scipy==1.18.1
+PyYAML==6.0.1
+click==8.5.0
+pytest==9.1.1

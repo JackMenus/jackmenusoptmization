@@ -1,0 +1,11 @@
++ optiforge benchmark configs/benchmark_portfolio.yaml
++ optiforge solve configs/solve_rastrigin.yaml
++ optiforge solve configs/solve_pressure_vessel.yaml
++ optiforge solve configs/solve_knapsack_exact.yaml
++ optiforge solve configs/solve_milp.yaml
++ optiforge solve configs/solve_pd_control.yaml
++ optiforge solve configs/solve_facility_mixed.yaml
++ optiforge develop configs/develop_continuous.yaml
++ optiforge develop configs/develop_discrete.yaml
++ optiforge develop configs/develop_mixed.yaml
++ echo done

@@ -1,0 +1,17 @@
+{
+  "kind": "solve",
+  "problem": {
+    "benchmark": "rastrigin",
+    "seed": 3,
+    "params": {
+      "dim": 8
+    }
+  },
+  "solver": "auto",
+  "budget": {
+    "max_evaluations": 20000
+  },
+  "seed": 0,
+  "runs_dir": "runs",
+  "_source": "/home/claude/optimization-platform/configs/solve_rastrigin.yaml"
+}

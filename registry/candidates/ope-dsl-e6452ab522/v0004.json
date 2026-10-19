@@ -1,0 +1,180 @@
+{
+  "id": "ope-dsl-e6452ab522",
+  "version": 4,
+  "created": "2026-10-19T16:40:35+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "success_rate",
+      "lt": 0.02
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "copy"
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "if",
+            "cond": {
+              "pred": "success_rate",
+              "lt": 0.27
+            },
+            "then": {
+              "op": "uniform_reset"
+            },
+            "else": {
+              "op": "bit_flip"
+            }
+          },
+          "integer": {
+            "op": "uniform_reset"
+          }
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_current_to_pbest",
+          "F": 0.327,
+          "CR": 0.457
+        },
+        {
+          "op": "type_aware",
+          "sigma": 0.1041
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:40:35+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:40:36+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-19T16:40:58+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 4,
+      "time": "2026-10-19T16:40:58+00:00",
+      "operation": "status -> retained",
+      "generation": 0
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.lt": 0.02,
+    "then.children.1.binary.cond.lt": 0.27,
+    "else.children.0.F": 0.327,
+    "else.children.0.CR": 0.457,
+    "else.children.1.sigma": 0.1041
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 11, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=127, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3121,
+    "seconds": 0.855
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 3000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 18,
+        "mean_score": 0.01515151515151515,
+        "median_score": 0.0,
+        "std_score": 0.06428243465332249,
+        "iqr_score": 0.0,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.9444444444444444,
+        "median_gap": 0.0,
+        "mean_runtime_s": 0.4970732015000421,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.1656910671666807,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "tabu",
+      "per_family": {
+        "knapsack": {
+          "ope-dsl-e6452ab522": 0.04545454545454545
+        },
+        "maxcut": {
+          "ope-dsl-e6452ab522": 0.0
+        },
+        "integer_quadratic": {
+          "ope-dsl-e6452ab522": 0.0
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite discrete_combinatorial"
+  ],
+  "status": "retained",
+  "train_score": 0.01515151515151515
+}

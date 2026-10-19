@@ -1,0 +1,75 @@
+{
+  "id": "ope-dsl-98f77750c0",
+  "version": 1,
+  "created": "2026-10-19T16:38:36+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "feasible_fraction",
+      "lt": 0.36
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "blend_cx",
+          "alpha": 0.989
+        },
+        {
+          "op": "mix",
+          "children": [
+            {
+              "op": "gaussian"
+            },
+            {
+              "op": "cauchy"
+            }
+          ],
+          "weights": [
+            0.84,
+            0.56
+          ]
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_best1",
+          "CR": 0.752
+        },
+        {
+          "op": "toward_best"
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:38:36+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.lt": 0.36,
+    "then.children.0.alpha": 0.989,
+    "else.children.0.CR": 0.752
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

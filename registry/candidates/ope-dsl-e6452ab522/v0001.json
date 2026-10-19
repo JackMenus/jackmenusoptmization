@@ -1,0 +1,82 @@
+{
+  "id": "ope-dsl-e6452ab522",
+  "version": 1,
+  "created": "2026-10-19T16:40:35+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "success_rate",
+      "lt": 0.02
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "copy"
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "if",
+            "cond": {
+              "pred": "success_rate",
+              "lt": 0.27
+            },
+            "then": {
+              "op": "uniform_reset"
+            },
+            "else": {
+              "op": "bit_flip"
+            }
+          },
+          "integer": {
+            "op": "uniform_reset"
+          }
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_current_to_pbest",
+          "F": 0.327,
+          "CR": 0.457
+        },
+        {
+          "op": "type_aware",
+          "sigma": 0.1041
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:40:35+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.lt": 0.02,
+    "then.children.1.binary.cond.lt": 0.27,
+    "else.children.0.F": 0.327,
+    "else.children.0.CR": 0.457,
+    "else.children.1.sigma": 0.1041
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

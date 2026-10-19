@@ -1,0 +1,147 @@
+{
+  "id": "alg-dsl-e46f88cbd6",
+  "version": 1,
+  "created": "2026-10-19T16:35:40+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g1-1",
+    "population": 20,
+    "offspring": 20,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "project"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "de_best1",
+              "CR": 0.6
+            },
+            {
+              "op": "cauchy",
+              "sigma": 0.1152
+            }
+          ]
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "one_fifth",
+          "factor": 1.22,
+          "target": 0.12
+        },
+        "until": {
+          "pred": "evals_fraction",
+          "ge": 0.47
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 3
+        },
+        "variation": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "copy"
+                },
+                {
+                  "op": "cauchy",
+                  "rate": 0.24
+                }
+              ]
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "de_best1",
+                  "F": 0.8449,
+                  "CR": 0.391
+                },
+                {
+                  "op": "cauchy",
+                  "sigma": 0.0225
+                }
+              ]
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "decay",
+          "rate": 0.9816,
+          "floor": 0.001
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [
+    "alg-dsl-26245e9ec0"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: stage 1: perturbed de_best1.F at children/1/children/0",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:35:40+00:00",
+      "operation": "stage 1: perturbed de_best1.F at children/1/children/0",
+      "parents": [
+        "alg-dsl-26245e9ec0"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 20,
+    "offspring": 20,
+    "stages.0.parent_selection.k": 4,
+    "stages.0.variation.children.0.CR": 0.6,
+    "stages.0.variation.children.1.sigma": 0.1152,
+    "stages.0.step.factor": 1.22,
+    "stages.0.step.target": 0.12,
+    "stages.0.until.ge": 0.47,
+    "stages.1.parent_selection.k": 3,
+    "stages.1.variation.children.0.children.1.rate": 0.24,
+    "stages.1.variation.children.1.children.0.F": 0.8449,
+    "stages.1.variation.children.1.children.0.CR": 0.391,
+    "stages.1.variation.children.1.children.1.sigma": 0.0225,
+    "stages.1.step.rate": 0.9816,
+    "stages.1.step.floor": 0.001
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

@@ -1,0 +1,177 @@
+{
+  "id": "ope-dsl-b4a778cc88",
+  "version": 1,
+  "created": "2026-10-19T16:46:27+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "success_rate",
+      "lt": 0.25
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_best1",
+          "CR": 0.947
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "if",
+            "cond": {
+              "pred": "stagnation",
+              "ge": 25
+            },
+            "then": {
+              "op": "bit_flip",
+              "rate": 0.08
+            },
+            "else": {
+              "op": "bit_flip"
+            }
+          },
+          "categorical": {
+            "op": "if",
+            "cond": {
+              "pred": "success_rate",
+              "lt": 0.06
+            },
+            "then": {
+              "op": "uniform_reset"
+            },
+            "else": {
+              "op": "uniform_reset"
+            }
+          },
+          "integer": {
+            "op": "mix",
+            "children": [
+              {
+                "op": "uniform_reset"
+              },
+              {
+                "op": "gaussian",
+                "rate": 0.38
+              }
+            ],
+            "weights": [
+              0.98,
+              0.86
+            ]
+          },
+          "real": {
+            "op": "if",
+            "cond": {
+              "pred": "stagnation",
+              "ge": 22
+            },
+            "then": {
+              "op": "toward_best",
+              "w": 0.46
+            },
+            "else": {
+              "op": "cauchy",
+              "sigma": 0.2002
+            }
+          }
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_current_to_pbest",
+          "F": 1.192,
+          "CR": 0.422,
+          "p": 0.443
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "repeat",
+            "n": 3,
+            "child": {
+              "op": "bit_flip"
+            }
+          },
+          "categorical": {
+            "op": "seq",
+            "children": [
+              {
+                "op": "categorical_reset"
+              },
+              {
+                "op": "prob",
+                "p": 0.52,
+                "child": {
+                  "op": "categorical_reset"
+                }
+              }
+            ]
+          },
+          "integer": {
+            "op": "integer_step",
+            "max_step": 3
+          },
+          "real": {
+            "op": "if",
+            "cond": {
+              "pred": "stagnation",
+              "ge": 31
+            },
+            "then": {
+              "op": "toward_best",
+              "w": 0.608
+            },
+            "else": {
+              "op": "uniform_reset"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:46:27+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.lt": 0.25,
+    "then.children.0.CR": 0.947,
+    "then.children.1.binary.cond.ge": 25,
+    "then.children.1.binary.then.rate": 0.08,
+    "then.children.1.categorical.cond.lt": 0.06,
+    "then.children.1.integer.children.1.rate": 0.38,
+    "then.children.1.real.cond.ge": 22,
+    "then.children.1.real.then.w": 0.46,
+    "then.children.1.real.else.sigma": 0.2002,
+    "else.children.0.F": 1.192,
+    "else.children.0.CR": 0.422,
+    "else.children.0.p": 0.443,
+    "else.children.1.binary.n": 3,
+    "else.children.1.categorical.children.1.p": 0.52,
+    "else.children.1.integer.max_step": 3,
+    "else.children.1.real.cond.ge": 31,
+    "else.children.1.real.then.w": 0.608
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

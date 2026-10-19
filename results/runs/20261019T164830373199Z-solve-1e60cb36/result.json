@@ -1,0 +1,294 @@
+{
+  "problem": "mixed_constrained-n4-s500",
+  "solver": "dsl:ope-pyt-c4d678ee14",
+  "solver_version": "dsl1-a43b53fabd0b",
+  "status": "feasible",
+  "x": [
+    2.4659509619103455,
+    0.0,
+    2.966073660913429,
+    2.398524630927937,
+    1.0,
+    0.0,
+    1.0,
+    1.0
+  ],
+  "x_decoded": {
+    "x0": 2.4659509619103455,
+    "x1": 0.0,
+    "x2": 2.966073660913429,
+    "x3": 2.398524630927937,
+    "y0": 1,
+    "y1": 0,
+    "y2": 1,
+    "y3": 1
+  },
+  "objective": 1.699500628777427,
+  "feasible": true,
+  "constraint_violations": {
+    "link[0]": 0.0,
+    "link[1]": 0.0,
+    "link[2]": 0.0,
+    "link[3]": 0.0,
+    "budget": 0.0
+  },
+  "max_violation": 0.0,
+  "n_evaluations": 3000,
+  "n_gradient_evaluations": 0,
+  "n_verification_evaluations": 1,
+  "runtime_s": 1.3950224929994874,
+  "seed": 0,
+  "termination_reason": "budget_evaluations",
+  "history": [
+    [
+      1,
+      -13.441100033752244,
+      false
+    ],
+    [
+      2,
+      -8.33126446064163,
+      false
+    ],
+    [
+      3,
+      10.640707166657927,
+      false
+    ],
+    [
+      17,
+      11.65786966768118,
+      false
+    ],
+    [
+      24,
+      5.93499654229285,
+      false
+    ],
+    [
+      57,
+      16.984704479529153,
+      true
+    ],
+    [
+      58,
+      16.61830476377233,
+      true
+    ],
+    [
+      74,
+      15.72854338823531,
+      true
+    ],
+    [
+      79,
+      10.267357071254235,
+      true
+    ],
+    [
+      107,
+      10.005373254243649,
+      true
+    ],
+    [
+      128,
+      8.062772187845827,
+      true
+    ],
+    [
+      213,
+      7.961212113319256,
+      true
+    ],
+    [
+      304,
+      5.188372784668394,
+      true
+    ],
+    [
+      435,
+      5.053847713785233,
+      true
+    ],
+    [
+      455,
+      4.934423961023137,
+      true
+    ],
+    [
+      464,
+      4.481315539907571,
+      true
+    ],
+    [
+      612,
+      4.213354151952302,
+      true
+    ],
+    [
+      783,
+      2.879768744122556,
+      true
+    ],
+    [
+      810,
+      2.868182767763008,
+      true
+    ],
+    [
+      825,
+      2.3142594762643736,
+      true
+    ],
+    [
+      1034,
+      2.282282988795844,
+      true
+    ],
+    [
+      1251,
+      2.228888288084306,
+      true
+    ],
+    [
+      1388,
+      1.9576841580916877,
+      true
+    ],
+    [
+      1533,
+      1.8776802511130857,
+      true
+    ],
+    [
+      1875,
+      1.791757844472178,
+      true
+    ],
+    [
+      1988,
+      1.784822538936842,
+      true
+    ],
+    [
+      1998,
+      1.7374349757992391,
+      true
+    ],
+    [
+      2120,
+      1.7165501485760615,
+      true
+    ],
+    [
+      2170,
+      1.713756840154586,
+      true
+    ],
+    [
+      2392,
+      1.710511565170595,
+      true
+    ],
+    [
+      2534,
+      1.7090600510040925,
+      true
+    ],
+    [
+      2599,
+      1.7029344501433563,
+      true
+    ],
+    [
+      2669,
+      1.7010984147411037,
+      true
+    ],
+    [
+      2761,
+      1.6996446774271305,
+      true
+    ],
+    [
+      2918,
+      1.699500628777427,
+      true
+    ]
+  ],
+  "guarantees": [
+    {
+      "kind": "feasibility_verified",
+      "statement": "The reported point satisfies every original constraint within its stated tolerance at verification.",
+      "method": "re-evaluation of original constraints",
+      "tolerance": 1e-06,
+      "assumptions": [],
+      "point": null
+    },
+    {
+      "kind": "heuristic_best_found",
+      "statement": "Best feasible solution found within the budget. No global (or proven local) optimality is claimed.",
+      "method": "",
+      "tolerance": null,
+      "assumptions": [],
+      "point": null
+    }
+  ],
+  "assumptions": [
+    "objective declared deterministic",
+    "constraint 'link' (ineq) satisfied when g(x) <= 1e-06",
+    "constraint 'budget' (ineq) satisfied when g(x) <= 1e-06"
+  ],
+  "operator_versions": {
+    "dsl:ope-pyt-c4d678ee14": "dsl1-a43b53fabd0b",
+    "code:ope-pyt-c4d678ee14": "v7"
+  },
+  "sense": "min",
+  "noise": null,
+  "diagnostics": {
+    "iterations": 149,
+    "n_errors": 0,
+    "n_nonfinite": 0,
+    "n_domain_rejections": 0,
+    "n_feasible_evaluations": 677,
+    "plan": {
+      "solver": "candidate:ope-pyt-c4d678ee14",
+      "params": {},
+      "strategy": "generated",
+      "rationale": [
+        "characteristics: kind=mixed dim=8 constraints=2 (eq=0) gradient=False noisy=False budget=3000",
+        "R13: mixed variables -> hybrid: type-aware GA exploration, then compass-search refinement",
+        "evidence override: champion beat baseline 'genetic' on a validation split (12 paired runs, p=0.00122, mean score diff -0.115)"
+      ],
+      "source": "evidence",
+      "evidence": {
+        "candidate": "ope-pyt-c4d678ee14",
+        "validation_summary": {
+          "runs": 12,
+          "mean_score": 0.029167037659374912,
+          "median_score": 0.01656257788966214,
+          "std_score": 0.03167438590668482,
+          "iqr_score": 0.040406824545734105,
+          "feasibility_rate": 1.0,
+          "failure_rate": 0.0,
+          "solved_rate": 0.0,
+          "median_gap": 0.5278180293273369,
+          "mean_runtime_s": 1.0636370209165686,
+          "mean_evaluations": 3000.0,
+          "runtime_per_eval_ms": 0.3545456736388562,
+          "not_applicable_runs": 0
+        },
+        "comparison": {
+          "baseline": "genetic",
+          "pairs": 12,
+          "mean_diff": -0.11523905347598085,
+          "wins": 11,
+          "losses": 1,
+          "ties": 0,
+          "p_value_a_better": 0.001220703125
+        }
+      }
+    }
+  },
+  "messages": []
+}

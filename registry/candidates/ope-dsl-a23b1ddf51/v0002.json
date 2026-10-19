@@ -1,0 +1,126 @@
+{
+  "id": "ope-dsl-a23b1ddf51",
+  "version": 2,
+  "created": "2026-10-19T16:36:32+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "stagnation",
+      "ge": 37
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "arithmetic_cx"
+        },
+        {
+          "op": "gaussian"
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "sbx",
+          "eta": 48.372
+        },
+        {
+          "op": "if",
+          "cond": {
+            "pred": "stagnation",
+            "ge": 39
+          },
+          "then": {
+            "op": "cauchy",
+            "rate": 0.48
+          },
+          "else": {
+            "op": "gaussian",
+            "sigma": 0.0065,
+            "rate": 0.49
+          }
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:36:32+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:36:33+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 37,
+    "else.children.0.eta": 48.372,
+    "else.children.1.cond.ge": 39,
+    "else.children.1.then.rate": 0.48,
+    "else.children.1.else.sigma": 0.0065,
+    "else.children.1.else.rate": 0.49
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 9, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=9.859949323584078e-08"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=96, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3127,
+    "seconds": 0.717
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite continuous_multimodal"
+  ],
+  "status": "validated"
+}

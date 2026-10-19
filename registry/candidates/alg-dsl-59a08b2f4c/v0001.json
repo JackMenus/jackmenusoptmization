@@ -1,0 +1,108 @@
+{
+  "id": "alg-dsl-59a08b2f4c",
+  "version": 1,
+  "created": "2026-10-19T16:43:07+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g5-3",
+    "population": 10,
+    "offspring": 10,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "resample"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 2
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "de_rand1",
+              "F": 0.641,
+              "CR": 0.426
+            },
+            {
+              "op": "per_type",
+              "binary": {
+                "op": "if",
+                "cond": {
+                  "pred": "stagnation",
+                  "ge": 35
+                },
+                "then": {
+                  "op": "bit_flip"
+                },
+                "else": {
+                  "op": "uniform_reset"
+                }
+              },
+              "integer": {
+                "op": "gaussian",
+                "sigma": 0.0154
+              }
+            }
+          ]
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": null,
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.12,
+      "step0": 0.0792
+    }
+  },
+  "parents": [
+    "alg-dsl-8eb0fbeb7a",
+    "alg-dsl-6ff0002790"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: crossover: stage 0 replaced by second parent's stage 0",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:43:07+00:00",
+      "operation": "crossover: stage 0 replaced by second parent's stage 0",
+      "parents": [
+        "alg-dsl-8eb0fbeb7a",
+        "alg-dsl-6ff0002790"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 10,
+    "offspring": 10,
+    "stages.0.parent_selection.k": 2,
+    "stages.0.variation.children.0.F": 0.641,
+    "stages.0.variation.children.0.CR": 0.426,
+    "stages.0.variation.children.1.binary.cond.ge": 35,
+    "stages.0.variation.children.1.integer.sigma": 0.0154,
+    "refine.evals_fraction": 0.12,
+    "refine.step0": 0.0792
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

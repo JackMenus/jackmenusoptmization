@@ -1,0 +1,38 @@
+{
+  "solver": "candidate:ope-pyt-c4d678ee14",
+  "params": {},
+  "strategy": "generated",
+  "rationale": [
+    "characteristics: kind=mixed dim=8 constraints=2 (eq=0) gradient=False noisy=False budget=3000",
+    "R13: mixed variables -> hybrid: type-aware GA exploration, then compass-search refinement",
+    "evidence override: champion beat baseline 'genetic' on a validation split (12 paired runs, p=0.00122, mean score diff -0.115)"
+  ],
+  "source": "evidence",
+  "evidence": {
+    "candidate": "ope-pyt-c4d678ee14",
+    "validation_summary": {
+      "runs": 12,
+      "mean_score": 0.029167037659374912,
+      "median_score": 0.01656257788966214,
+      "std_score": 0.03167438590668482,
+      "iqr_score": 0.040406824545734105,
+      "feasibility_rate": 1.0,
+      "failure_rate": 0.0,
+      "solved_rate": 0.0,
+      "median_gap": 0.5278180293273369,
+      "mean_runtime_s": 1.0636370209165686,
+      "mean_evaluations": 3000.0,
+      "runtime_per_eval_ms": 0.3545456736388562,
+      "not_applicable_runs": 0
+    },
+    "comparison": {
+      "baseline": "genetic",
+      "pairs": 12,
+      "mean_diff": -0.11523905347598085,
+      "wins": 11,
+      "losses": 1,
+      "ties": 0,
+      "p_value_a_better": 0.001220703125
+    }
+  }
+}

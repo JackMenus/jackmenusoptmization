@@ -1,0 +1,2 @@
+{"t": 1792427670.047, "event": "run_started", "kind": "solve", "config_hash": "304f1817"}
+{"t": 1792427671.0209, "event": "run_finished", "status": "feasible", "objective": 4.974795285466456, "evaluations": 16007}

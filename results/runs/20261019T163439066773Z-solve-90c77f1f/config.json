@@ -1,0 +1,14 @@
+{
+  "kind": "solve",
+  "problem": {
+    "benchmark": "pd_control",
+    "seed": 0
+  },
+  "solver": "cmaes",
+  "budget": {
+    "max_evaluations": 800
+  },
+  "checkpoint_every": 5,
+  "runs_dir": "runs",
+  "_source": "/home/claude/optimization-platform/configs/solve_pd_control.yaml"
+}

@@ -1,0 +1,6 @@
+kind: solve
+# 2^16 points fit the budget, so the selector chooses complete enumeration and certifies the optimum
+problem: {benchmark: knapsack, seed: 7, params: {n: 16}}
+solver: auto
+budget: {max_evaluations: 70000}
+runs_dir: runs

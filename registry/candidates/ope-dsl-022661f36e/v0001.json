@@ -1,0 +1,56 @@
+{
+  "id": "ope-dsl-022661f36e",
+  "version": 1,
+  "created": "2026-10-19T16:38:37+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "arithmetic_cx"
+      },
+      {
+        "op": "mix",
+        "children": [
+          {
+            "op": "cauchy",
+            "sigma": 0.0012
+          },
+          {
+            "op": "gaussian",
+            "sigma": 0.0347
+          }
+        ],
+        "weights": [
+          0.49,
+          0.37
+        ]
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:38:37+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.1.children.0.sigma": 0.0012,
+    "children.1.children.1.sigma": 0.0347
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

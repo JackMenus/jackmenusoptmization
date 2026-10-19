@@ -1,0 +1,106 @@
+{
+  "id": "alg-dsl-c9385d3b5f",
+  "version": 1,
+  "created": "2026-10-19T16:42:38+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g4-1",
+    "population": 20,
+    "offspring": 20,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "resample"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 2
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "de_rand1",
+              "F": 0.641,
+              "CR": 0.426
+            },
+            {
+              "op": "per_type",
+              "binary": {
+                "op": "if",
+                "cond": {
+                  "pred": "stagnation",
+                  "ge": 35
+                },
+                "then": {
+                  "op": "bit_flip"
+                },
+                "else": {
+                  "op": "uniform_reset"
+                }
+              },
+              "integer": {
+                "op": "gaussian",
+                "sigma": 0.0154
+              }
+            }
+          ]
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": null,
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.12,
+      "step0": 0.0792
+    }
+  },
+  "parents": [
+    "alg-dsl-00bef57051"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: population/offspring -> 20",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:42:38+00:00",
+      "operation": "population/offspring -> 20",
+      "parents": [
+        "alg-dsl-00bef57051"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 20,
+    "offspring": 20,
+    "stages.0.parent_selection.k": 2,
+    "stages.0.variation.children.0.F": 0.641,
+    "stages.0.variation.children.0.CR": 0.426,
+    "stages.0.variation.children.1.binary.cond.ge": 35,
+    "stages.0.variation.children.1.integer.sigma": 0.0154,
+    "refine.evals_fraction": 0.12,
+    "refine.step0": 0.0792
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

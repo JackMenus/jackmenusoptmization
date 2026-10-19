@@ -1,0 +1,138 @@
+{
+  "id": "ope-dsl-c64734a680",
+  "version": 1,
+  "created": "2026-10-19T16:41:01+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "stagnation",
+      "ge": 32
+    },
+    "then": {
+      "op": "if",
+      "cond": {
+        "pred": "stagnation",
+        "ge": 21
+      },
+      "then": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "uniform_cx",
+            "p": 0.743
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "bit_flip",
+                  "rate": 0.4
+                },
+                {
+                  "op": "prob",
+                  "p": 0.46,
+                  "child": {
+                    "op": "bit_flip"
+                  }
+                }
+              ]
+            },
+            "integer": {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "integer_step",
+                  "max_step": 3
+                },
+                {
+                  "op": "prob",
+                  "p": 0.33,
+                  "child": {
+                    "op": "gaussian",
+                    "sigma": 0.0839
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "else": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "uniform_cx",
+            "p": 0.852
+          },
+          {
+            "op": "type_aware",
+            "sigma": 0.1212
+          }
+        ]
+      }
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_rand1",
+          "F": 1.305,
+          "CR": 0.089
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "bit_flip"
+          },
+          "integer": {
+            "op": "gaussian",
+            "sigma": 0.0419
+          }
+        }
+      ]
+    }
+  },
+  "parents": [
+    "ope-dsl-956a82d68c"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: wrapped operator in a conditional with a new alternative branch",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:41:01+00:00",
+      "operation": "wrapped operator in a conditional with a new alternative branch",
+      "parents": [
+        "ope-dsl-956a82d68c"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 32,
+    "then.cond.ge": 21,
+    "then.then.children.0.p": 0.743,
+    "then.then.children.1.binary.children.0.rate": 0.4,
+    "then.then.children.1.binary.children.1.p": 0.46,
+    "then.then.children.1.integer.children.0.max_step": 3,
+    "then.then.children.1.integer.children.1.p": 0.33,
+    "then.then.children.1.integer.children.1.child.sigma": 0.0839,
+    "then.else.children.0.p": 0.852,
+    "then.else.children.1.sigma": 0.1212,
+    "else.children.0.F": 1.305,
+    "else.children.0.CR": 0.089,
+    "else.children.1.integer.sigma": 0.0419
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

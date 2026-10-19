@@ -1,0 +1,5 @@
+kind: solve
+problem: {factory: "examples.custom_problems:production_planning"}
+solver: auto            # linear structure declared -> HiGHS MILP adapter after spot checks
+budget: {max_evaluations: 1000}
+runs_dir: runs

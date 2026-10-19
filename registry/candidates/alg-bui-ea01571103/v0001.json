@@ -1,0 +1,27 @@
+{
+  "id": "alg-bui-ea01571103",
+  "version": 1,
+  "created": "2026-10-19T16:34:47+00:00",
+  "kind": "algorithm",
+  "representation": "builtin",
+  "source": {
+    "builtin": "cmaes"
+  },
+  "parents": [],
+  "provider": "baseline",
+  "rationale": "established baseline solver (not generated)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:34:47+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [],
+  "hyperparameters": {},
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "baseline"
+}

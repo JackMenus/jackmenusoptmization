@@ -1,0 +1,14 @@
+{
+  "kind": "solve",
+  "problem": {
+    "benchmark": "mixed_constrained",
+    "seed": 500
+  },
+  "solver": "hybrid",
+  "budget": {
+    "max_evaluations": 3000
+  },
+  "registry": "registry",
+  "runs_dir": "runs",
+  "_source": "/home/claude/optimization-platform/results/evidence_selection_demo.yaml"
+}

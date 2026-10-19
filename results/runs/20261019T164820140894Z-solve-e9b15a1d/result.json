@@ -1,0 +1,265 @@
+{
+  "problem": "mixed_rastrigin-s500",
+  "solver": "hybrid",
+  "solver_version": "1.0.0",
+  "status": "feasible",
+  "x": [
+    1.8210168741744952,
+    1.7714828808345087,
+    -1.0174745975272301,
+    -0.508886551349039,
+    1.0,
+    -2.0,
+    -2.0,
+    3.0
+  ],
+  "x_decoded": {
+    "x0": 1.8210168741744952,
+    "x1": 1.7714828808345087,
+    "x2": -1.0174745975272301,
+    "x3": -0.508886551349039,
+    "z0": 1,
+    "z1": -2,
+    "z2": -2,
+    "mode": "mode3"
+  },
+  "objective": 0.9949900406414827,
+  "feasible": true,
+  "constraint_violations": {},
+  "max_violation": 0.0,
+  "n_evaluations": 3000,
+  "n_gradient_evaluations": 0,
+  "n_verification_evaluations": 1,
+  "runtime_s": 0.4654115109997292,
+  "seed": 0,
+  "termination_reason": "budget_evaluations",
+  "history": [
+    [
+      1,
+      111.3633046797664,
+      true
+    ],
+    [
+      43,
+      108.29262121728135,
+      true
+    ],
+    [
+      59,
+      87.71937714400381,
+      true
+    ],
+    [
+      89,
+      70.01764289354665,
+      true
+    ],
+    [
+      126,
+      63.664450457757454,
+      true
+    ],
+    [
+      179,
+      59.75955845255292,
+      true
+    ],
+    [
+      193,
+      53.581432752729064,
+      true
+    ],
+    [
+      227,
+      51.094237033146285,
+      true
+    ],
+    [
+      241,
+      45.56865191209341,
+      true
+    ],
+    [
+      326,
+      43.25496365922659,
+      true
+    ],
+    [
+      327,
+      27.896752089103114,
+      true
+    ],
+    [
+      687,
+      27.081740365308487,
+      true
+    ],
+    [
+      696,
+      26.616514650303976,
+      true
+    ],
+    [
+      714,
+      15.089565358407068,
+      true
+    ],
+    [
+      2409,
+      14.315996698015137,
+      true
+    ],
+    [
+      2410,
+      12.99546678591416,
+      true
+    ],
+    [
+      2413,
+      11.12551007116545,
+      true
+    ],
+    [
+      2435,
+      8.12551007116545,
+      true
+    ],
+    [
+      2437,
+      5.125510071165451,
+      true
+    ],
+    [
+      2477,
+      2.4953130914718358,
+      true
+    ],
+    [
+      2482,
+      1.7445305587806104,
+      true
+    ],
+    [
+      2506,
+      1.3217839542690086,
+      true
+    ],
+    [
+      2509,
+      1.2762174531523414,
+      true
+    ],
+    [
+      2525,
+      1.0965402042160193,
+      true
+    ],
+    [
+      2558,
+      1.0884524771224022,
+      true
+    ],
+    [
+      2559,
+      1.0513532607946416,
+      true
+    ],
+    [
+      2562,
+      1.0056179673860512,
+      true
+    ],
+    [
+      2588,
+      0.9969709375003291,
+      true
+    ],
+    [
+      2610,
+      0.9967288921686475,
+      true
+    ],
+    [
+      2637,
+      0.9960563572351475,
+      true
+    ],
+    [
+      2638,
+      0.9954163580912976,
+      true
+    ],
+    [
+      2639,
+      0.995199903250338,
+      true
+    ],
+    [
+      2659,
+      0.9950846493009919,
+      true
+    ],
+    [
+      2667,
+      0.9949945738738677,
+      true
+    ],
+    [
+      2688,
+      0.9949900406414827,
+      true
+    ]
+  ],
+  "guarantees": [
+    {
+      "kind": "feasibility_verified",
+      "statement": "The reported point satisfies every original constraint within its stated tolerance at verification.",
+      "method": "re-evaluation of original constraints",
+      "tolerance": null,
+      "assumptions": [],
+      "point": null
+    },
+    {
+      "kind": "heuristic_best_found",
+      "statement": "Best feasible solution found within the budget. No global (or proven local) optimality is claimed.",
+      "method": "",
+      "tolerance": null,
+      "assumptions": [],
+      "point": null
+    }
+  ],
+  "assumptions": [
+    "objective declared deterministic"
+  ],
+  "operator_versions": {
+    "hybrid": "1.0.0",
+    "genetic": "1.0.0",
+    "pattern_search": "1.0.0"
+  },
+  "sense": "min",
+  "noise": null,
+  "diagnostics": {
+    "iterations": 22,
+    "n_errors": 0,
+    "n_nonfinite": 0,
+    "n_domain_rejections": 0,
+    "n_feasible_evaluations": 3000,
+    "plan": {
+      "solver": "hybrid",
+      "params": {
+        "global_solver": "genetic",
+        "local": "pattern_search",
+        "global_fraction": 0.8
+      },
+      "strategy": "hybrid",
+      "rationale": [
+        "characteristics: kind=mixed dim=8 constraints=0 (eq=0) gradient=False noisy=False budget=3000",
+        "R13: mixed variables -> hybrid: type-aware GA exploration, then compass-search refinement",
+        "evidence: no validated champion matches this problem profile; rule-based plan kept (ope-pyt-c4d678ee14: constraint class differs from the evidence)"
+      ],
+      "source": "rules",
+      "evidence": null
+    }
+  },
+  "messages": []
+}

@@ -1,0 +1,151 @@
+{
+  "id": "alg-dsl-23e491ab69",
+  "version": 2,
+  "created": "2026-10-19T16:37:17+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g3-2",
+    "population": 30,
+    "offspring": 30,
+    "init": {
+      "op": "opposition"
+    },
+    "repair": {
+      "op": "project"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "best"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "arithmetic_cx"
+            },
+            {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "cauchy",
+                  "sigma": 0.1532
+                },
+                {
+                  "op": "toward_best",
+                  "w": 0.476
+                }
+              ],
+              "weights": [
+                0.62,
+                0.56
+              ]
+            }
+          ]
+        },
+        "survival": {
+          "op": "threshold",
+          "tau": 0.0118
+        },
+        "step": {
+          "op": "decay",
+          "rate": 0.9934,
+          "floor": 0.001
+        }
+      }
+    ],
+    "restart": null,
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.11,
+      "step0": 0.0056
+    }
+  },
+  "parents": [
+    "alg-dsl-9b5973b42a"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: stage 0: replaced subtree at children/1 (if -> mix)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:37:17+00:00",
+      "operation": "stage 0: replaced subtree at children/1 (if -> mix)",
+      "parents": [
+        "alg-dsl-9b5973b42a"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:37:18+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 30,
+    "offspring": 30,
+    "stages.0.variation.children.1.children.0.sigma": 0.1532,
+    "stages.0.variation.children.1.children.1.w": 0.476,
+    "stages.0.survival.tau": 0.0118,
+    "stages.0.step.rate": 0.9934,
+    "stages.0.step.floor": 0.001,
+    "refine.evals_fraction": 0.11,
+    "refine.step0": 0.0056
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 5, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=4.612477961854974e-11"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=47, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3125,
+    "seconds": 0.623
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite continuous_multimodal"
+  ],
+  "status": "validated"
+}

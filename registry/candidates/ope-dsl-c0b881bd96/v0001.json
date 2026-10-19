@@ -1,0 +1,105 @@
+{
+  "id": "ope-dsl-c0b881bd96",
+  "version": 1,
+  "created": "2026-10-19T16:45:30+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "evals_fraction",
+      "ge": 0.47
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "uniform_cx"
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "mix",
+            "children": [
+              {
+                "op": "uniform_reset"
+              },
+              {
+                "op": "bit_flip"
+              }
+            ],
+            "weights": [
+              0.22,
+              0.37
+            ]
+          },
+          "categorical": {
+            "op": "mix",
+            "children": [
+              {
+                "op": "uniform_reset",
+                "rate": 0.6
+              },
+              {
+                "op": "categorical_reset"
+              }
+            ],
+            "weights": [
+              0.64,
+              0.43
+            ]
+          },
+          "integer": {
+            "op": "integer_step"
+          },
+          "real": {
+            "op": "toward_best"
+          }
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_current_to_pbest",
+          "F": 0.479,
+          "CR": 0.259,
+          "p": 0.107
+        },
+        {
+          "op": "type_aware",
+          "sigma": 0.2212
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:45:30+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 0.47,
+    "then.children.1.categorical.children.0.rate": 0.6,
+    "else.children.0.F": 0.479,
+    "else.children.0.CR": 0.259,
+    "else.children.0.p": 0.107,
+    "else.children.1.sigma": 0.2212
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

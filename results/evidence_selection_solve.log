@@ -1,0 +1,4 @@
+[dsl:ope-pyt-c4d678ee14 dsl1-a43b53fabd0b] mixed_constrained-n4-s500: status=feasible objective=1.699500629 feasible=True max_violation=0 evals=3000 time=1.395s termination=budget_evaluations guarantees=[feasibility_verified, heuristic_best_found]
+  - feasibility_verified: The reported point satisfies every original constraint within its stated tolerance at verification.
+  - heuristic_best_found: Best feasible solution found within the budget. No global (or proven local) optimality is claimed.
+run record: runs/20261019T164830373199Z-solve-1e60cb36

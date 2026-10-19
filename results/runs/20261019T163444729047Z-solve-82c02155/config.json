@@ -1,0 +1,12 @@
+{
+  "kind": "solve",
+  "problem": {
+    "factory": "examples.custom_problems:facility_mixed"
+  },
+  "solver": "auto",
+  "budget": {
+    "max_evaluations": 8000
+  },
+  "runs_dir": "runs",
+  "_source": "/home/claude/optimization-platform/configs/solve_facility_mixed.yaml"
+}

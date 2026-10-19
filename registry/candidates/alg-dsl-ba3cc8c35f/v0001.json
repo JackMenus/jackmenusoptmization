@@ -1,0 +1,147 @@
+{
+  "id": "alg-dsl-ba3cc8c35f",
+  "version": 1,
+  "created": "2026-10-19T16:43:01+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g5-0",
+    "population": 4,
+    "offspring": 4,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "reflect"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 2
+        },
+        "variation": {
+          "op": "if",
+          "cond": {
+            "pred": "evals_fraction",
+            "ge": 0.31
+          },
+          "then": {
+            "op": "seq",
+            "children": [
+              {
+                "op": "de_current_to_pbest",
+                "CR": 0.923,
+                "p": 0.275
+              },
+              {
+                "op": "per_type",
+                "binary": {
+                  "op": "uniform_reset",
+                  "rate": 0.33
+                },
+                "integer": {
+                  "op": "mix",
+                  "children": [
+                    {
+                      "op": "uniform_reset",
+                      "rate": 0.48
+                    },
+                    {
+                      "op": "gaussian",
+                      "sigma": 0.1963
+                    }
+                  ],
+                  "weights": [
+                    0.69,
+                    0.5
+                  ]
+                }
+              }
+            ]
+          },
+          "else": {
+            "op": "seq",
+            "children": [
+              {
+                "op": "de_current_to_pbest",
+                "F": 0.759
+              },
+              {
+                "op": "per_type",
+                "binary": {
+                  "op": "bit_flip"
+                },
+                "integer": {
+                  "op": "integer_step",
+                  "max_step": 2
+                }
+              }
+            ]
+          }
+        },
+        "survival": {
+          "op": "threshold",
+          "tau": 0.0966
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": {
+      "op": "stagnation",
+      "patience": 59,
+      "keep_best": 1,
+      "reinit": "uniform",
+      "scale": 0.215
+    },
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.08,
+      "step0": 0.0902
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:43:01+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 4,
+    "offspring": 4,
+    "stages.0.parent_selection.k": 2,
+    "stages.0.variation.cond.ge": 0.31,
+    "stages.0.variation.then.children.0.CR": 0.923,
+    "stages.0.variation.then.children.0.p": 0.275,
+    "stages.0.variation.then.children.1.binary.rate": 0.33,
+    "stages.0.variation.then.children.1.integer.children.0.rate": 0.48,
+    "stages.0.variation.then.children.1.integer.children.1.sigma": 0.1963,
+    "stages.0.variation.else.children.0.F": 0.759,
+    "stages.0.variation.else.children.1.integer.max_step": 2,
+    "stages.0.survival.tau": 0.0966,
+    "restart.patience": 59,
+    "restart.keep_best": 1,
+    "restart.scale": 0.215,
+    "refine.evals_fraction": 0.08,
+    "refine.step0": 0.0902
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

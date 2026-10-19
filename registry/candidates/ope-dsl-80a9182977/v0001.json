@@ -1,0 +1,110 @@
+{
+  "id": "ope-dsl-80a9182977",
+  "version": 1,
+  "created": "2026-10-19T16:42:01+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "mix",
+    "children": [
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_rand1",
+            "F": 0.574,
+            "CR": 0.481
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "if",
+              "cond": {
+                "pred": "stagnation",
+                "ge": 39
+              },
+              "then": {
+                "op": "bit_flip",
+                "rate": 0.33
+              },
+              "else": {
+                "op": "uniform_reset",
+                "rate": 0.27
+              }
+            },
+            "integer": {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "uniform_reset"
+                },
+                {
+                  "op": "prob",
+                  "p": 0.1,
+                  "child": {
+                    "op": "gaussian"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_current_to_pbest",
+            "F": 1.309,
+            "CR": 0.854
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "uniform_reset"
+            },
+            "integer": {
+              "op": "gaussian",
+              "sigma": 0.0057
+            }
+          }
+        ]
+      }
+    ],
+    "weights": [
+      0.5,
+      0.5
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:42:01+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.children.0.F": 0.574,
+    "children.0.children.0.CR": 0.481,
+    "children.0.children.1.binary.cond.ge": 39,
+    "children.0.children.1.binary.then.rate": 0.33,
+    "children.0.children.1.binary.else.rate": 0.27,
+    "children.0.children.1.integer.children.1.p": 0.1,
+    "children.1.children.0.F": 1.309,
+    "children.1.children.0.CR": 0.854,
+    "children.1.children.1.integer.sigma": 0.0057
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

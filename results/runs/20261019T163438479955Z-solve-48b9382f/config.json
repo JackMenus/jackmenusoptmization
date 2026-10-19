@@ -1,0 +1,12 @@
+{
+  "kind": "solve",
+  "problem": {
+    "factory": "examples.custom_problems:production_planning"
+  },
+  "solver": "auto",
+  "budget": {
+    "max_evaluations": 1000
+  },
+  "runs_dir": "runs",
+  "_source": "/home/claude/optimization-platform/configs/solve_milp.yaml"
+}

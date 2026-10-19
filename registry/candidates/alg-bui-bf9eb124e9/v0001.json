@@ -1,0 +1,27 @@
+{
+  "id": "alg-bui-bf9eb124e9",
+  "version": 1,
+  "created": "2026-10-19T16:40:28+00:00",
+  "kind": "algorithm",
+  "representation": "builtin",
+  "source": {
+    "builtin": "tabu"
+  },
+  "parents": [],
+  "provider": "baseline",
+  "rationale": "established baseline solver (not generated)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:40:28+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [],
+  "hyperparameters": {},
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "baseline"
+}

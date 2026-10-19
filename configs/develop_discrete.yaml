@@ -1,0 +1,19 @@
+kind: develop
+runs_dir: runs
+development:
+  suite: discrete_combinatorial
+  run_budget: 3000
+  run_seeds: [0, 1, 2]
+  test_run_seeds: [0, 1, 2, 3, 4]
+  generations: 6
+  proposals_per_generation: 10
+  retain: 4
+  total_evaluations: 12000000       # total development budget (analysis + validation + benchmarking + test)
+  test_share: 0.2
+  max_wall_time: 5400
+  alpha: 0.05
+  code_generation: true             # sandboxed Python operators (disabled automatically without isolation)
+  llm: null                         # e.g. {provider: anthropic, model: claude-opus-5-5}; counts toward max_model_calls
+  max_model_calls: 0
+  registry: registry
+  seed: 0

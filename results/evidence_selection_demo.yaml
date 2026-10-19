@@ -1,0 +1,7 @@
+kind: solve
+# The mixed development run left a validated champion in ./registry; `plan` shows whether evidence overrides the rules.
+problem: {benchmark: mixed_constrained, seed: 500}
+solver: auto
+budget: {max_evaluations: 3000}
+registry: registry
+runs_dir: runs

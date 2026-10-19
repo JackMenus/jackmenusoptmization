@@ -1,0 +1,4 @@
+[exhaustive 1.0.0] knapsack-n16-s7: status=optimal_certified objective=336 feasible=True max_violation=0 evals=65536 time=2.299s termination=search_space_exhausted guarantees=[global_optimum_certified, feasibility_verified]
+  - global_optimum_certified: Global optimum over the finite domain: all 65536 points were evaluated exactly and this point is the best feasible one (ties broken by enumeration order).
+  - feasibility_verified: The reported point satisfies every original constraint within its stated tolerance at verification.
+run record: runs/20261019T163435648946Z-solve-5f293939

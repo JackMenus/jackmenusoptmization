@@ -1,0 +1,104 @@
+{
+  "id": "ope-dsl-d1effd9be4",
+  "version": 2,
+  "created": "2026-10-19T16:41:04+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "de_rand1",
+        "F": 1.305,
+        "CR": 0.089
+      },
+      {
+        "op": "per_type",
+        "binary": {
+          "op": "bit_flip"
+        },
+        "integer": {
+          "op": "type_aware",
+          "sigma": 0.2224
+        }
+      }
+    ]
+  },
+  "parents": [
+    "ope-dsl-956a82d68c"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: replaced subtree at children/1/integer (gaussian -> type_aware)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:41:04+00:00",
+      "operation": "replaced subtree at children/1/integer (gaussian -> type_aware)",
+      "parents": [
+        "ope-dsl-956a82d68c"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:41:05+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.F": 1.305,
+    "children.0.CR": 0.089,
+    "children.1.integer.sigma": 0.2224
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 5, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=81, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3122,
+    "seconds": 0.787
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite discrete_combinatorial"
+  ],
+  "status": "validated"
+}

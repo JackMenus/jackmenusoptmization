@@ -1,0 +1,183 @@
+{
+  "id": "ope-dsl-0ab9f6feb6",
+  "version": 3,
+  "created": "2026-10-19T16:45:32+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "de_best1",
+        "F": 1.447,
+        "CR": 0.234
+      },
+      {
+        "op": "per_type",
+        "binary": {
+          "op": "uniform_reset"
+        },
+        "categorical": {
+          "op": "categorical_reset",
+          "rate": 0.43
+        },
+        "integer": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "integer_step",
+              "max_step": 3
+            },
+            {
+              "op": "prob",
+              "p": 0.39,
+              "child": {
+                "op": "gaussian",
+                "sigma": 0.0903,
+                "rate": 0.14
+              }
+            }
+          ]
+        },
+        "real": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "gaussian",
+              "sigma": 0.0018
+            },
+            {
+              "op": "prob",
+              "p": 0.1,
+              "child": {
+                "op": "cauchy",
+                "sigma": 0.0182
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:45:32+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:45:33+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-19T16:45:55+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.F": 1.447,
+    "children.0.CR": 0.234,
+    "children.1.categorical.rate": 0.43,
+    "children.1.integer.children.0.max_step": 3,
+    "children.1.integer.children.1.p": 0.39,
+    "children.1.integer.children.1.child.sigma": 0.0903,
+    "children.1.integer.children.1.child.rate": 0.14,
+    "children.1.real.children.0.sigma": 0.0018,
+    "children.1.real.children.1.p": 0.1,
+    "children.1.real.children.1.child.sigma": 0.0182
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 13, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.04561918852028286"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=66, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3113,
+    "seconds": 1.326
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 3000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 12,
+        "mean_score": 0.22115428196696554,
+        "median_score": 0.19764024631533547,
+        "std_score": 0.2102507012106507,
+        "iqr_score": 0.3600991324170644,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 5.567748880377582,
+        "mean_runtime_s": 0.7582875581667471,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.2527625193889157,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "hybrid",
+      "per_family": {
+        "mixed_rastrigin": {
+          "ope-dsl-0ab9f6feb6": 0.40506212850706796
+        },
+        "mixed_constrained": {
+          "ope-dsl-0ab9f6feb6": 0.03724643542686316
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite mixed"
+  ],
+  "status": "validated",
+  "train_score": 0.22115428196696554
+}

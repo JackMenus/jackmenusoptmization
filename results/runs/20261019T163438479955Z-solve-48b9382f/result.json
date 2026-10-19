@@ -1,0 +1,112 @@
+{
+  "problem": "production_planning",
+  "solver": "milp",
+  "solver_version": "1.0.0",
+  "status": "optimal_certified",
+  "x": [
+    19.0,
+    0.0,
+    18.0,
+    17.0
+  ],
+  "x_decoded": {
+    "q0": 19,
+    "q1": 0,
+    "q2": 18,
+    "q3": 17
+  },
+  "objective": 1136.0,
+  "feasible": true,
+  "constraint_violations": {
+    "resource0": 0.0,
+    "resource1": 0.0,
+    "resource2": 0.0
+  },
+  "max_violation": 0.0,
+  "n_evaluations": 21,
+  "n_gradient_evaluations": 0,
+  "n_verification_evaluations": 1,
+  "runtime_s": 0.015558224999949744,
+  "seed": 0,
+  "termination_reason": "exact_solver_finished",
+  "history": [
+    [
+      1,
+      2704.0,
+      false
+    ],
+    [
+      2,
+      435.0,
+      true
+    ],
+    [
+      11,
+      538.0,
+      true
+    ],
+    [
+      21,
+      1136.0,
+      true
+    ]
+  ],
+  "guarantees": [
+    {
+      "kind": "global_optimum_certified",
+      "statement": "HiGHS reported optimality (relative MIP gap 0 <= 1e-09); the solution was re-evaluated on the original functions.",
+      "method": "HiGHS branch-and-bound via scipy.optimize.milp",
+      "tolerance": 1e-09,
+      "assumptions": [
+        "declared linear structure is exact (spot-checked at random points, not proven)",
+        "HiGHS default feasibility/integrality tolerances"
+      ],
+      "point": [
+        19.0,
+        0.0,
+        18.0,
+        17.0
+      ]
+    },
+    {
+      "kind": "feasibility_verified",
+      "statement": "The reported point satisfies every original constraint within its stated tolerance at verification.",
+      "method": "re-evaluation of original constraints",
+      "tolerance": 1e-09,
+      "assumptions": [],
+      "point": null
+    }
+  ],
+  "assumptions": [
+    "objective declared deterministic",
+    "constraint 'resource0' (ineq) satisfied when g(x) <= 1e-09",
+    "constraint 'resource1' (ineq) satisfied when g(x) <= 1e-09",
+    "constraint 'resource2' (ineq) satisfied when g(x) <= 1e-09"
+  ],
+  "operator_versions": {
+    "milp": "1.0.0"
+  },
+  "sense": "max",
+  "noise": null,
+  "diagnostics": {
+    "highs_status": 0,
+    "highs_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "mip_gap": 0.0,
+    "n_errors": 0,
+    "n_nonfinite": 0,
+    "n_domain_rejections": 0,
+    "n_feasible_evaluations": 3,
+    "plan": {
+      "solver": "milp",
+      "params": {},
+      "strategy": "exact",
+      "rationale": [
+        "characteristics: kind=discrete dim=4 constraints=3 (eq=0) gradient=False noisy=False budget=1000",
+        "R2: linear structure declared -> MILP/LP adapter (HiGHS), certifiable after spot checks"
+      ],
+      "source": "rules",
+      "evidence": null
+    }
+  },
+  "messages": []
+}

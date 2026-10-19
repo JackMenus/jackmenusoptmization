@@ -1,0 +1,191 @@
+{
+  "id": "ope-dsl-482e9e0c3d",
+  "version": 2,
+  "created": "2026-10-19T16:45:29+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "mix",
+    "children": [
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "copy"
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "bit_flip",
+              "rate": 0.55
+            },
+            "categorical": {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "uniform_reset"
+                },
+                {
+                  "op": "uniform_reset",
+                  "rate": 0.15
+                }
+              ],
+              "weights": [
+                0.96,
+                0.37
+              ]
+            },
+            "integer": {
+              "op": "integer_step",
+              "max_step": 2
+            },
+            "real": {
+              "op": "if",
+              "cond": {
+                "pred": "feasible_fraction",
+                "lt": 0.75
+              },
+              "then": {
+                "op": "uniform_reset",
+                "rate": 0.22
+              },
+              "else": {
+                "op": "cauchy",
+                "sigma": 0.0032,
+                "rate": 0.26
+              }
+            }
+          }
+        ]
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_current_to_pbest",
+            "F": 1.318,
+            "CR": 0.039
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "bit_flip",
+                  "rate": 0.6
+                },
+                {
+                  "op": "uniform_reset",
+                  "rate": 0.52
+                }
+              ],
+              "weights": [
+                0.54,
+                0.71
+              ]
+            },
+            "categorical": {
+              "op": "categorical_reset"
+            },
+            "integer": {
+              "op": "uniform_reset"
+            },
+            "real": {
+              "op": "cauchy",
+              "sigma": 0.0188,
+              "rate": 0.07
+            }
+          }
+        ]
+      }
+    ],
+    "weights": [
+      0.5,
+      0.5
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:45:29+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:45:30+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.children.1.binary.rate": 0.55,
+    "children.0.children.1.categorical.children.1.rate": 0.15,
+    "children.0.children.1.integer.max_step": 2,
+    "children.0.children.1.real.cond.lt": 0.75,
+    "children.0.children.1.real.then.rate": 0.22,
+    "children.0.children.1.real.else.sigma": 0.0032,
+    "children.0.children.1.real.else.rate": 0.26,
+    "children.1.children.0.F": 1.318,
+    "children.1.children.0.CR": 0.039,
+    "children.1.children.1.binary.children.0.rate": 0.6,
+    "children.1.children.1.binary.children.1.rate": 0.52,
+    "children.1.children.1.real.sigma": 0.0188,
+    "children.1.children.1.real.rate": 0.07
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 21, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.122946404820506"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=98, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3115,
+    "seconds": 1.35
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite mixed"
+  ],
+  "status": "validated"
+}

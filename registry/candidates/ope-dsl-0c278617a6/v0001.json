@@ -1,0 +1,121 @@
+{
+  "id": "ope-dsl-0c278617a6",
+  "version": 1,
+  "created": "2026-10-19T16:44:31+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "stagnation",
+      "ge": 24
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_best1",
+          "CR": 0.049
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "mix",
+            "children": [
+              {
+                "op": "uniform_reset",
+                "rate": 0.52
+              },
+              {
+                "op": "bit_flip",
+                "rate": 0.59
+              }
+            ],
+            "weights": [
+              0.66,
+              0.31
+            ]
+          },
+          "categorical": {
+            "op": "categorical_reset"
+          },
+          "integer": {
+            "op": "uniform_reset",
+            "rate": 0.23
+          },
+          "real": {
+            "op": "toward_best",
+            "w": 0.678
+          }
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "blend_cx",
+          "alpha": 0.956
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "mix",
+            "children": [
+              {
+                "op": "uniform_reset"
+              },
+              {
+                "op": "uniform_reset"
+              }
+            ],
+            "weights": [
+              0.49,
+              0.67
+            ]
+          },
+          "categorical": {
+            "op": "uniform_reset"
+          },
+          "integer": {
+            "op": "uniform_reset"
+          },
+          "real": {
+            "op": "toward_best",
+            "w": 0.32
+          }
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:44:31+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 24,
+    "then.children.0.CR": 0.049,
+    "then.children.1.binary.children.0.rate": 0.52,
+    "then.children.1.binary.children.1.rate": 0.59,
+    "then.children.1.integer.rate": 0.23,
+    "then.children.1.real.w": 0.678,
+    "else.children.0.alpha": 0.956,
+    "else.children.1.real.w": 0.32
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

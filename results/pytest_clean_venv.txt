@@ -1,0 +1,3 @@
+# Test suite run against a clean virtual environment built from requirements-lock.txt (package installed non-editable).
+.......................................                                  [100%]
+111 passed in 27.06s

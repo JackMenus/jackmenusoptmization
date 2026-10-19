@@ -1,0 +1,277 @@
+{
+  "problem": "pressure_vessel",
+  "solver": "hybrid",
+  "solver_version": "1.0.0",
+  "status": "feasible",
+  "x": [
+    14.0,
+    7.0,
+    43.24782985356369,
+    162.8958797454834
+  ],
+  "x_decoded": {
+    "ts_units": 14,
+    "th_units": 7,
+    "R": 43.24782985356369,
+    "L": 162.8958797454834
+  },
+  "objective": 6343.450031887834,
+  "feasible": true,
+  "constraint_violations": {
+    "shell_thickness": 0.0,
+    "head_thickness": 0.0,
+    "volume": 0.0,
+    "length": 0.0
+  },
+  "max_violation": 0.0,
+  "n_evaluations": 16555,
+  "n_gradient_evaluations": 0,
+  "n_verification_evaluations": 1,
+  "runtime_s": 3.4201411170001847,
+  "seed": 1,
+  "termination_reason": "completed",
+  "history": [
+    [
+      1,
+      91404.96356791671,
+      false
+    ],
+    [
+      2,
+      15182.886021019463,
+      false
+    ],
+    [
+      3,
+      87585.90469661649,
+      true
+    ],
+    [
+      8,
+      33872.21689040406,
+      true
+    ],
+    [
+      122,
+      25464.24210171032,
+      true
+    ],
+    [
+      139,
+      23660.30232135881,
+      true
+    ],
+    [
+      284,
+      18270.475973292472,
+      true
+    ],
+    [
+      321,
+      12540.20347332092,
+      true
+    ],
+    [
+      328,
+      9024.087123063502,
+      true
+    ],
+    [
+      1038,
+      8895.526573045248,
+      true
+    ],
+    [
+      4437,
+      8710.659029440303,
+      true
+    ],
+    [
+      4848,
+      8646.688828626857,
+      true
+    ],
+    [
+      6560,
+      8093.667829769145,
+      true
+    ],
+    [
+      9941,
+      8084.478829873537,
+      true
+    ],
+    [
+      12249,
+      8020.553497027795,
+      true
+    ],
+    [
+      16004,
+      7488.215034871886,
+      true
+    ],
+    [
+      16022,
+      7222.045803793932,
+      true
+    ],
+    [
+      16034,
+      7088.961188254953,
+      true
+    ],
+    [
+      16050,
+      7022.418880485466,
+      true
+    ],
+    [
+      16052,
+      6814.561792432916,
+      true
+    ],
+    [
+      16054,
+      6381.872862810639,
+      true
+    ],
+    [
+      16070,
+      6351.025396837873,
+      true
+    ],
+    [
+      16102,
+      6347.169463591276,
+      true
+    ],
+    [
+      16116,
+      6345.2414969679785,
+      true
+    ],
+    [
+      16136,
+      6344.2775136563305,
+      true
+    ],
+    [
+      16152,
+      6343.795522000505,
+      true
+    ],
+    [
+      16168,
+      6343.554526172594,
+      true
+    ],
+    [
+      16188,
+      6343.4942772156155,
+      true
+    ],
+    [
+      16202,
+      6343.464152737126,
+      true
+    ],
+    [
+      16232,
+      6343.456621617504,
+      true
+    ],
+    [
+      16246,
+      6343.452856057693,
+      true
+    ],
+    [
+      16262,
+      6343.450973277788,
+      true
+    ],
+    [
+      16276,
+      6343.450031887834,
+      true
+    ]
+  ],
+  "guarantees": [
+    {
+      "kind": "local_method_converged",
+      "statement": "Compass search mesh size fell below 1e-07 (relative) with no improving poll step. For smooth objectives such limit points are stationary in theory; this finite run provides no proof of stationarity or local optimality.",
+      "method": "compass search",
+      "tolerance": 1e-07,
+      "assumptions": [],
+      "point": [
+        14.0,
+        7.0,
+        43.24782985356369,
+        162.8958797454834
+      ]
+    },
+    {
+      "kind": "feasibility_verified",
+      "statement": "The reported point satisfies every original constraint within its stated tolerance at verification.",
+      "method": "re-evaluation of original constraints",
+      "tolerance": 1e-06,
+      "assumptions": [],
+      "point": null
+    },
+    {
+      "kind": "heuristic_best_found",
+      "statement": "Best feasible solution found within the budget. No global (or proven local) optimality is claimed.",
+      "method": "",
+      "tolerance": null,
+      "assumptions": [],
+      "point": null
+    }
+  ],
+  "assumptions": [
+    "objective declared deterministic",
+    "constraint 'shell_thickness' (ineq) satisfied when g(x) <= 1e-06",
+    "constraint 'head_thickness' (ineq) satisfied when g(x) <= 1e-06",
+    "constraint 'volume' (ineq) satisfied when g(x) <= 1e-06",
+    "constraint 'length' (ineq) satisfied when g(x) <= 1e-06"
+  ],
+  "operator_versions": {
+    "hybrid": "1.0.0",
+    "genetic": "1.0.0",
+    "pattern_search": "1.0.0"
+  },
+  "sense": "min",
+  "noise": null,
+  "diagnostics": {
+    "iterations": 34,
+    "hybrid_stages": {
+      "global": "genetic",
+      "local": "pattern_search",
+      "reasons": [
+        "stage_budget",
+        "converged",
+        "converged"
+      ]
+    },
+    "n_errors": 0,
+    "n_nonfinite": 0,
+    "n_domain_rejections": 0,
+    "n_feasible_evaluations": 7487,
+    "plan": {
+      "solver": "hybrid",
+      "params": {
+        "global_solver": "genetic",
+        "local": "pattern_search",
+        "global_fraction": 0.8
+      },
+      "strategy": "hybrid",
+      "rationale": [
+        "characteristics: kind=mixed dim=4 constraints=4 (eq=0) gradient=False noisy=False budget=20000",
+        "R13: mixed variables -> hybrid: type-aware GA exploration, then compass-search refinement"
+      ],
+      "source": "rules",
+      "evidence": null
+    }
+  },
+  "messages": []
+}

@@ -1,0 +1,6 @@
+kind: solve
+problem: {factory: "examples.custom_problems:pressure_vessel"}
+solver: auto
+budget: {max_evaluations: 20000}
+seed: 1
+runs_dir: runs

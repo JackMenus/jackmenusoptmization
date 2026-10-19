@@ -1,0 +1,699 @@
+{
+  "config": {
+    "suite": "mixed",
+    "run_budget": 3000,
+    "run_seeds": [
+      0,
+      1,
+      2
+    ],
+    "test_run_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "generations": 6,
+    "proposals_per_generation": 10,
+    "retain": 4,
+    "total_evaluations": 12000000,
+    "max_model_calls": 0,
+    "max_wall_time": 5400,
+    "test_share": 0.2,
+    "alpha": 0.05,
+    "baselines": null,
+    "operator_share": 0.4,
+    "code_generation": true,
+    "llm": null,
+    "workers": null,
+    "seed": 0,
+    "registry": "registry"
+  },
+  "suite": {
+    "name": "mixed",
+    "families": [
+      [
+        "mixed_rastrigin",
+        {}
+      ],
+      [
+        "mixed_constrained",
+        {
+          "n": 4
+        }
+      ]
+    ],
+    "splits": {
+      "train": [
+        0,
+        1
+      ],
+      "validation": [
+        100,
+        101
+      ],
+      "test": [
+        200,
+        201,
+        202
+      ]
+    },
+    "description": "Mixed real/integer/binary/categorical problems with verified optima."
+  },
+  "features": {
+    "n_problems": 4,
+    "types": [
+      "binary",
+      "categorical",
+      "integer",
+      "real"
+    ],
+    "kinds": [
+      "mixed"
+    ],
+    "kind": "mixed",
+    "max_dim": 8,
+    "any_constraints": true,
+    "any_noise": false,
+    "has_repair": false,
+    "feasible_fraction": 0.50625,
+    "ruggedness": 0.17853443201388158,
+    "smoothness": 0.8214655679861184,
+    "eval_cost_s": 4.473070000017287e-05,
+    "error_fraction": 0.0
+  },
+  "bias_notes": [],
+  "isolation": {
+    "available": true,
+    "checks": {
+      "network_blocked": true,
+      "usr_readonly": true,
+      "root_listing": [
+        "bin",
+        "dev",
+        "lib",
+        "lib64",
+        "proc",
+        "runner",
+        "sbin",
+        "tmp",
+        "usr"
+      ],
+      "host_paths_hidden": true,
+      "env_empty": true,
+      "no_capabilities": true,
+      "no_new_privs": true,
+      "outside_uid": 65534,
+      "pid_namespace": true,
+      "rlimit_as": 1073741824,
+      "rlimit_cpu": 120
+    },
+    "reason": "",
+    "mechanism": "linux namespaces (user, mount, pid, net, ipc, uts) + pivot_root + capability drop + rlimits"
+  },
+  "provider_notes": [],
+  "baselines": [
+    "random_search",
+    "genetic",
+    "de",
+    "hybrid"
+  ],
+  "train_baselines": {
+    "random_search": {
+      "runs": 12,
+      "mean_score": 1.0120179543687793,
+      "median_score": 1.0,
+      "std_score": 0.31489333648282386,
+      "iqr_score": 0.20515550494307988,
+      "feasibility_rate": 1.0,
+      "failure_rate": 0.0,
+      "solved_rate": 0.0,
+      "median_gap": 18.351029131933632,
+      "mean_runtime_s": 0.18796062333334854,
+      "mean_evaluations": 3000.0,
+      "runtime_per_eval_ms": 0.06265354111111618,
+      "not_applicable_runs": 0
+    },
+    "genetic": {
+      "runs": 12,
+      "mean_score": 0.2063707731427227,
+      "median_score": 0.19172103501755308,
+      "std_score": 0.163705499416826,
+      "iqr_score": 0.26713645557413246,
+      "feasibility_rate": 1.0,
+      "failure_rate": 0.0,
+      "solved_rate": 0.0,
+      "median_gap": 5.33531555706757,
+      "mean_runtime_s": 0.5520797139167826,
+      "mean_evaluations": 3000.0,
+      "runtime_per_eval_ms": 0.1840265713055942,
+      "not_applicable_runs": 0
+    },
+    "de": {
+      "runs": 12,
+      "mean_score": 0.3640315292628092,
+      "median_score": 0.4123295425643589,
+      "std_score": 0.18344465338232951,
+      "iqr_score": 0.22891036055661063,
+      "feasibility_rate": 1.0,
+      "failure_rate": 0.0,
+      "solved_rate": 0.0,
+      "median_gap": 9.37983213160489,
+      "mean_runtime_s": 0.34271022091661507,
+      "mean_evaluations": 3000.0,
+      "runtime_per_eval_ms": 0.11423674030553836,
+      "not_applicable_runs": 0
+    },
+    "hybrid": {
+      "runs": 12,
+      "mean_score": 0.1867097040215713,
+      "median_score": 0.0909735481384142,
+      "std_score": 0.21837823737860784,
+      "iqr_score": 0.15774052771439534,
+      "feasibility_rate": 1.0,
+      "failure_rate": 0.0,
+      "solved_rate": 0.08333333333333333,
+      "median_gap": 1.9899181258102914,
+      "mean_runtime_s": 0.28682259958335027,
+      "mean_evaluations": 2731.5,
+      "runtime_per_eval_ms": 0.10500552794557946,
+      "not_applicable_runs": 0
+    }
+  },
+  "train_reference": {
+    "mixed_rastrigin#0": {
+      "f_ref": 0.0,
+      "ref_kind": "known optimum (analytic (separable: Rastrigin min 0 at the offset, integer part 0 at b))",
+      "f_rand": 35.53016586938883
+    },
+    "mixed_rastrigin#1": {
+      "f_ref": 0.0,
+      "ref_kind": "known optimum (analytic (separable: Rastrigin min 0 at the offset, integer part 0 at b))",
+      "f_rand": 38.16316358863031
+    },
+    "mixed_constrained[n=4]#0": {
+      "f_ref": -5.593819546354551,
+      "ref_kind": "known optimum (enumeration of binaries + SLSQP on each convex QP subproblem (numerical, tol 1e-6))",
+      "f_rand": 3.586517268490045
+    },
+    "mixed_constrained[n=4]#1": {
+      "f_ref": -2.6832800767082743,
+      "ref_kind": "known optimum (enumeration of binaries + SLSQP on each convex QP subproblem (numerical, tol 1e-6))",
+      "f_rand": 1.096615594306968
+    }
+  },
+  "generations": [
+    {
+      "generation": 0,
+      "proposed": 10,
+      "rejected": 2,
+      "validated": 8,
+      "benchmarked": 8,
+      "duplicates": 0,
+      "best_train_score": 0.11722958792976958,
+      "best_candidate": "ope-dsl-97caadd1c9",
+      "best_baseline_train_score": 0.1867097040215713
+    },
+    {
+      "generation": 1,
+      "proposed": 10,
+      "rejected": 1,
+      "validated": 9,
+      "benchmarked": 9,
+      "duplicates": 0,
+      "best_train_score": 0.088016906486807,
+      "best_candidate": "ope-dsl-ddba137ae4",
+      "best_baseline_train_score": 0.1867097040215713
+    },
+    {
+      "generation": 2,
+      "proposed": 10,
+      "rejected": 2,
+      "validated": 8,
+      "benchmarked": 8,
+      "duplicates": 0,
+      "best_train_score": 0.08213648115966994,
+      "best_candidate": "ope-dsl-a74a93bfba",
+      "best_baseline_train_score": 0.1867097040215713
+    },
+    {
+      "generation": 3,
+      "proposed": 10,
+      "rejected": 1,
+      "validated": 9,
+      "benchmarked": 9,
+      "duplicates": 0,
+      "best_train_score": 0.06536812072921541,
+      "best_candidate": "ope-dsl-0a55ccc850",
+      "best_baseline_train_score": 0.1867097040215713
+    },
+    {
+      "generation": 4,
+      "proposed": 10,
+      "rejected": 3,
+      "validated": 7,
+      "benchmarked": 7,
+      "duplicates": 0,
+      "best_train_score": 0.06536812072921541,
+      "best_candidate": "ope-dsl-0a55ccc850",
+      "best_baseline_train_score": 0.1867097040215713
+    },
+    {
+      "generation": 5,
+      "proposed": 10,
+      "rejected": 3,
+      "validated": 7,
+      "benchmarked": 7,
+      "duplicates": 0,
+      "best_train_score": 0.06536812072921541,
+      "best_candidate": "ope-dsl-0a55ccc850",
+      "best_baseline_train_score": 0.1867097040215713
+    }
+  ],
+  "stop_reason": "generations_completed",
+  "archive": [
+    {
+      "id": "ope-dsl-0a55ccc850",
+      "kind": "operator",
+      "representation": "dsl",
+      "train_score": 0.06536812072921541,
+      "provider": "evolution",
+      "parents": [
+        "ope-dsl-057eac1d83"
+      ]
+    },
+    {
+      "id": "ope-dsl-9186b83ad3",
+      "kind": "operator",
+      "representation": "dsl",
+      "train_score": 0.06735842386643731,
+      "provider": "evolution",
+      "parents": [
+        "ope-dsl-0a55ccc850"
+      ]
+    },
+    {
+      "id": "ope-dsl-39e44e4cc2",
+      "kind": "operator",
+      "representation": "dsl",
+      "train_score": 0.07523194491463318,
+      "provider": "evolution",
+      "parents": [
+        "ope-dsl-0a55ccc850"
+      ]
+    },
+    {
+      "id": "ope-pyt-c4d678ee14",
+      "kind": "operator",
+      "representation": "python",
+      "train_score": 0.08044383618086616,
+      "provider": "code_template",
+      "parents": []
+    }
+  ],
+  "selection": {
+    "champion": "ope-pyt-c4d678ee14",
+    "best_baseline": "genetic",
+    "decision": "ope-pyt-c4d678ee14 beat the best baseline 'genetic' on the validation split (mean score 0.0292 vs 0.1444, one-sided Wilcoxon p=0.00122 < 0.05)",
+    "summary": {
+      "random_search": {
+        "runs": 12,
+        "mean_score": 1.05763670784211,
+        "median_score": 1.0,
+        "std_score": 0.1896382707932154,
+        "iqr_score": 0.1841541683652923,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 22.348045570676362,
+        "mean_runtime_s": 0.18488111783331837,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.061627039277772785,
+        "not_applicable_runs": 0
+      },
+      "genetic": {
+        "runs": 12,
+        "mean_score": 0.14440609113535574,
+        "median_score": 0.08911327285827303,
+        "std_score": 0.14712195336002326,
+        "iqr_score": 0.2751424045828517,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 3.303468375608386,
+        "mean_runtime_s": 0.5468049870833814,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.1822683290277938,
+        "not_applicable_runs": 0
+      },
+      "de": {
+        "runs": 12,
+        "mean_score": 0.4411572176118727,
+        "median_score": 0.42488018620190965,
+        "std_score": 0.1932243130801225,
+        "iqr_score": 0.32872844073130003,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 7.272748104913096,
+        "mean_runtime_s": 0.3368189379167461,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.11227297930558204,
+        "not_applicable_runs": 0
+      },
+      "hybrid": {
+        "runs": 12,
+        "mean_score": 0.3330050816287708,
+        "median_score": 0.3071713975922251,
+        "std_score": 0.3128865912133372,
+        "iqr_score": 0.552938107886059,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 2.8646092169095567,
+        "mean_runtime_s": 0.2909919939999857,
+        "mean_evaluations": 2745.75,
+        "runtime_per_eval_ms": 0.10597905635982363,
+        "not_applicable_runs": 0
+      },
+      "ope-dsl-0a55ccc850": {
+        "runs": 12,
+        "mean_score": 0.13275949683977536,
+        "median_score": 0.05447914579647169,
+        "std_score": 0.25757448052982884,
+        "iqr_score": 0.08689189058575016,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 2.4100064568765056,
+        "mean_runtime_s": 0.6720424893333453,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.2240141631111151,
+        "not_applicable_runs": 0
+      },
+      "ope-dsl-9186b83ad3": {
+        "runs": 12,
+        "mean_score": 0.11727287270443737,
+        "median_score": 0.050089949239313564,
+        "std_score": 0.2576533274554183,
+        "iqr_score": 0.08397054121622968,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 2.215840562962356,
+        "mean_runtime_s": 0.6095549901666951,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.20318499672223173,
+        "not_applicable_runs": 0
+      },
+      "ope-dsl-39e44e4cc2": {
+        "runs": 12,
+        "mean_score": 0.16088850875872027,
+        "median_score": 0.09311344129582177,
+        "std_score": 0.2570891858694518,
+        "iqr_score": 0.1609470330692239,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 4.021613804424894,
+        "mean_runtime_s": 0.6960829187500318,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.23202763958334394,
+        "not_applicable_runs": 0
+      },
+      "ope-pyt-c4d678ee14": {
+        "runs": 12,
+        "mean_score": 0.029167037659374912,
+        "median_score": 0.01656257788966214,
+        "std_score": 0.03167438590668482,
+        "iqr_score": 0.040406824545734105,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 0.5278180293273369,
+        "mean_runtime_s": 1.0636370209165686,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.3545456736388562,
+        "not_applicable_runs": 0
+      }
+    },
+    "comparisons": {
+      "ope-dsl-0a55ccc850": {
+        "pairs": 12,
+        "mean_diff": -0.011646594295580362,
+        "wins": 10,
+        "losses": 2,
+        "ties": 0,
+        "p_value_a_better": 0.031982421875
+      },
+      "ope-dsl-9186b83ad3": {
+        "pairs": 12,
+        "mean_diff": -0.027133218430918395,
+        "wins": 11,
+        "losses": 1,
+        "ties": 0,
+        "p_value_a_better": 0.01708984375
+      },
+      "ope-dsl-39e44e4cc2": {
+        "pairs": 12,
+        "mean_diff": 0.016482417623364533,
+        "wins": 9,
+        "losses": 3,
+        "ties": 0,
+        "p_value_a_better": 0.088134765625
+      },
+      "ope-pyt-c4d678ee14": {
+        "pairs": 12,
+        "mean_diff": -0.11523905347598085,
+        "wins": 11,
+        "losses": 1,
+        "ties": 0,
+        "p_value_a_better": 0.001220703125
+      }
+    },
+    "per_family": {
+      "mixed_rastrigin": {
+        "random_search": 1.0384857593147663,
+        "genetic": 0.27575116815542744,
+        "de": 0.2612083566904131,
+        "hybrid": 0.03687783373959492,
+        "ope-dsl-0a55ccc850": 0.10435410456670441,
+        "ope-dsl-9186b83ad3": 0.07686036147719451,
+        "ope-dsl-39e44e4cc2": 0.16061212840459418,
+        "ope-pyt-c4d678ee14": 0.05387910234922691
+      },
+      "mixed_constrained": {
+        "random_search": 1.076787656369454,
+        "genetic": 0.013061014115284054,
+        "de": 0.6211060785333322,
+        "hybrid": 0.6291323295179465,
+        "ope-dsl-0a55ccc850": 0.16116488911284635,
+        "ope-dsl-9186b83ad3": 0.15768538393168022,
+        "ope-dsl-39e44e4cc2": 0.16116488911284635,
+        "ope-pyt-c4d678ee14": 0.004454972969522908
+      }
+    }
+  },
+  "demonstrations": {
+    "operator": "ope-dsl-0a55ccc850",
+    "algorithm": "alg-dsl-26bfd13429",
+    "code_operator": "ope-pyt-c4d678ee14"
+  },
+  "ledger": {
+    "total_limit": 12000000,
+    "used_total": 2931559,
+    "used_by_category": {
+      "analysis": 320,
+      "train_baselines": 140778,
+      "validation": 155615,
+      "train": 1728000,
+      "selection": 284949,
+      "test": 621897
+    },
+    "category_limits": {
+      "test": 2400000,
+      "model_calls": 0,
+      "analysis": null,
+      "validation": null,
+      "train": null,
+      "selection": null,
+      "train_baselines": null
+    },
+    "wall_time_s": 222.526,
+    "max_wall_time": 5400
+  },
+  "wall_time_s": 222.5,
+  "candidate_counts": {
+    "baseline": 8,
+    "retained": 11,
+    "discarded": 144,
+    "rejected": 24,
+    "champion": 1
+  },
+  "test": {
+    "solvers": [
+      "random_search",
+      "genetic",
+      "de",
+      "hybrid",
+      "ope-pyt-c4d678ee14",
+      "ope-dsl-0a55ccc850",
+      "alg-dsl-26bfd13429"
+    ],
+    "summary": {
+      "random_search": {
+        "runs": 30,
+        "mean_score": 1.0542307845724874,
+        "median_score": 1.0,
+        "std_score": 0.2886723440364196,
+        "iqr_score": 0.19314739550847193,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 15.784403934731685,
+        "mean_runtime_s": 0.16534448416664418,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.05511482805554806,
+        "not_applicable_runs": 0
+      },
+      "genetic": {
+        "runs": 30,
+        "mean_score": 0.2362635134380225,
+        "median_score": 0.2733077494962435,
+        "std_score": 0.18068730003630945,
+        "iqr_score": 0.3572547366300856,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 5.616346636408008,
+        "mean_runtime_s": 0.5636229712999465,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.18787432376664887,
+        "not_applicable_runs": 0
+      },
+      "de": {
+        "runs": 30,
+        "mean_score": 0.47371492032119067,
+        "median_score": 0.4615263014708121,
+        "std_score": 0.12613292454135144,
+        "iqr_score": 0.2341907143440628,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 7.592129753946221,
+        "mean_runtime_s": 0.39265063000002554,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.13088354333334185,
+        "not_applicable_runs": 0
+      },
+      "hybrid": {
+        "runs": 30,
+        "mean_score": 0.29473875963513213,
+        "median_score": 0.23725309877259623,
+        "std_score": 0.27068754144407203,
+        "iqr_score": 0.5627714317688235,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.06666666666666667,
+        "median_gap": 1.989918185410243,
+        "mean_runtime_s": 0.28912546503335457,
+        "mean_evaluations": 2729.9,
+        "runtime_per_eval_ms": 0.10591064325922363,
+        "not_applicable_runs": 0
+      },
+      "ope-pyt-c4d678ee14": {
+        "runs": 30,
+        "mean_score": 0.05054682159094389,
+        "median_score": 0.026096483815341135,
+        "std_score": 0.07376350805868279,
+        "iqr_score": 0.07630312813250782,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 0.9259398782226169,
+        "mean_runtime_s": 0.907579013900037,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.302526337966679,
+        "not_applicable_runs": 0
+      },
+      "ope-dsl-0a55ccc850": {
+        "runs": 30,
+        "mean_score": 0.10605795261185615,
+        "median_score": 0.0835014234241869,
+        "std_score": 0.11385693863142586,
+        "iqr_score": 0.15382558766282606,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 1.008635594810948,
+        "mean_runtime_s": 0.7033820183999978,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.23446067279999927,
+        "not_applicable_runs": 0
+      },
+      "alg-dsl-26bfd13429": {
+        "runs": 30,
+        "mean_score": 0.20553621232595257,
+        "median_score": 0.14425387564874792,
+        "std_score": 0.24889786867701444,
+        "iqr_score": 0.11117491007143335,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 3.728171771557392,
+        "mean_runtime_s": 0.6523015083667361,
+        "mean_evaluations": 3000.0,
+        "runtime_per_eval_ms": 0.21743383612224534,
+        "not_applicable_runs": 0
+      }
+    },
+    "best_baseline": "genetic",
+    "comparisons": {
+      "ope-pyt-c4d678ee14": {
+        "pairs": 30,
+        "mean_diff": -0.18571669184707862,
+        "wins": 30,
+        "losses": 0,
+        "ties": 0,
+        "p_value_a_better": 9.313225746154785e-10
+      },
+      "ope-dsl-0a55ccc850": {
+        "pairs": 30,
+        "mean_diff": -0.13020556082616633,
+        "wins": 27,
+        "losses": 3,
+        "ties": 0,
+        "p_value_a_better": 2.210959792137146e-06
+      },
+      "alg-dsl-26bfd13429": {
+        "pairs": 30,
+        "mean_diff": -0.030727301112069953,
+        "wins": 18,
+        "losses": 12,
+        "ties": 0,
+        "p_value_a_better": 0.06206723116338253
+      }
+    },
+    "per_family": {
+      "mixed_rastrigin": {
+        "random_search": 1.0274961782066323,
+        "genetic": 0.3557609854677614,
+        "de": 0.4067650325295998,
+        "hybrid": 0.04262757771734156,
+        "ope-pyt-c4d678ee14": 0.06108778106091644,
+        "ope-dsl-0a55ccc850": 0.18481107939459102,
+        "alg-dsl-26bfd13429": 0.15765810152879794
+      },
+      "mixed_constrained": {
+        "random_search": 1.0809653909383425,
+        "genetic": 0.11676604140828355,
+        "de": 0.5406648081127815,
+        "hybrid": 0.5468499415529225,
+        "ope-pyt-c4d678ee14": 0.0400058621209713,
+        "ope-dsl-0a55ccc850": 0.027304825829121287,
+        "alg-dsl-26bfd13429": 0.2534143231231071
+      }
+    }
+  }
+}

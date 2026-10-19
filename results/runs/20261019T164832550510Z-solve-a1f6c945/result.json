@@ -1,0 +1,233 @@
+{
+  "problem": "mixed_constrained-n4-s500",
+  "solver": "hybrid",
+  "solver_version": "1.0.0",
+  "status": "feasible",
+  "x": [
+    2.127071033556286,
+    1.6079898424926078,
+    2.3007854524837033,
+    1.7962990551440998,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "x_decoded": {
+    "x0": 2.127071033556286,
+    "x1": 1.6079898424926078,
+    "x2": 2.3007854524837033,
+    "x3": 1.7962990551440998,
+    "y0": 1,
+    "y1": 1,
+    "y2": 1,
+    "y3": 1
+  },
+  "objective": 2.7658625310460714,
+  "feasible": true,
+  "constraint_violations": {
+    "link[0]": 0.0,
+    "link[1]": 0.0,
+    "link[2]": 0.0,
+    "link[3]": 0.0,
+    "budget": 0.0
+  },
+  "max_violation": 0.0,
+  "n_evaluations": 2482,
+  "n_gradient_evaluations": 0,
+  "n_verification_evaluations": 1,
+  "runtime_s": 0.40670372800013865,
+  "seed": 0,
+  "termination_reason": "completed",
+  "history": [
+    [
+      1,
+      -1.4291506334456479,
+      false
+    ],
+    [
+      4,
+      1.9512296413911763,
+      false
+    ],
+    [
+      7,
+      5.903790382173552,
+      false
+    ],
+    [
+      44,
+      7.8917061356429485,
+      true
+    ],
+    [
+      160,
+      7.364726579424804,
+      true
+    ],
+    [
+      358,
+      5.794470154659477,
+      true
+    ],
+    [
+      507,
+      4.819450068835925,
+      true
+    ],
+    [
+      691,
+      4.4715249186694805,
+      true
+    ],
+    [
+      696,
+      4.229954354076856,
+      true
+    ],
+    [
+      951,
+      4.166993765036512,
+      true
+    ],
+    [
+      971,
+      3.071929714079154,
+      true
+    ],
+    [
+      1328,
+      2.9511790512294187,
+      true
+    ],
+    [
+      1457,
+      2.929414400761223,
+      true
+    ],
+    [
+      1669,
+      2.8599302758414265,
+      true
+    ],
+    [
+      1696,
+      2.840333347820602,
+      true
+    ],
+    [
+      2060,
+      2.8204163605490997,
+      true
+    ],
+    [
+      2142,
+      2.7747961849171894,
+      true
+    ],
+    [
+      2173,
+      2.770324316485631,
+      true
+    ],
+    [
+      2188,
+      2.7674892679720173,
+      true
+    ],
+    [
+      2203,
+      2.76626858654153,
+      true
+    ],
+    [
+      2226,
+      2.7659324282209887,
+      true
+    ],
+    [
+      2257,
+      2.765888145721954,
+      true
+    ],
+    [
+      2272,
+      2.7658706924452616,
+      true
+    ],
+    [
+      2295,
+      2.765865157165626,
+      true
+    ],
+    [
+      2310,
+      2.7658625310460714,
+      true
+    ]
+  ],
+  "guarantees": [
+    {
+      "kind": "local_method_converged",
+      "statement": "Compass search mesh size fell below 1e-07 (relative) with no improving poll step. For smooth objectives such limit points are stationary in theory; this finite run provides no proof of stationarity or local optimality.",
+      "method": "compass search",
+      "tolerance": 1e-07,
+      "assumptions": [],
+      "point": [
+        2.127071033556286,
+        1.6079898424926078,
+        2.3007854524837033,
+        1.7962990551440998,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "kind": "feasibility_verified",
+      "statement": "The reported point satisfies every original constraint within its stated tolerance at verification.",
+      "method": "re-evaluation of original constraints",
+      "tolerance": 1e-06,
+      "assumptions": [],
+      "point": null
+    },
+    {
+      "kind": "heuristic_best_found",
+      "statement": "Best feasible solution found within the budget. No global (or proven local) optimality is claimed.",
+      "method": "",
+      "tolerance": null,
+      "assumptions": [],
+      "point": null
+    }
+  ],
+  "assumptions": [
+    "objective declared deterministic",
+    "constraint 'link' (ineq) satisfied when g(x) <= 1e-06",
+    "constraint 'budget' (ineq) satisfied when g(x) <= 1e-06"
+  ],
+  "operator_versions": {
+    "hybrid": "1.0.0",
+    "de": "1.1.0",
+    "pattern_search": "1.0.0"
+  },
+  "sense": "min",
+  "noise": null,
+  "diagnostics": {
+    "iterations": 31,
+    "hybrid_stages": {
+      "global": "de",
+      "local": "pattern_search",
+      "reasons": [
+        "stage_budget",
+        "converged",
+        "converged"
+      ]
+    },
+    "n_errors": 0,
+    "n_nonfinite": 0,
+    "n_domain_rejections": 0,
+    "n_feasible_evaluations": 1330
+  },
+  "messages": []
+}

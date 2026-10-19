@@ -1,0 +1,5 @@
+[hybrid 1.0.0] facility_mixed: status=feasible objective=230.0348039 feasible=True max_violation=0 evals=6684 time=1.570s termination=completed guarantees=[local_method_converged, feasibility_verified, heuristic_best_found]
+  - local_method_converged: Compass search mesh size fell below 1e-07 (relative) with no improving poll step. For smooth objectives such limit points are stationary in theory; this finite run provides no proof of stationarity or local optimality.
+  - feasibility_verified: The reported point satisfies every original constraint within its stated tolerance at verification.
+  - heuristic_best_found: Best feasible solution found within the budget. No global (or proven local) optimality is claimed.
+run record: runs/20261019T163444729047Z-solve-82c02155

@@ -1,0 +1,168 @@
+{
+  "id": "ope-dsl-6a3aa08ba8",
+  "version": 5,
+  "created": "2026-10-19T16:34:55+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "evals_fraction",
+      "ge": 0.3
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "copy"
+        },
+        {
+          "op": "cauchy"
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "blend_cx",
+          "alpha": 0.083
+        },
+        {
+          "op": "uniform_reset"
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:34:55+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:34:56+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-19T16:35:37+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 4,
+      "time": "2026-10-19T16:35:37+00:00",
+      "operation": "status -> retained",
+      "generation": 0
+    },
+    {
+      "version": 5,
+      "time": "2026-10-19T16:36:31+00:00",
+      "operation": "status -> discarded",
+      "generation": 1
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 0.3,
+    "else.children.0.alpha": 0.083
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 7, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=2.1150050555779683e-07"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=85, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3122,
+    "seconds": 0.696
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 4000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 24,
+        "mean_score": 0.006361404709811456,
+        "median_score": 0.00022921808535235973,
+        "std_score": 0.01936212440662856,
+        "iqr_score": 0.0037240847287859785,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.20833333333333334,
+        "median_gap": 0.0019151439258868752,
+        "mean_runtime_s": 0.4846983535000315,
+        "mean_evaluations": 4000.0,
+        "runtime_per_eval_ms": 0.12117458837500787,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "de",
+      "per_family": {
+        "rastrigin": {
+          "ope-dsl-6a3aa08ba8": 0.0204971941798363
+        },
+        "ackley": {
+          "ope-dsl-6a3aa08ba8": 0.0004387204802493439
+        },
+        "styblinski_tang": {
+          "ope-dsl-6a3aa08ba8": 2.7410259677090233e-06
+        },
+        "rosenbrock": {
+          "ope-dsl-6a3aa08ba8": 0.004506963153192476
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite continuous_multimodal"
+  ],
+  "status": "discarded",
+  "train_score": 0.006361404709811456
+}

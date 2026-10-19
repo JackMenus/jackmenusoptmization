@@ -1,0 +1,271 @@
+{
+  "problem": "knapsack-n16-s7",
+  "solver": "exhaustive",
+  "solver_version": "1.0.0",
+  "status": "optimal_certified",
+  "x": [
+    0.0,
+    1.0,
+    1.0,
+    0.0,
+    1.0,
+    0.0,
+    1.0,
+    1.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    1.0,
+    1.0,
+    0.0,
+    1.0
+  ],
+  "x_decoded": {
+    "b0": 0,
+    "b1": 1,
+    "b2": 1,
+    "b3": 0,
+    "b4": 1,
+    "b5": 0,
+    "b6": 1,
+    "b7": 1,
+    "b8": 0,
+    "b9": 1,
+    "b10": 0,
+    "b11": 0,
+    "b12": 1,
+    "b13": 1,
+    "b14": 0,
+    "b15": 1
+  },
+  "objective": 336.0,
+  "feasible": true,
+  "constraint_violations": {
+    "capacity": 0.0
+  },
+  "max_violation": 0.0,
+  "n_evaluations": 65536,
+  "n_gradient_evaluations": 0,
+  "n_verification_evaluations": 1,
+  "runtime_s": 2.299497423000048,
+  "seed": 0,
+  "termination_reason": "search_space_exhausted",
+  "history": [
+    [
+      1,
+      0.0,
+      true
+    ],
+    [
+      2,
+      30.0,
+      true
+    ],
+    [
+      3,
+      48.0,
+      true
+    ],
+    [
+      4,
+      78.0,
+      true
+    ],
+    [
+      8,
+      92.0,
+      true
+    ],
+    [
+      11,
+      103.0,
+      true
+    ],
+    [
+      12,
+      133.0,
+      true
+    ],
+    [
+      16,
+      147.0,
+      true
+    ],
+    [
+      28,
+      154.0,
+      true
+    ],
+    [
+      32,
+      168.0,
+      true
+    ],
+    [
+      48,
+      176.0,
+      true
+    ],
+    [
+      60,
+      183.0,
+      true
+    ],
+    [
+      64,
+      197.0,
+      true
+    ],
+    [
+      96,
+      202.0,
+      true
+    ],
+    [
+      112,
+      210.0,
+      true
+    ],
+    [
+      284,
+      212.0,
+      true
+    ],
+    [
+      288,
+      226.0,
+      true
+    ],
+    [
+      304,
+      234.0,
+      true
+    ],
+    [
+      336,
+      239.0,
+      true
+    ],
+    [
+      348,
+      246.0,
+      true
+    ],
+    [
+      352,
+      260.0,
+      true
+    ],
+    [
+      844,
+      276.0,
+      true
+    ],
+    [
+      8480,
+      279.0,
+      true
+    ],
+    [
+      8528,
+      292.0,
+      true
+    ],
+    [
+      8972,
+      295.0,
+      true
+    ],
+    [
+      9035,
+      299.0,
+      true
+    ],
+    [
+      9039,
+      313.0,
+      true
+    ],
+    [
+      24912,
+      327.0,
+      true
+    ],
+    [
+      25419,
+      334.0,
+      true
+    ],
+    [
+      27470,
+      336.0,
+      true
+    ]
+  ],
+  "guarantees": [
+    {
+      "kind": "global_optimum_certified",
+      "statement": "Global optimum over the finite domain: all 65536 points were evaluated exactly and this point is the best feasible one (ties broken by enumeration order).",
+      "method": "complete enumeration",
+      "tolerance": 0.0,
+      "assumptions": [
+        "objective and constraints deterministic",
+        "constraint tolerances as declared"
+      ],
+      "point": [
+        0.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "kind": "feasibility_verified",
+      "statement": "The reported point satisfies every original constraint within its stated tolerance at verification.",
+      "method": "re-evaluation of original constraints",
+      "tolerance": 0.0,
+      "assumptions": [],
+      "point": null
+    }
+  ],
+  "assumptions": [
+    "objective declared deterministic",
+    "constraint 'capacity' (ineq) satisfied when g(x) <= 0"
+  ],
+  "operator_versions": {
+    "exhaustive": "1.0.0"
+  },
+  "sense": "max",
+  "noise": null,
+  "diagnostics": {
+    "n_errors": 0,
+    "n_nonfinite": 0,
+    "n_domain_rejections": 0,
+    "n_feasible_evaluations": 15727,
+    "plan": {
+      "solver": "exhaustive",
+      "params": {},
+      "strategy": "exact",
+      "rationale": [
+        "characteristics: kind=discrete dim=16 constraints=1 (eq=0) gradient=False noisy=False budget=70000",
+        "R1: finite domain with 65536 points fits the budget -> complete enumeration (certifiable)"
+      ],
+      "source": "rules",
+      "evidence": null
+    }
+  },
+  "messages": []
+}

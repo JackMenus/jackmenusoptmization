@@ -1,0 +1,16 @@
+{
+  "kind": "solve",
+  "problem": {
+    "benchmark": "knapsack",
+    "seed": 7,
+    "params": {
+      "n": 16
+    }
+  },
+  "solver": "auto",
+  "budget": {
+    "max_evaluations": 70000
+  },
+  "runs_dir": "runs",
+  "_source": "/home/claude/optimization-platform/configs/solve_knapsack_exact.yaml"
+}

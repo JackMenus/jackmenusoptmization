@@ -1,0 +1,119 @@
+{
+  "id": "alg-dsl-67c72dc7f3",
+  "version": 1,
+  "created": "2026-10-19T16:41:02+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g1-1",
+    "population": 20,
+    "offspring": 20,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "project"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "de_current_to_pbest",
+              "p": 0.048
+            },
+            {
+              "op": "per_type",
+              "binary": {
+                "op": "seq",
+                "children": [
+                  {
+                    "op": "bit_flip"
+                  },
+                  {
+                    "op": "prob",
+                    "p": 0.16,
+                    "child": {
+                      "op": "uniform_reset"
+                    }
+                  }
+                ]
+              },
+              "integer": {
+                "op": "integer_step",
+                "rate": 0.43
+              }
+            }
+          ]
+        },
+        "survival": {
+          "op": "metropolis",
+          "t0": 1.9667,
+          "cooling": 0.999
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": {
+      "op": "stagnation",
+      "patience": 60,
+      "keep_best": 1,
+      "reinit": "uniform",
+      "scale": 0.21
+    },
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.19,
+      "step0": 0.0086
+    }
+  },
+  "parents": [
+    "alg-dsl-821c6c8f61"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: stage 0: new parent_selection tournament",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:41:02+00:00",
+      "operation": "stage 0: new parent_selection tournament",
+      "parents": [
+        "alg-dsl-821c6c8f61"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 20,
+    "offspring": 20,
+    "stages.0.parent_selection.k": 4,
+    "stages.0.variation.children.0.p": 0.048,
+    "stages.0.variation.children.1.binary.children.1.p": 0.16,
+    "stages.0.variation.children.1.integer.rate": 0.43,
+    "stages.0.survival.t0": 1.9667,
+    "stages.0.survival.cooling": 0.999,
+    "restart.patience": 60,
+    "restart.keep_best": 1,
+    "restart.scale": 0.21,
+    "refine.evals_fraction": 0.19,
+    "refine.step0": 0.0086
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

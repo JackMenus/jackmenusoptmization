@@ -1,0 +1,153 @@
+{
+  "id": "ope-dsl-a74a93bfba",
+  "version": 2,
+  "created": "2026-10-19T16:45:37+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "mix",
+    "children": [
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_current_to_pbest",
+            "F": 0.428,
+            "CR": 0.389,
+            "p": 0.027
+          },
+          {
+            "op": "type_aware",
+            "sigma": 0.1971
+          }
+        ]
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "sbx",
+            "eta": 3.719
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "bit_flip"
+            },
+            "categorical": {
+              "op": "categorical_reset"
+            },
+            "integer": {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "gaussian",
+                  "sigma": 0.1434,
+                  "rate": 0.13
+                },
+                {
+                  "op": "prob",
+                  "p": 0.58,
+                  "child": {
+                    "op": "uniform_reset",
+                    "rate": 0.17
+                  }
+                }
+              ]
+            },
+            "real": {
+              "op": "gaussian"
+            }
+          }
+        ]
+      }
+    ],
+    "weights": [
+      0.5,
+      0.5
+    ]
+  },
+  "parents": [
+    "ope-dsl-bc00581a7f"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: perturbed uniform_reset.rate at children/1/children/1/integer/children/1/child",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:45:37+00:00",
+      "operation": "perturbed uniform_reset.rate at children/1/children/1/integer/children/1/child",
+      "parents": [
+        "ope-dsl-bc00581a7f"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:45:38+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.children.0.F": 0.428,
+    "children.0.children.0.CR": 0.389,
+    "children.0.children.0.p": 0.027,
+    "children.0.children.1.sigma": 0.1971,
+    "children.1.children.0.eta": 3.719,
+    "children.1.children.1.integer.children.0.sigma": 0.1434,
+    "children.1.children.1.integer.children.0.rate": 0.13,
+    "children.1.children.1.integer.children.1.p": 0.58,
+    "children.1.children.1.integer.children.1.child.rate": 0.17
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 14, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0008009414272456899"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=81, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3116,
+    "seconds": 1.173
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite mixed"
+  ],
+  "status": "validated"
+}

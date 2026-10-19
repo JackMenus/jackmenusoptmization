@@ -1,0 +1,145 @@
+{
+  "id": "ope-dsl-7bcb387647",
+  "version": 4,
+  "created": "2026-10-19T16:37:56+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "arithmetic_cx"
+      },
+      {
+        "op": "cauchy",
+        "sigma": 0.0105,
+        "rate": 0.14
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-19T16:37:56+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-19T16:37:56+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-19T16:38:36+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 4,
+      "time": "2026-10-19T16:38:36+00:00",
+      "operation": "status -> discarded",
+      "generation": 4
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.1.sigma": 0.0105,
+    "children.1.rate": 0.14
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 3, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=3.6703660231134533e-09"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=92, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3124,
+    "seconds": 0.711
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 4000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 24,
+        "mean_score": 0.03299022317616826,
+        "median_score": 0.0007009653137920042,
+        "std_score": 0.0924612102909209,
+        "iqr_score": 0.013837147561573847,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.20833333333333334,
+        "median_gap": 0.3003108024402657,
+        "mean_runtime_s": 0.5670580439166883,
+        "mean_evaluations": 4000.0,
+        "runtime_per_eval_ms": 0.1417645109791721,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "de",
+      "per_family": {
+        "rastrigin": {
+          "ope-dsl-7bcb387647": 0.05213588391551636
+        },
+        "ackley": {
+          "ope-dsl-7bcb387647": 5.670049024714821e-05
+        },
+        "styblinski_tang": {
+          "ope-dsl-7bcb387647": 0.07437113108683219
+        },
+        "rosenbrock": {
+          "ope-dsl-7bcb387647": 0.005397177212077345
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite continuous_multimodal"
+  ],
+  "status": "discarded",
+  "train_score": 0.03299022317616826
+}
