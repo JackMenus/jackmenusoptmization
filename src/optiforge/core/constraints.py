@@ -68,3 +68,30 @@ class LinearStructure:
     A_eq: np.ndarray | None = None
     b_eq: np.ndarray | None = None
     offset: float = 0.0
+
+
+class LinearFunction:
+    """``x -> c @ x + offset`` built from a :class:`LinearStructure`.
+
+    Problems made with :meth:`Problem.from_linear` use these objects as their
+    objective and constraints, so the declared model *is* the problem. Only then
+    can an exact MILP solve certify optimality or infeasibility.
+    """
+
+    def __init__(self, model: LinearStructure, part: str) -> None:
+        self.model, self.part = model, part
+        if part == "objective":
+            self.M, self.b = np.array(model.c, dtype=float)[None, :], np.array([-float(model.offset)])
+        elif part == "ub":
+            self.M, self.b = np.array(model.A_ub, dtype=float, ndmin=2), np.array(model.b_ub, dtype=float, ndmin=1)
+        elif part == "eq":
+            self.M, self.b = np.array(model.A_eq, dtype=float, ndmin=2), np.array(model.b_eq, dtype=float, ndmin=1)
+        else:
+            raise ValueError(part)
+        # private copies: later in-place edits of the declaration cannot make the model and the functions disagree
+        self.M.setflags(write=False)
+        self.b.setflags(write=False)
+
+    def __call__(self, x):
+        v = self.M @ np.asarray(x, dtype=float) - self.b
+        return float(v[0]) if self.part == "objective" else v

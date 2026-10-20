@@ -58,6 +58,43 @@ class Problem:
     n_objectives: int = 1
     metadata: dict = field(default_factory=dict)
 
+    @classmethod
+    def from_linear(cls, space: Space, model: LinearStructure, sense: str = "min", name: str = "linear_model",
+                    tol: float = 1e-9, **kw) -> "Problem":
+        """A problem whose objective and constraints are generated from ``model``.
+
+        Because the functions are the model, an exact MILP solve of such a problem can certify global optimality
+        (or infeasibility) of the problem as defined. A ``linear=`` declaration on a problem with user-written
+        functions is only spot-checked, and the MILP adapter then makes conditional statements only.
+        """
+        from .constraints import Constraint, LinearFunction
+        cons = []
+        if model.A_ub is not None:
+            cons.append(Constraint(LinearFunction(model, "ub"), "ineq", "linear_ub", tol))
+        if model.A_eq is not None:
+            cons.append(Constraint(LinearFunction(model, "eq"), "eq", "linear_eq", tol))
+        return cls(space, LinearFunction(model, "objective"), sense=sense, constraints=cons, name=name, linear=model,
+                   **kw)
+
+    @property
+    def linear_is_exact(self) -> bool:
+        """True when the objective and every constraint are generated from ``self.linear`` (see ``from_linear``)."""
+        from .constraints import LinearFunction
+        L = self.linear
+        if L is None or self.input_format != "vector" or self.noisy:
+            return False
+        if not (isinstance(self.objective, LinearFunction) and self.objective.model is L
+                and self.objective.part == "objective"):
+            return False
+        parts = []
+        for c in self.constraints:
+            if not (isinstance(c.fn, LinearFunction) and c.fn.model is L):
+                return False
+            if (c.fn.part == "ub") != (c.kind == "ineq"):
+                return False
+            parts.append(c.fn.part)
+        return sorted(parts) == sorted((["ub"] if L.A_ub is not None else []) + (["eq"] if L.A_eq is not None else []))
+
     def __post_init__(self) -> None:
         self.constraints = tuple(self.constraints)
         self.validate()

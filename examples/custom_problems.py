@@ -42,9 +42,9 @@ def production_planning():
                   [3.0, 1.0, 2.0, 1.5]])   # material
     b = np.array([100.0, 80.0, 120.0])
     sp = Space([Integer(f"q{i}", 0, 50) for i in range(4)])
-    cons = [ineq(lambda x, k=k: float(A[k] @ x - b[k]), f"resource{k}", tol=1e-9) for k in range(3)]
-    return Problem(sp, lambda x: float(profit @ x), sense="max", constraints=cons, name="production_planning",
-                   linear=LinearStructure(c=profit, A_ub=A, b_ub=b))
+    # built from the model, so the MILP adapter can certify the optimum (not just state it conditionally)
+    return Problem.from_linear(sp, LinearStructure(c=profit, A_ub=A, b_ub=b), sense="max", name="production_planning",
+                               tol=1e-9)
 
 
 def noisy_quadratic(sigma: float = 0.05, dim: int = 4, seed: int = 0):

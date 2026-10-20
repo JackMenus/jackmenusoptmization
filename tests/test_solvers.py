@@ -86,11 +86,20 @@ def test_exhaustive_refuses_when_budget_too_small():
 def test_milp_certified():
     sp = Space([Integer("a", 0, 10), Integer("b", 0, 10)])
     lin = LinearStructure(c=np.array([-3.0, -2.0]), A_ub=np.array([[1.0, 1.0], [1.0, 3.0]]), b_ub=np.array([4.0, 6.0]))
+    p = Problem.from_linear(sp, lin)
+    r = get_solver("milp").solve(p, Budget(100), seed=0)
+    assert r.status == "optimal_certified" and r.objective == pytest.approx(-12.0)
+
+
+def test_milp_on_declared_black_box_functions_is_only_conditional():
+    sp = Space([Integer("a", 0, 10), Integer("b", 0, 10)])
+    lin = LinearStructure(c=np.array([-3.0, -2.0]), A_ub=np.array([[1.0, 1.0], [1.0, 3.0]]), b_ub=np.array([4.0, 6.0]))
     p = Problem(sp, lambda x: float(-3 * x[0] - 2 * x[1]),
                 constraints=[ineq(lambda x: x[0] + x[1] - 4, name="c1"), ineq(lambda x: x[0] + 3 * x[1] - 6, name="c2")],
                 linear=lin)
     r = get_solver("milp").solve(p, Budget(100), seed=0)
-    assert r.status == "optimal_certified" and r.objective == pytest.approx(-12.0)
+    assert r.status == "feasible" and not r.certified_optimal and r.objective == pytest.approx(-12.0)
+    assert "global_optimum_conditional_on_assumptions" in [g.kind for g in r.guarantees]
 
 
 def test_milp_detects_mismatched_linear_declaration():

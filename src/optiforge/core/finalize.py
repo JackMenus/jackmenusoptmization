@@ -50,7 +50,18 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
                 NO_FEASIBLE_FOUND,
                 "No valid evaluation was obtained within the budget. This is not evidence that the problem is infeasible.",
             ))
-            status = "error" if termination == "error" else "no_feasible_found"
+            st = ev.stats
+            failed = st.n_errors + st.n_nonfinite
+            if termination == "error" or (failed > 0 and failed >= ev.n_evals):
+                # every evaluation that ran failed: an execution failure, not an unsuccessful search
+                status = "error"
+                messages.append(f"execution failure: all {ev.n_evals} evaluations failed "
+                                f"({st.n_errors} raised, {st.n_nonfinite} non-finite)")
+            elif ev.n_evals == 0:
+                status = "error"
+                messages.append("no evaluation was performed")
+            else:
+                status = "no_feasible_found"
         return OptimizationResult(
             problem=p.name, solver=solver_name, solver_version=solver_version, status=status, x=None,
             x_decoded=None, objective=None, feasible=False, constraint_violations={}, max_violation=math.inf,
@@ -70,23 +81,33 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
         n_verif += 1
         if last.valid:
             vals.append(last.f)
+    verification_failed = False
     if last is None or not last.valid or not vals:
         messages.append(f"verification evaluation failed: {None if last is None else last.error}")
         feasible, objective, viol = False, None, {}
         max_v = math.inf
+        verification_failed = True
     else:
         objective = float(np.mean(vals))
         feasible = bool(last.feasible)
-        viol = _named_violations(p, best.x)
-        max_v = float(max(viol.values())) if viol else 0.0
+        try:
+            viol = _named_violations(p, best.x)
+            max_v = float(max(viol.values())) if viol else 0.0
+        except Exception as exc:  # a constraint that raises here must not lose the result
+            messages.append(f"per-constraint violation report failed: {type(exc).__name__}: {exc}")
+            viol, max_v = {}, (0.0 if feasible else math.inf)
     if p.noisy and vals:
         noise = {"verification_repeats": reps, "mean": float(np.mean(vals)), "std": float(np.std(vals, ddof=1)) if len(vals) > 1 else 0.0,
                  "search_value_of_reported_point": best.f,
                  "note": "objective is noisy; reported value is the mean of repeated verification evaluations"}
-    if not p.noisy and objective is not None and best.valid and not math.isclose(objective, best.f, rel_tol=1e-9, abs_tol=1e-12):
+    nondeterministic = False
+    if not p.noisy and objective is not None and best.valid and (
+            not math.isclose(objective, best.f, rel_tol=1e-9, abs_tol=1e-12) or bool(last.feasible) != bool(best.feasible)):
+        nondeterministic = True
         messages.append(
-            f"objective at reported point changed between search ({best.f}) and verification ({objective}); "
-            "the function may be non-deterministic despite being declared deterministic"
+            f"objective or feasibility at reported point changed between search ({best.f}, feasible={best.feasible}) "
+            f"and verification ({objective}, feasible={last.feasible}); the function may be non-deterministic despite "
+            "being declared deterministic, so no certificate is kept"
         )
 
     # -- optional independent verifier (e.g. dense re-simulation) ------------
@@ -107,12 +128,18 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
         if g.point is not None and not np.allclose(np.asarray(g.point, dtype=float), best.x, rtol=0, atol=1e-12):
             messages.append(f"dropped guarantee '{g.kind}': it refers to a point other than the reported one")
             continue
+        if g.kind in (GLOBAL_CERTIFIED, GLOBAL_CONDITIONAL, INFEASIBILITY_CERTIFIED) and nondeterministic:
+            messages.append(f"dropped guarantee '{g.kind}': the problem did not behave deterministically")
+            continue
         if g.kind in (GLOBAL_CERTIFIED, GLOBAL_CONDITIONAL):
             if not feasible:
                 messages.append(f"dropped guarantee '{g.kind}': reported point does not verify as feasible")
                 continue
             if p.noisy:
                 messages.append(f"dropped guarantee '{g.kind}': objective is noisy")
+                continue
+            if dense_rejected:
+                messages.append(f"dropped guarantee '{g.kind}': the independent verifier rejected the reported point")
                 continue
             certified = certified or g.kind == GLOBAL_CERTIFIED
         guarantees.append(g)
@@ -154,12 +181,20 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
             status = "infeasible_certified"
         else:
             guarantees = [g for g in guarantees if g.kind != INFEASIBILITY_CERTIFIED]
-            guarantees.append(Guarantee(
-                NO_FEASIBLE_FOUND,
-                "No feasible solution was found; the reported point minimises constraint violation among the points "
-                "evaluated. This is not evidence that the problem is infeasible.",
-            ))
-            status = "no_feasible_found"
+            if verification_failed:
+                guarantees.append(Guarantee(
+                    NO_FEASIBLE_FOUND,
+                    "The verification evaluation of the reported point failed, so neither its objective nor its "
+                    "feasibility could be confirmed. This is not evidence that the problem is infeasible.",
+                ))
+                status = "error"
+            else:
+                guarantees.append(Guarantee(
+                    NO_FEASIBLE_FOUND,
+                    "No feasible solution was found; the reported point minimises constraint violation among the points "
+                    "evaluated. This is not evidence that the problem is infeasible.",
+                ))
+                status = "no_feasible_found"
 
     diag = _diag(ctx)
     if verifier_report is not None:

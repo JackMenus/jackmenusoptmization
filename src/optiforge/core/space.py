@@ -339,10 +339,14 @@ class Space:
         for v, s in zip(self.variables, self._slices):
             val = values[v.name]
             if v.type is VarType.CATEGORICAL:
-                try:
-                    x[s] = v.choices.index(val)
-                except ValueError as exc:
-                    raise ProblemDefinitionError(f"{val!r} is not a choice of {v.name}") from exc
+                # match on type as well as value: 1 == True and 0 == False would otherwise collide
+                idx = [i for i, c in enumerate(v.choices) if type(c) is type(val) and c == val]
+                if not idx:
+                    idx = [i for i, c in enumerate(v.choices) if c == val]
+                if len(idx) != 1:
+                    raise ProblemDefinitionError(f"{val!r} is not a choice of {v.name}" if not idx else
+                                                 f"{val!r} matches several choices of {v.name}")
+                x[s] = idx[0]
             elif v.type is VarType.PERMUTATION:
                 x[s] = np.asarray(val, dtype=float)
             else:

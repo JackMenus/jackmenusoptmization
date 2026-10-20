@@ -16,9 +16,9 @@ Every `OptimizationResult` carries:
 
 | kind | issued when | meaning |
 |---|---|---|
-| `global_optimum_certified` | `exhaustive` evaluated every point of a finite deterministic domain; `milp` solved a declared linear model to optimality *and* the declaration matched the real functions on spot checks *and* the returned point re-verifies | the reported point is globally optimal within the stated tolerances |
-| `infeasibility_certified` | `exhaustive` evaluated every point and none was feasible | the finite problem has no feasible point within tolerances |
-| `global_optimum_conditional_on_assumptions` | `lbfgsb` reached a projected-gradient stationary point on a problem that the *user declared* convex and that has an analytic gradient | global optimality holds only if the declaration is true; it is not verified |
+| `global_optimum_certified` | `exhaustive` evaluated every point of a finite deterministic domain without any failed evaluation; or `milp` proved optimality of a linear model **that is the problem**, because the problem was built with `Problem.from_linear` (objective and constraints generated from the model), and the returned point re-verifies | the reported point is globally optimal within the stated tolerances |
+| `infeasibility_certified` | `exhaustive` evaluated every point and none was feasible; or `milp` found the tolerance-relaxed model of a `Problem.from_linear` problem infeasible | the problem as defined has no feasible point within tolerances |
+| `global_optimum_conditional_on_assumptions` | `lbfgsb` reached a projected-gradient stationary point on a minimisation problem that the *user declared* convex and that has an analytic gradient; or `milp` proved optimality of a `linear=` declaration attached to user-written functions, which agreed with the declaration at the box corners, at random spot checks and at the solution | global optimality holds only if the declaration is true; it is not verified |
 | `first_order_stationary_point` | projected-gradient norm below tolerance at the reported point | local stationarity only; not a proof of a local minimum |
 | `local_method_converged` | a local method's own stopping test fired (simplex size, compass mesh, neighbourhood exhausted) | no proof of stationarity or local optimality |
 | `feasibility_verified` | the original constraints hold at the reported point on re-evaluation | exact feasibility for the problem as defined |
@@ -36,5 +36,28 @@ The following rules are enforced in `core/finalize.py` and are tested:
   and no optimality claim is made.
 * When the denser re-simulation of a continuous-time problem rejects a point that was feasible on the grid, the
   status becomes `feasible_discretized_only` and the message says so.
+* Every certificate (global or infeasibility) is dropped when the reported point's objective or feasibility changes
+  between search and verification, because that shows the problem is not deterministic.
+* A global certificate is dropped when the problem's independent verifier rejects the point or raises.
+* A `linear=` declaration on user-written functions is never trusted for a certificate, however many spot checks
+  pass: a declaration that is wrong only near the optimum passes random checks. Only `Problem.from_linear`, where
+  the functions are generated from the model, gives the MILP adapter a certificate. The MILP model is solved with
+  each constraint relaxed by its tolerance, so the statement is about the problem as defined. The adapter requires
+  at least 20 spot checks and honours `Budget.max_time`; a HiGHS time-out ends with termination `budget_time` and
+  no certificate.
 * Statuses are `optimal_certified`, `feasible`, `feasible_discretized_only`, `infeasible_certified`,
   `no_feasible_found` and `error`. Only the first and fourth are certificates.
+
+## Status meanings
+
+| status | meaning |
+|---|---|
+| `optimal_certified` | proven global optimum (see the certificate's method and assumptions) |
+| `feasible` | a feasible point was found and verified; its guarantees say whether it is merely heuristic, locally stationary or conditionally optimal |
+| `feasible_discretized_only` | feasible on the simulation grid but rejected by the denser independent check |
+| `infeasible_certified` | proven that no feasible point exists |
+| `no_feasible_found` | the search ran but found no feasible point; **not** evidence of infeasibility |
+| `error` | an execution failure: every evaluation failed, nothing was evaluated, the solver raised before any valid evaluation, or the verification evaluation of the reported point failed |
+
+The termination reason is reported separately (`budget_evaluations`, `budget_time`, `cancelled`, `converged`,
+`error`, ...). A time-out with a verified feasible incumbent has status `feasible` and termination `budget_time`.

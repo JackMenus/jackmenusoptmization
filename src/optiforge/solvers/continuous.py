@@ -122,7 +122,7 @@ class LBFGSB(_ScipyLocal):
                 f"First-order stationarity on the box: ||P(x - grad f) - x||_inf = {pg:.3g} <= {tol:g} ({how}). "
                 "Stationarity is necessary, not sufficient, for a local minimum; no local optimality is proven.",
                 method="projected gradient norm", tolerance=tol, point=best.x.tolist()))
-            if ctx.problem.convex and analytic:
+            if ctx.problem.convex and analytic and ctx.problem.sense == "min":  # convex maximisation is not a convex problem
                 ctx.guarantee_hints.append(Guarantee(
                     GLOBAL_CONDITIONAL,
                     "Under the user's declaration that the objective is convex, a stationary point of the box-constrained "

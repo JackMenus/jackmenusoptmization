@@ -1,0 +1,5 @@
+[hybrid 1.0.0] pressure_vessel: status=feasible objective=6343.450032 feasible=True max_violation=0 evals=16555 time=3.076s termination=completed guarantees=[local_method_converged, feasibility_verified, heuristic_best_found]
+  - local_method_converged: Compass search mesh size fell below 1e-07 (relative) with no improving poll step. For smooth objectives such limit points are stationary in theory; this finite run provides no proof of stationarity or local optimality.
+  - feasibility_verified: The reported point satisfies every original constraint within its stated tolerance at verification.
+  - heuristic_best_found: Best feasible solution found within the budget. No global (or proven local) optimality is claimed.
+run record: /home/claude/dev/rounds/r2/runs/20261020T112833586139Z-solve-9401b0b7

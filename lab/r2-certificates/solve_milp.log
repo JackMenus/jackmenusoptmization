@@ -1,0 +1,4 @@
+[milp 1.0.0] production_planning: status=optimal_certified objective=1136 feasible=True max_violation=0 evals=53 time=0.012s termination=exact_solver_finished guarantees=[global_optimum_certified, feasibility_verified]
+  - global_optimum_certified: HiGHS proved optimality of the linear model (relative MIP gap 0 <= 1e-09) with constraints relaxed by their declared tolerances. The problem's functions are generated from that model (Problem.from_linear), and the solution was re-evaluated on them.
+  - feasibility_verified: The reported point satisfies every original constraint within its stated tolerance at verification.
+run record: /home/claude/dev/rounds/r2/runs/20261020T112840183422Z-solve-a5b785cc

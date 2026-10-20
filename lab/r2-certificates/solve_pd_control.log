@@ -1,0 +1,5 @@
+[cmaes 1.0.0] pd_control-s0: status=feasible_discretized_only objective=0.2973770562 feasible=True max_violation=0 evals=800 time=5.284s termination=budget_evaluations guarantees=[feasibility_verified_at_sample_points_only, heuristic_best_found]
+  - feasibility_verified_at_sample_points_only: Feasible for the problem as defined (constraints evaluated on the simulation's sample grid), but the independent re-simulation on a denser grid with tighter tolerances found constraint violations. Feasibility of the underlying continuous-time system is NOT established.
+  - heuristic_best_found: Best feasible solution found within the budget. No global (or proven local) optimality is claimed.
+  ! independent verifier rejected the reported point: {'feasible': False, 'scope': 'sampled: 1200 points of a re-integration with rtol=1e-07', 'max_constraint_values': {'overshoot': 0.00020330712717298027, 'actuator': -4.4590141357048196e-07}, 'objective_dense': 0.2973758704986272}
+run record: /home/claude/dev/rounds/r2/runs/20261020T112840741948Z-solve-cf1d8a0c
