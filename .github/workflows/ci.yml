@@ -7,9 +7,15 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
+      # The sandbox exposes the interpreter read-only and requires it under /usr, so use a system Python 3.13
+      # (deadsnakes) instead of actions/setup-python, which installs under /opt/hostedtoolcache.
+      - name: Install Python 3.13 under /usr
+        run: |
+          sudo add-apt-repository -y ppa:deadsnakes/ppa
+          sudo apt-get update
+          sudo apt-get install -y python3.13 python3.13-venv
+          python3.13 -m venv "$RUNNER_TEMP/venv"
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
       - name: Allow unprivileged user namespaces (Ubuntu 24.04 restricts them through AppArmor)
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Install
