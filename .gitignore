@@ -3,3 +3,13 @@ __pycache__/
 /runs/
 .pytest_cache/
 build/
+.venv/
+venv/
+.env
+*.pyc
+.DS_Store
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
