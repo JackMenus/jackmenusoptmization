@@ -1,0 +1,33 @@
+{
+  "kind": "benchmark",
+  "runs_dir": "/home/claude/dev/baseline/runs",
+  "benchmark": {
+    "suite": "baseline_portfolio",
+    "split": "test",
+    "budget": 3000,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "solvers": [
+      "random_search",
+      "auto",
+      "cmaes",
+      "de",
+      "nelder_mead",
+      "lbfgsb",
+      "slsqp",
+      "multistart",
+      "hybrid",
+      "genetic",
+      "simulated_annealing",
+      "tabu",
+      "greedy_ls",
+      "pattern_search"
+    ]
+  },
+  "_source": "/home/claude/dev/baseline/bench.yaml"
+}

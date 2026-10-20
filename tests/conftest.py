@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pytest
 
@@ -24,5 +26,9 @@ def isolation():
 @pytest.fixture
 def needs_isolation(isolation):
     if not isolation.available:
+        # On hosts where isolation is expected (CI, the development host), a broken sandbox must fail the suite
+        # instead of silently skipping every isolation test.
+        if os.environ.get("OPTIFORGE_REQUIRE_ISOLATION") == "1":
+            pytest.fail(f"OS isolation required but unavailable: {isolation.reason}")
         pytest.skip(f"OS isolation unavailable: {isolation.reason}")
     return isolation

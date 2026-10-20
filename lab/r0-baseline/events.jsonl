@@ -1,0 +1,2 @@
+{"t": 1792495042.0552, "event": "run_started", "kind": "benchmark", "config_hash": "64429768"}
+{"t": 1792495333.9063, "event": "benchmark_finished", "wall_time_s": 291.78}

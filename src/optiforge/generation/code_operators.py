@@ -161,6 +161,8 @@ def space_info(space, sigma: float) -> dict:
 class SandboxedCodeOperator:
     """Transformer backed by an isolated worker running candidate source code."""
 
+    MAX_RESTARTS = 3
+
     def __init__(self, cid: str, source: str, types: list[str], version: str = "1", base_sigma: float = 0.1,
                  config: SandboxConfig | None = None) -> None:
         rep = probe()
@@ -171,10 +173,15 @@ class SandboxedCodeOperator:
         self.config = config or SandboxConfig()
         self._proc: SandboxProcess | None = None
         self._info_cache = None
-        self.stats = {"calls": 0, "invalid_outputs": 0, "raw_domain_violations": 0, "failures": 0}
+        self.stats = {"calls": 0, "invalid_outputs": 0, "raw_domain_violations": 0, "failures": 0, "starts": 0}
 
     def _ensure(self) -> SandboxProcess:
         if self._proc is None or self._proc.proc.poll() is not None:
+            # each worker gets a fresh CPU rlimit, so restarts are capped rather than unbounded
+            if self.stats["starts"] > self.MAX_RESTARTS:
+                raise CandidateRejected(f"code operator {self.cid}: sandbox worker restarted {self.MAX_RESTARTS} times; "
+                                        "candidate disabled")
+            self.stats["starts"] += 1
             self._proc = SandboxProcess(self.source, "mutate", self.config)
         return self._proc
 
@@ -185,6 +192,8 @@ class SandboxedCodeOperator:
             resp = self._ensure().call([float(v) for v in x], info, int(rng.integers(2**31 - 1)))
         except Exception as exc:
             self.stats["failures"] += 1
+            if self._proc is not None:
+                self._proc.close()
             self._proc = None
             raise CandidateRejected(f"code operator {self.cid} failed in sandbox: {exc}") from exc
         if not resp.get("ok"):

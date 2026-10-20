@@ -17,16 +17,22 @@ Generated Python operators run in a persistent worker process that is
 * bounded by rlimits on CPU time, address space, file size, open files and
   processes, plus a per-request wall-clock timeout and a cap on the bytes it
   may return.
+* restricted, once the runner has started and before the candidate's source is
+  compiled, by a seccomp-BPF system-call allowlist (x86_64): no process
+  creation or exec, no sockets, no ptrace, mount, namespace, bpf or keyring
+  calls, no signals to other processes.
 
 The parent process only exchanges JSON lines with the worker and validates
 every value it returns; the worker never sees the objective function.
 
-Limitations (stated, not hidden): there is no seccomp syscall filter, so the
-kernel's syscall surface is still reachable; isolation relies on Linux
-namespaces being correctly implemented.  This is substantially stronger than
-an AST filter or a plain subprocess but weaker than a virtual machine.  If the
-probe below fails, arbitrary code execution is disabled and only the
-declarative DSL is used for autonomous generation.
+Limitations (stated, not hidden): the syscall allowlist still admits file,
+memory and futex calls, so isolation relies on the kernel's implementation of
+those calls, of namespaces and of seccomp.  The filter is defined for x86_64
+only; on other architectures the probe fails and generated code is disabled.
+This is substantially stronger than an AST filter or a plain subprocess but
+weaker than a virtual machine.  If the probe below fails, arbitrary code
+execution is disabled and only the declarative DSL is used for autonomous
+generation.
 """
 from __future__ import annotations
 
@@ -70,15 +76,86 @@ rmdir /oldroot
 exec /usr/bin/env -i /usr/bin/setpriv --bounding-set=-all --inh-caps=-all --no-new-privs -- "$PY" -I /runner/runner.py
 """
 
+# x86_64 system calls the worker may make once the candidate is loaded.  Everything else fails with
+# EPERM (ioctl with ENOTTY, so isatty() is simply False); a foreign syscall ABI kills the process.
+# Process creation (clone/fork/vfork/execve), sockets, ptrace, mount/unshare/setns, bpf, keyctl, kill,
+# prctl, io_uring and file creation/removal outside open() are all outside the list.
+SECCOMP_ALLOW_X86_64 = {
+    "read": 0, "write": 1, "open": 2, "close": 3, "stat": 4, "fstat": 5, "lstat": 6, "poll": 7, "lseek": 8,
+    "mmap": 9, "mprotect": 10, "munmap": 11, "brk": 12, "rt_sigaction": 13, "rt_sigprocmask": 14,
+    "rt_sigreturn": 15, "pread64": 17, "readv": 19, "writev": 20, "access": 21, "sched_yield": 24,
+    "mremap": 25, "madvise": 28, "dup": 32, "dup2": 33, "nanosleep": 35, "getpid": 39, "exit": 60,
+    "uname": 63, "fcntl": 72, "getcwd": 79, "readlink": 89, "getrusage": 98, "sysinfo": 99, "times": 100,
+    "getuid": 102, "getgid": 104, "geteuid": 107, "getegid": 108, "getppid": 110, "sigaltstack": 131,
+    "fstatfs": 138, "arch_prctl": 158, "gettid": 186, "futex": 202, "sched_getaffinity": 204,
+    "getdents64": 217, "set_tid_address": 218, "clock_gettime": 228, "clock_getres": 229,
+    "clock_nanosleep": 230, "exit_group": 231, "openat": 257, "newfstatat": 262, "readlinkat": 267,
+    "set_robust_list": 273, "dup3": 292, "prlimit64": 302, "getrandom": 318, "statx": 332, "rseq": 334,
+    "faccessat2": 439,
+}
+SECCOMP_ERRNO_X86_64 = {16: 25}  # ioctl -> ENOTTY
+
 _RUNNER = r'''
-import json, math, random, sys
+import ctypes, json, math, random, sys
+
+ALLOW = sorted(set(%(allow)r))
+ERRNO = %(errno)r
+
+
+def install_seccomp():
+    # Classic BPF filter loaded with prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER).  no_new_privs is already set by
+    # setpriv; it is set again here so the filter can never be loaded without it.
+    if not sys.platform.startswith("linux") or __import__("platform").machine() != "x86_64":
+        raise OSError("seccomp filter is only defined for linux x86_64")
+    LD_W_ABS, JEQ_K, RET_K = 0x20, 0x15, 0x06
+    ARCH_X86_64, KILL_PROCESS, ALLOW_RET, ERRNO_RET = 0xC000003E, 0x80000000, 0x7FFF0000, 0x00050000
+    prog = [(LD_W_ABS, 0, 0, 4), (JEQ_K, 1, 0, ARCH_X86_64), (RET_K, 0, 0, KILL_PROCESS), (LD_W_ABS, 0, 0, 0)]
+    special = sorted(ERRNO.items())
+    n_tests = len(ALLOW) + len(special)
+    # layout after the tests: [RET EPERM (default)] [RET ALLOW] [RET errno_i ...]
+    allow_at = len(prog) + n_tests + 1
+    for i, nr in enumerate(ALLOW):
+        here = len(prog)
+        prog.append((JEQ_K, allow_at - here - 1, 0, nr))
+    for j, (nr, err) in enumerate(special):
+        here = len(prog)
+        prog.append((JEQ_K, allow_at + 1 + j - here - 1, 0, nr))
+    prog.append((RET_K, 0, 0, ERRNO_RET | 1))  # EPERM
+    prog.append((RET_K, 0, 0, ALLOW_RET))
+    for nr, err in special:
+        prog.append((RET_K, 0, 0, ERRNO_RET | err))
+    if any(not 0 <= jt <= 255 for _, jt, _, _ in prog):
+        raise OSError("seccomp program jump out of range")
+
+    class SockFilter(ctypes.Structure):
+        _fields_ = [("code", ctypes.c_ushort), ("jt", ctypes.c_ubyte), ("jf", ctypes.c_ubyte), ("k", ctypes.c_uint32)]
+
+    class SockFprog(ctypes.Structure):
+        _fields_ = [("len", ctypes.c_ushort), ("filter", ctypes.POINTER(SockFilter))]
+
+    arr = (SockFilter * len(prog))(*[SockFilter(*ins) for ins in prog])
+    fprog = SockFprog(len(prog), ctypes.cast(arr, ctypes.POINTER(SockFilter)))
+    libc = ctypes.CDLL(None, use_errno=True)
+    libc.prctl.argtypes = [ctypes.c_int, ctypes.c_ulong, ctypes.c_void_p, ctypes.c_ulong, ctypes.c_ulong]
+    if libc.prctl(38, 1, None, 0, 0) != 0:  # PR_SET_NO_NEW_PRIVS
+        raise OSError(ctypes.get_errno(), "PR_SET_NO_NEW_PRIVS failed")
+    if libc.prctl(22, 2, ctypes.cast(ctypes.pointer(fprog), ctypes.c_void_p), 0, 0) != 0:  # PR_SET_SECCOMP, FILTER
+        raise OSError(ctypes.get_errno(), "PR_SET_SECCOMP failed")
+
+
 def reply(obj):
     sys.stdout.write(json.dumps(obj) + "\n"); sys.stdout.flush()
+
+
 def main():
     first = sys.stdin.readline()
     if not first:
         return
     msg = json.loads(first)
+    try:
+        install_seccomp()
+    except BaseException as exc:
+        reply({"ok": False, "error": "seccomp: %%s: %%s" %% (type(exc).__name__, exc)}); return
     ns = {"__name__": "candidate", "math": math, "random": random}
     try:
         exec(compile(msg["source"], "<candidate>", "exec"), ns)
@@ -86,7 +163,7 @@ def main():
         if not callable(fn):
             raise TypeError("entry point is not callable")
     except BaseException as exc:
-        reply({"ok": False, "error": "load: %s: %s" % (type(exc).__name__, exc)}); return
+        reply({"ok": False, "error": "load: %%s: %%s" %% (type(exc).__name__, exc)}); return
     reply({"ok": True})
     for line in sys.stdin:
         req = json.loads(line)
@@ -95,11 +172,11 @@ def main():
         try:
             rng = random.Random(req["seed"])
             y = fn(list(req["x"]), req["info"], rng)
-            reply({"ok": True, "y": list(map(float, y))})
+            reply({"ok": True, "id": req.get("id"), "y": list(map(float, y))})
         except BaseException as exc:
-            reply({"ok": False, "error": "%s: %s" % (type(exc).__name__, exc)})
+            reply({"ok": False, "id": req.get("id"), "error": "%%s: %%s" %% (type(exc).__name__, exc)})
 main()
-'''
+''' % {"allow": sorted(SECCOMP_ALLOW_X86_64.values()), "errno": SECCOMP_ERRNO_X86_64}
 
 _PROBE = r'''
 def mutate(x, info, rng):
@@ -127,6 +204,23 @@ def mutate(x, info, rng):
     import resource
     out["rlimit_as"] = resource.getrlimit(resource.RLIMIT_AS)[0]
     out["rlimit_cpu"] = resource.getrlimit(resource.RLIMIT_CPU)[0]
+    sec = [l.split()[1] for l in status.splitlines() if l.startswith("Seccomp:")]
+    out["seccomp_filter_active"] = bool(sec) and sec[0] == "2"
+    try:
+        pid = os.fork()
+        if pid == 0:
+            os._exit(0)
+        os.waitpid(pid, 0); out["fork_blocked"] = False
+    except OSError:
+        out["fork_blocked"] = True
+    try:
+        os.execv("/usr/bin/true", ["true"]); out["exec_blocked"] = False
+    except OSError:
+        out["exec_blocked"] = True
+    try:
+        socket.socket(socket.AF_UNIX, socket.SOCK_STREAM).close(); out["socket_blocked"] = False
+    except OSError:
+        out["socket_blocked"] = True
     import json
     return [float(len(json.dumps(out)))] + [float(ord(c)) for c in json.dumps(out)]
 '''
@@ -149,7 +243,8 @@ class IsolationReport:
     available: bool
     checks: dict = field(default_factory=dict)
     reason: str = ""
-    mechanism: str = "linux namespaces (user, mount, pid, net, ipc, uts) + pivot_root + capability drop + rlimits"
+    mechanism: str = ("linux namespaces (user, mount, pid, net, ipc, uts) + pivot_root + capability drop + rlimits "
+                      "+ seccomp syscall allowlist (x86_64)")
 
     def to_dict(self) -> dict:
         return {"available": self.available, "checks": self.checks, "reason": self.reason, "mechanism": self.mechanism}
@@ -249,14 +344,20 @@ class SandboxProcess:
         try:
             self.proc.stdin.write((json.dumps(msg) + "\n").encode())
             self.proc.stdin.flush()
-            return json.loads(self._readline(timeout))
+            resp = json.loads(self._readline(timeout))
+            if not isinstance(resp, dict):
+                raise ValueError(f"malformed reply of type {type(resp).__name__}")
+            if "id" in msg and resp.get("id") != msg["id"]:
+                raise ValueError("reply does not answer the current request (protocol desynchronised)")
+            resp.pop("id", None)
+            return resp
         except (BrokenPipeError, TimeoutError, RuntimeError, ValueError) as exc:
             self.kill()
             raise RuntimeError(f"sandbox failure: {exc}") from exc
 
     def call(self, x: list, info: dict, seed: int) -> dict:
         self.calls += 1
-        return self._roundtrip({"x": x, "info": info, "seed": int(seed)}, self.config.request_timeout)
+        return self._roundtrip({"id": self.calls, "x": x, "info": info, "seed": int(seed)}, self.config.request_timeout)
 
     def stderr_tail(self, n: int = 600) -> str:
         try:
@@ -324,7 +425,8 @@ def probe(force: bool = False) -> IsolationReport:
             _probe_cache = IsolationReport(False, {}, f"sandbox probe failed: {exc}")
             return _probe_cache
         required = ["network_blocked", "usr_readonly", "host_paths_hidden", "env_empty", "no_capabilities",
-                    "no_new_privs", "pid_namespace"]
+                    "no_new_privs", "pid_namespace", "seccomp_filter_active", "fork_blocked", "exec_blocked",
+                    "socket_blocked"]
         failed = [k for k in required if not checks.get(k)]
         if checks.get("outside_uid") == 0:
             failed.append("outside_uid_is_root")

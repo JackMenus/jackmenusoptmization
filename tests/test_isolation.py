@@ -95,3 +95,80 @@ def test_exception_is_reported_not_raised():
 def test_load_failure_rejected():
     with pytest.raises(RuntimeError, match="failed to load"):
         SandboxProcess("this is not python")
+
+
+# --- seccomp system-call filter -------------------------------------------------------------
+
+def test_probe_reports_seccomp_properties():
+    rep = probe(force=True)
+    for k in ("seccomp_filter_active", "fork_blocked", "exec_blocked", "socket_blocked"):
+        assert rep.checks[k], k
+
+
+def test_cannot_fork_exec_or_spawn():
+    assert run(attempt("import os\npid = os.fork()\nif pid == 0:\n    os._exit(0)"))["y"] == [0.0]
+    assert run(attempt("import os\nos.execv('/usr/bin/true', ['true'])"))["y"] == [0.0]
+    assert run(attempt("import subprocess\nsubprocess.run(['/usr/bin/true'], check=True)"))["y"] == [0.0]
+    # os.system cannot raise; it must report failure instead of running the shell
+    r = run("import os\ndef mutate(x, info, rng):\n    return [float(os.system('/usr/bin/true') != 0)]\n")
+    assert r["y"] == [1.0]
+
+
+def test_cannot_open_any_socket_or_thread():
+    assert run(attempt("import socket\nsocket.socket(socket.AF_UNIX, socket.SOCK_STREAM)"))["y"] == [0.0]
+    assert run(attempt("import socket\nsocket.socket(socket.AF_NETLINK, socket.SOCK_RAW)"))["y"] == [0.0]
+    assert run(attempt("import threading\nt = threading.Thread(target=print)\nt.start()"))["y"] == [0.0]
+
+
+def test_cannot_signal_ptrace_or_unshare():
+    assert run(attempt("import os, signal\nos.kill(1, signal.SIGKILL)"))["y"] == [0.0]
+    body = ("import ctypes\nlibc = ctypes.CDLL(None, use_errno=True)\n"
+            "if libc.ptrace(0, 0, 0, 0) != 0:\n    raise OSError('ptrace refused')")
+    assert run(attempt(body))["y"] == [0.0]
+    assert run(attempt("import os\nos.unshare(os.CLONE_NEWUSER)"))["y"] == [0.0]
+
+
+def test_seccomp_cannot_be_lifted_by_candidate():
+    # a candidate may add filters (only ever stricter) but prctl itself is outside the allowlist
+    body = ("import ctypes\nlibc = ctypes.CDLL(None, use_errno=True)\n"
+            "if libc.prctl(22, 0, 0, 0, 0) != 0:\n    raise OSError('prctl refused')")
+    assert run(attempt(body))["y"] == [0.0]
+
+
+def test_malformed_or_desynchronised_replies_kill_the_worker():
+    # extra line written straight to the protocol channel: the next reply no longer matches its request
+    src = ("import sys\ndef mutate(x, info, rng):\n"
+           "    sys.stdout.write('{\"ok\": true, \"id\": 999, \"y\": [5.0]}\\n')\n    return [1.0]\n")
+    sb = SandboxProcess(src, config=SandboxConfig(request_timeout=3))
+    try:
+        with pytest.raises(RuntimeError, match="desynchronised"):
+            sb.call([0.0], {}, 0)
+        assert sb.proc.poll() is not None
+    finally:
+        sb.close()
+    src = "import sys\ndef mutate(x, info, rng):\n    sys.stdout.write('[1, 2]\\n')\n    return [1.0]\n"
+    sb = SandboxProcess(src, config=SandboxConfig(request_timeout=3))
+    try:
+        with pytest.raises(RuntimeError, match="malformed reply"):
+            sb.call([0.0], {}, 0)
+    finally:
+        sb.close()
+
+
+def test_code_operator_restarts_are_capped():
+    import numpy as np
+    from optiforge.core.errors import CandidateRejected
+    from optiforge.core.space import Real, Space
+    from optiforge.generation.code_operators import SandboxedCodeOperator
+    op = SandboxedCodeOperator("crash", "def mutate(x, info, rng):\n    while True:\n        pass\n", ["real"],
+                               config=SandboxConfig(request_timeout=0.5))
+    sp = Space([Real("x", -1, 1)])
+    rng = np.random.default_rng(0)
+    msgs = []
+    for _ in range(SandboxedCodeOperator.MAX_RESTARTS + 3):
+        with pytest.raises(CandidateRejected) as ei:
+            op.transform(np.zeros(1), sp, rng, 1.0)
+        msgs.append(str(ei.value))
+    op.close()
+    assert op.stats["starts"] == SandboxedCodeOperator.MAX_RESTARTS + 1
+    assert "candidate disabled" in msgs[-1]
