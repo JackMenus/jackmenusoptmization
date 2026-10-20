@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 6 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 7 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -28,7 +28,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
   folder instead: `git clone /mnt/project-files/optimization-platform/ <dir>` (needs `git config --global
   safe.directory '*'`).
 * Tests: `OPTIFORGE_REQUIRE_ISOLATION=1 python -m pytest -q -p no:cacheprovider` (the variable makes the isolation
-  tests fail instead of skipping when the sandbox probe fails). 151 tests as of commit 47be67a.
+  tests fail instead of skipping when the sandbox probe fails). 153 tests as of round 7.
 * Experiments: every run is listed in `lab/EXPERIMENTS.jsonl` (code version, command, config, seeds, raw output
   location, result). Raw outputs are under `lab/<round>/`. Pre-registrations (`PREREG.md`) are written before a run
   that touches an untouched test split.
@@ -45,6 +45,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 5 | `3f1d338` | effect sizes, practical threshold, Holm-corrected selection; DSL `correlated_gaussian` | unit tests; docs/benchmarking.md |
 | 5b | `47be67a` | fixes from the second independent review (MILP mixed-integer certificates, ties, verifier errors, SLSQP vector constraints, cache key, test-access ledger, held-out family) | review scripts in `lab/r5-review2`; 200/200 random mixed-integer models certify |
 | 6 | (this commit) | development loop on `continuous_general` v2, pre-registered in `lab/r6-develop-v2/PREREG.md` | no champion; test: hybrid 0.047, cmaes 0.051, best candidate 0.056; **no improvement shown**; test split now historical (`lab/r6-develop-v2`) |
+| 7 | (this commit) | behavioural fingerprints: validated candidates that behave like an earlier candidate or a baseline are not benchmarked (status `duplicate`) | 2 new tests; round-6 re-fingerprint: 45 candidates, 38 behaviours, fingerprint groups match identical train means exactly (`lab/r7-dedup`) |
 
 ## Audit findings still open
 
@@ -72,8 +73,8 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 
 ## Next tasks (directly executable)
 
-1. Behavioural duplicate detection: in round 6 four code-template operators with identical scores filled the
-   archive. Fingerprint candidates by their outputs on fixed probe inputs and treat equal fingerprints as duplicates.
+1. (Optional) rerun the development loop with de-duplication on a fresh suite version (`continuous_general` v3, new
+   instance seeds); v2's test split is historical.
 2. Discrete suite: most runs reach the optimum, so comparisons are ties. Add larger / harder instances (fixed-budget
    gap metric) as a version-2 discrete suite, then analyse representation, neighbourhoods and repair.
 3. Mixed suite: reproduce the 0.1.0 code-operator champion on new independent instances and constraint scenarios.

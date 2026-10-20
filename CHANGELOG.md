@@ -54,6 +54,13 @@
 * Round 6 ran the pre-registered development loop on `continuous_general` v2 (`lab/r6-develop-v2`): no champion,
   no improvement shown on test. That suite's test split is now marked historical.
 
+### Behavioural de-duplication (round 7)
+* The development loop fingerprints each validated candidate (evaluation sequence on one train instance per family,
+  seed 0, 200 evaluations each) and does not benchmark candidates that behave like an earlier candidate or a
+  baseline (status `duplicate`). Re-fingerprinting round 6: 45 benchmarked candidates had 38 distinct behaviours; one
+  group of 7 code-template operators (4 of them filled the archive) and one pair of DSL operators. Equal fingerprints
+  coincided exactly with equal train results (`lab/r7-dedup`).
+
 ### Operator language
 * New transformer `correlated_gaussian`: a rotation-invariant mutation from the elite population covariance; the
   grammar can now propose it for real variables. Existing candidates and their hashes are unchanged.

@@ -66,8 +66,16 @@ Fixed before the runs it governs, in `DevelopmentConfig`:
   95% CI of the paired mean difference lies entirely below zero, and its feasibility rate is not lower;
 * the held-out test split is run once, after selection is frozen, and never feeds back. Each suite records the
   status of its test split (`test_status`); the version-1 suites' test splits were reported in 0.1.0 and are
-  historical, so confirmatory claims use the version-2 suite `continuous_general`, which has fresh instance seeds
-  and two families that appear only in its test split.
+  historical. The version-2 suite `continuous_general` had fresh instance seeds and two test-only families; its
+  test split was run once in round 6 and is now historical too, so the next confirmatory claim needs a new suite
+  version.
+
+Before a validated candidate is benchmarked, it is run once (seed 0, `fingerprint_budget` = 200 evaluations) on the
+first train instance of every family, and the sequence of points it evaluates is hashed. A candidate whose
+fingerprint equals that of an earlier candidate or of a baseline gets status `duplicate` (with
+`behavioural_duplicate_of`) and is not benchmarked, so behavioural copies cannot fill the archive. Equal fingerprints
+are evidence of equivalence on that suite's variable types only. The cost is charged to the ledger category
+`fingerprint`; `fingerprint_budget: 0` disables the check.
 
 `multiple_testing: none` and `min_effect: 0` restore the 0.1.0 rule.
 

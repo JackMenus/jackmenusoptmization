@@ -151,6 +151,8 @@ def test_development_loop_end_to_end(tmp_path, monkeypatch):
     assert os.path.exists(tmp_path / "out" / "development_report.md")
     assert rep["ledger"]["used_total"] <= cfg.total_evaluations
     assert rep["selection"]["decision"]
+    assert all("behavioural_duplicates" in g for g in rep["generations"])
+    assert rep["ledger"]["used_by_category"].get("fingerprint", 0) > 0
     assert Registry(str(tmp_path / "reg")).list()
 
 
@@ -180,3 +182,29 @@ def test_rotated_families_have_verified_optimum_inside_the_box():
             p = make_problem(fam, 3, dim=dim)
             x = p.known_optimum.x
             assert p.space.contains(x) and abs(p.objective(x) - p.known_optimum.value) < 1e-12
+
+
+def test_behaviour_fingerprint_merges_equivalent_code_operators(tmp_path, needs_isolation):
+    from optiforge.generation.fingerprint import behaviour_fingerprint, probe_instances
+    reg = Registry(str(tmp_path / "reg"))
+    probes = probe_instances(get_suite("continuous_general").instances("train"))[:2]
+    allc = {**GOOD_CODE, "select": "all", "dist": "uniform"}
+    a = _code_rec(reg, {**allc, "rate": 0.59})
+    b = _code_rec(reg, {**allc, "rate": 0.28, "discrete": "resample"})  # rate unused with select=all; no discrete vars
+    c = _code_rec(reg, {**allc, "dist": "gauss"})
+    fp = {k: behaviour_fingerprint(lambda r=r: build_solver(r, allow_unvalidated=True), probes, budget=150)
+          for k, r in {"a": a, "b": b, "c": c}.items()}
+    assert a["source"] != b["source"]
+    assert fp["a"][0] == fp["b"][0]
+    assert fp["a"][0] != fp["c"][0]
+    assert 0 < fp["a"][1] <= 2 * 150
+
+
+def test_behaviour_fingerprint_of_builtins_is_stable_and_distinguishes(tmp_path):
+    from optiforge.benchmarks.runner import builtin
+    from optiforge.generation.fingerprint import behaviour_fingerprint, probe_instances
+    probes = probe_instances(get_suite("continuous_general").instances("train"))
+    assert len(probes) == len({(i.family, i.params) for i in probes}) == 8
+    cm, de = builtin("cmaes"), builtin("de")
+    assert behaviour_fingerprint(cm.build, probes[:2])[0] == behaviour_fingerprint(cm.build, probes[:2])[0]
+    assert behaviour_fingerprint(cm.build, probes[:2])[0] != behaviour_fingerprint(de.build, probes[:2])[0]

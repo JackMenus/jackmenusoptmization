@@ -34,6 +34,7 @@ from ..benchmarks.runner import (SolverSpec, builtin, holm_adjust, paired_compar
 from ..benchmarks.suites import get_suite
 from ..validation.gates import validate
 from .features import analyze
+from .fingerprint import behaviour_fingerprint, probe_instances
 from .grammar import bias_from_features
 from .materialize import build_solver
 from .providers import ProposalContext, default_providers
@@ -65,6 +66,10 @@ class DevelopmentConfig:
     # least min_effect AND the bootstrap 95% CI of the paired mean difference entirely below zero
     min_effect: float = 0.01
     multiple_testing: str = "holm"  # "holm" or "none" (the 0.1.0 rule)
+    # behavioural de-duplication: a validated candidate whose evaluation sequence on one train instance per family
+    # (fixed seed, fingerprint_budget evaluations each) equals that of an earlier candidate or a baseline is not
+    # benchmarked (status "duplicate"). 0 disables it.
+    fingerprint_budget: int = 200
     baselines: list[str] | None = None
     operator_share: float = 0.4
     code_generation: bool = True
@@ -101,6 +106,19 @@ class DevelopmentLoop:
         used = sum(v for k, v in self.ledger.used.items() if k != "test") + sum(
             v for k, v in self.ledger.reserved.items() if k != "test")
         return self.dev_limit - used
+
+    def _fingerprint(self, make_solver, probes) -> str:
+        reserve = len(probes) * self.cfg.fingerprint_budget
+        try:
+            self.ledger.reserve("fingerprint", reserve)
+        except BudgetExhausted:
+            return f"unfingerprinted-{self.rng.integers(1 << 62)}"  # never matches: no de-duplication without budget
+        used = reserve
+        try:
+            fp, used = behaviour_fingerprint(make_solver, probes, seed=0, budget=self.cfg.fingerprint_budget)
+        finally:
+            self.ledger.settle("fingerprint", reserve, used)
+        return fp
 
     def _can_afford(self, units: int) -> bool:
         return units <= self._dev_remaining()
@@ -141,6 +159,13 @@ class DevelopmentLoop:
         best_base_train = min(base_summary, key=lambda s: base_summary[s]["mean_score"])
         self.event("train_baselines", summary=base_summary)
 
+        probes = probe_instances(train)
+        fingerprints: dict[str, str] = {}  # fingerprint -> first candidate or baseline that produced it
+        if cfg.fingerprint_budget > 0:
+            for b in base_specs:
+                fp = self._fingerprint(b.build, probes)
+                fingerprints.setdefault(fp, b.label)
+
         archive: list[dict] = []  # retained registry records with train scores
         generations = []
         stop_reason = "generations_completed"
@@ -164,7 +189,7 @@ class DevelopmentLoop:
                 except BudgetExhausted:
                     notes.append(f"provider {p.name} stopped: model-call budget exhausted")
             gen_info = {"generation": gen, "proposed": len(proposals), "rejected": 0, "validated": 0, "benchmarked": 0,
-                        "duplicates": 0}
+                        "duplicates": 0, "behavioural_duplicates": 0}
             to_bench = []
             for prop in proposals:
                 rec = self._register(prop)
@@ -179,6 +204,17 @@ class DevelopmentLoop:
                     gen_info["rejected"] += 1
                     continue
                 gen_info["validated"] += 1
+                if cfg.fingerprint_budget > 0:
+                    r = self.registry.get(rec["id"])
+                    fp = self._fingerprint(lambda r=r: build_solver(r), probes)
+                    first = fingerprints.setdefault(fp, rec["id"])
+                    if first != rec["id"]:
+                        gen_info["behavioural_duplicates"] += 1
+                        self.registry.update(rec["id"], status="duplicate", fingerprint=fp, behavioural_duplicate_of=first,
+                                             history_entry={"operation": f"behavioural duplicate of {first}"})
+                        self.event("behavioural_duplicate", candidate=rec["id"], duplicate_of=first, fingerprint=fp)
+                        continue
+                    self.registry.update(rec["id"], fingerprint=fp)
                 to_bench.append(self.registry.get(rec["id"]))
             if to_bench and self._can_afford(len(to_bench) * per_run_cost):
                 specs = [SolverSpec(r["id"], record=r) for r in to_bench]
@@ -425,11 +461,11 @@ def render_markdown(rep: dict) -> str:
     if rep["provider_notes"]:
         L.append("Provider notes: " + "; ".join(rep["provider_notes"]))
     L.append(f"Candidates by final status: {rep['candidate_counts']}")
-    L += ["", "## Generations", "", "| gen | proposed | duplicates | rejected | validated | benchmarked | best candidate train score | best baseline train score |",
-          "|---|---|---|---|---|---|---|---|"]
+    L += ["", "## Generations", "", "| gen | proposed | duplicates (source) | rejected | validated | duplicates (behaviour) | benchmarked | best candidate train score | best baseline train score |",
+          "|---|---|---|---|---|---|---|---|---|"]
     for g in rep["generations"]:
         bs = g.get("best_train_score")
-        L.append(f"| {g['generation']} | {g['proposed']} | {g['duplicates']} | {g['rejected']} | {g['validated']} | {g['benchmarked']} | "
+        L.append(f"| {g['generation']} | {g['proposed']} | {g['duplicates']} | {g['rejected']} | {g['validated']} | {g.get('behavioural_duplicates', 0)} | {g['benchmarked']} | "
                  f"{'n/a' if bs is None else f'{bs:.4f}'} | {g['best_baseline_train_score']:.4f} |")
     L += ["", "Scores: 0 = known optimum (or best baseline value), 1 = random-search median at the same budget, 2 = infeasible. Lower is better.", ""]
     L += ["## Selection (validation split)", "", rep["selection"]["decision"], ""]
