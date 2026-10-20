@@ -20,6 +20,11 @@ A suite lists families and instance seeds per split: train [0, 1], validation [1
 `disk_rosenbrock` and `g06` appear only in the test split of `constrained_continuous`, so selection is also tested
 on unseen families there. `check_disjoint()` asserts that no instance appears in two splits.
 
+Version-2 suites use their own instance seeds: `continuous_general` (train [1010, 1011], validation [1020, 1021],
+test [1030-1032]; test split historical since round 6) and `discrete_general` (train [2010, 2011], validation
+[2020, 2021], test [2030-2032]; held-out test family `set_cover`; test split untouched). The discrete v2 sizes were
+calibrated on pilot seeds 1100-1101, which no split uses (`lab/r8-discrete-v2/pilot.json`).
+
 The development loop uses train for generation and retention and validation for selection. It runs test exactly
 once, after the selection is frozen. Test results are written to the registry for the record, but nothing reads
 them back to make a decision.

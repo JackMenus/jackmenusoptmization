@@ -326,7 +326,10 @@ class Space:
             elif v.type in (VarType.INTEGER, VarType.BINARY):
                 out[v.name] = int(round(x[s][0]))
             elif v.type is VarType.CATEGORICAL:
-                out[v.name] = v.choices[int(round(x[s][0]))]
+                k = int(round(x[s][0]))
+                if not 0 <= k < len(v.choices):  # a negative index would silently wrap to the last choice
+                    raise ValueError(f"categorical '{v.name}': code {x[s][0]} is outside 0..{len(v.choices) - 1}")
+                out[v.name] = v.choices[k]
             else:
                 out[v.name] = [int(round(t)) for t in x[s]]
         return out

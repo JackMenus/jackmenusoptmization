@@ -1,0 +1,15 @@
+{"suite": {"name": "discrete_general", "version": "2", "families": [["knapsack_correlated", {"n": 50}], ["knapsack_correlated", {"n": 100}], ["multi_knapsack", {"n": 40, "m": 5}], ["independent_set", {"n": 40}], ["integer_quadratic", {"n": 6, "radius": 7}]], "test_only": [["set_cover", {"n_sets": 40, "n_elements": 30}]], "splits": {"train": [2010, 2011], "validation": [2020, 2021], "test": [2030, 2031, 2032]}, "description": "Correlated and multidimensional knapsacks, weighted independent set and an integer quadratic, with exact optima (dynamic programming, MILP with HiGHS at gap 0, enumeration); test adds a held-out family (weighted set cover) that no other suite uses.", "test_status": "untouched"}, "splits_used": ["train", "validation"], "budget": 5000, "seeds": [0, 1, 2], "solvers": ["random_search", "simulated_annealing", "genetic", "tabu", "greedy_ls", "auto", "ope-pyt-c4d678ee14"], "git": "9acbbcc91ccc26c6c72f596f3da5063218fdb063", "src_dirty": true, "wall_s": 88.6, "python": "3.13.16 (main, Oct  1 2026, 15:40:24) [GCC 13.3.0]", "numpy": "2.5.3"}
+| family | random_search | simulated_annealing | genetic | tabu | greedy_ls | auto | ope-pyt-c4d678ee14 |
+|---|---|---|---|---|---|---|---|
+| independent_set[n=40] | 2.000 | 0.882 | 0.194 | 0.314 | 0.195 | 0.194 | 0.789 |
+| integer_quadratic[n=6,radius=7] | 0.991 | 0.116 | 0.000 | 0.066 | 0.000 | 0.066 | 0.011 |
+| knapsack_correlated[n=100] | 1.008 | 0.987 | 0.485 | 1.320 | 1.177 | 0.485 | 0.774 |
+| knapsack_correlated[n=50] | 0.988 | 0.859 | 0.366 | 1.511 | 1.233 | 0.366 | 0.640 |
+| multi_knapsack[m=5,n=40] | 0.995 | 0.919 | 0.261 | 0.410 | 0.498 | 0.261 | 0.606 |
+| **mean** | 1.196 | 0.753 | 0.261 | 0.724 | 0.621 | 0.274 | 0.564 |
+ope-pyt-c4d678ee14 vs genetic {'pairs': 60, 'mean_diff': 0.30294475383238, 'wins': 0, 'losses': 48, 'ties': 12, 'p_value_a_better': 0.9999999999459135}
+ope-pyt-c4d678ee14 vs tabu {'pairs': 60, 'mean_diff': -0.16024373649166254, 'wins': 32, 'losses': 23, 'ties': 5, 'p_value_a_better': 0.03048812806988745}
+ope-pyt-c4d678ee14 vs auto {'pairs': 60, 'mean_diff': 0.2897868177677804, 'wins': 6, 'losses': 48, 'ties': 6, 'p_value_a_better': 0.9999999991983176}
+auto vs genetic {'pairs': 60, 'mean_diff': 0.01315793606459958, 'wins': 0, 'losses': 7, 'ties': 53, 'p_value_a_better': 0.9463157643623692}
+auto vs tabu {'pairs': 60, 'mean_diff': -0.4500305542594428, 'wins': 42, 'losses': 5, 'ties': 13, 'p_value_a_better': 1.6533112424800065e-08}
+auto vs greedy_ls {'pairs': 60, 'mean_diff': -0.34633337195273445, 'wins': 40, 'losses': 14, 'ties': 6, 'p_value_a_better': 1.2043245723942115e-06}

@@ -142,6 +142,11 @@ class Evaluator:
                             "domain: " + "; ".join(dom[:3]), idx)
             self._record(ev)
             return ev
+        # domain_violations accepts points within 1e-9 of the domain; user code receives the exact in-domain point
+        sp = p.space
+        np_ = ~sp.perm_mask
+        x[np_] = np.clip(x[np_], sp.lower[np_], sp.upper[np_])
+        x[sp.scalar_discrete_mask] = np.round(x[sp.scalar_discrete_mask])
         try:
             f = p.call_objective(x)
         except Exception as exc:  # user code failure is data, not a crash

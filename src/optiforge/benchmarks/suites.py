@@ -113,6 +113,19 @@ SUITES: dict[str, Suite] = {
         test_only=[("bent_cigar_rotated", {"dim": 10}), ("griewank_rotated", {"dim": 8})],
         test_status="historical: test split run once in round 6 (2026-10-20, lab/r6-develop-v2); "
                     "regression/diagnostic use only"),
+    # Version 2 of the discrete suite (2026-10-20, round 8). Sizes were chosen from a pilot on instance seeds 1100-1101
+    # (lab/r8-discrete-v2/pilot.json), which no split uses: families where the baselines mostly reach the optimum at
+    # 3000-10000 evaluations (maxcut n=20) were left out so that comparisons are not dominated by ties.
+    "discrete_general": Suite(
+        "discrete_general",
+        [("knapsack_correlated", {"n": 50}), ("knapsack_correlated", {"n": 100}), ("multi_knapsack", {"n": 40, "m": 5}),
+         ("independent_set", {"n": 40}), ("integer_quadratic", {"n": 6, "radius": 7})],
+        {"train": [2010, 2011], "validation": [2020, 2021], "test": [2030, 2031, 2032]},
+        "Correlated and multidimensional knapsacks, weighted independent set and an integer quadratic, with exact "
+        "optima (dynamic programming, MILP with HiGHS at gap 0, enumeration); test adds a held-out family "
+        "(weighted set cover) that no other suite uses.",
+        version="2",
+        test_only=[("set_cover", {"n_sets": 40, "n_elements": 30})]),
 }
 
 

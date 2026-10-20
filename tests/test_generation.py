@@ -208,3 +208,59 @@ def test_behaviour_fingerprint_of_builtins_is_stable_and_distinguishes(tmp_path)
     cm, de = builtin("cmaes"), builtin("de")
     assert behaviour_fingerprint(cm.build, probes[:2])[0] == behaviour_fingerprint(cm.build, probes[:2])[0]
     assert behaviour_fingerprint(cm.build, probes[:2])[0] != behaviour_fingerprint(de.build, probes[:2])[0]
+
+
+@pytest.mark.parametrize("family,kw", [("knapsack_correlated", {"n": 12}), ("multi_knapsack", {"n": 12, "m": 3}),
+                                       ("independent_set", {"n": 13, "density": 0.3})])
+def test_discrete_v2_optima_match_brute_force(family, kw):
+    import itertools
+    from optiforge.benchmarks.problems import make_problem
+    for seed in (0, 1):
+        p = make_problem(family, seed, **kw)
+        n = p.space.dim
+        best = -np.inf
+        for bits in itertools.product((0, 1), repeat=n):
+            x = np.array(bits, dtype=float)
+            if all(c.fn(x) <= 0 for c in p.constraints):
+                best = max(best, p.objective(x))
+        assert p.known_optimum.value == pytest.approx(best, abs=1e-9)
+        if p.known_optimum.x is not None:
+            assert p.objective(p.known_optimum.x) == pytest.approx(best, abs=1e-9)
+            assert all(c.fn(p.known_optimum.x) <= 0 for c in p.constraints)
+
+
+def test_integer_quadratic_chunked_enumeration_matches_full_grid():
+    import itertools
+    from optiforge.benchmarks.problems import _enumerate_quadratic
+    rng = np.random.default_rng(3)
+    A = rng.standard_normal((3, 3))
+    Q, a = A @ A.T + 0.5 * np.eye(3), rng.uniform(-3, 3, 3)
+    grid = np.array(list(itertools.product(range(-4, 5), repeat=3)), dtype=float)
+    vals = np.einsum("bi,ij,bj->b", grid - a, Q, grid - a)
+    f, z = _enumerate_quadratic(Q, a, 3, 4, chunk=50)
+    assert f == vals.min() and np.array_equal(z, grid[np.argmin(vals)])
+
+
+def test_set_cover_optimum_matches_brute_force():
+    import itertools
+    from optiforge.benchmarks.problems import make_problem
+    p = make_problem("set_cover", 0, n_sets=12, n_elements=10, density=0.25)
+    best = min(p.objective(np.array(b, float)) for b in itertools.product((0, 1), repeat=12)
+               if p.constraints[0].fn(np.array(b, float)) <= 0)
+    assert p.known_optimum.value == pytest.approx(best, abs=1e-9)
+
+
+def test_discrete_general_v2_uses_fresh_seeds_and_a_held_out_family():
+    s = get_suite("discrete_general")
+    other_seeds, other_fams = set(), set()
+    for name, o in SUITES.items():
+        if name != s.name:
+            other_fams |= {f for f, _ in o.families} | {f for f, _ in o.test_only}
+            for split in o.splits.values():
+                other_seeds |= set(split)
+    assert not other_seeds & {x for v in s.splits.values() for x in v}
+    assert not {f for f, _ in s.test_only} & (other_fams | {f for f, _ in s.families})
+    assert s.test_status == "untouched"
+    for split in ("train", "validation", "test"):
+        for inst in s.instances(split):
+            assert inst.make().known_optimum is not None

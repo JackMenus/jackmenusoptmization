@@ -61,6 +61,20 @@
   group of 7 code-template operators (4 of them filled the archive) and one pair of DSL operators. Equal fingerprints
   coincided exactly with equal train results (`lab/r7-dedup`).
 
+### Discrete benchmark suite v2 (round 8)
+* New families with exact optima: `knapsack_correlated` (dynamic programming), `multi_knapsack`, `independent_set`
+  and `set_cover` (MILP with HiGHS at relative gap 0; the rounded solution is re-checked), and suite
+  `discrete_general` v2 (fresh instance seeds 2010-2032, held-out test family `set_cover`). Sizes were calibrated on
+  pilot seeds that no split uses. Brute-force tests confirm the optima on small instances.
+* Expensive exact optima are cached per process, and the benchmark runner builds every instance once before forking.
+* `integer_quadratic` enumerates in chunks (same optimum and tie-breaking, bounded memory).
+
+### Fixes from the audit list (round 8)
+* The evaluator passes user code the exact in-domain point: discrete coordinates within 1e-9 of an integer are
+  rounded and reals within 1e-9 of a bound are clipped (recorded points too). Portfolio benchmark: 1190/1190 runs
+  unchanged.
+* `Space.decode` raises on a categorical code outside the choice range instead of wrapping to the last choice.
+
 ### Operator language
 * New transformer `correlated_gaussian`: a rotation-invariant mutation from the elite population covariance; the
   grammar can now propose it for real variables. Existing candidates and their hashes are unchanged.

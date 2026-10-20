@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 7 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 8 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -28,7 +28,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
   folder instead: `git clone /mnt/project-files/optimization-platform/ <dir>` (needs `git config --global
   safe.directory '*'`).
 * Tests: `OPTIFORGE_REQUIRE_ISOLATION=1 python -m pytest -q -p no:cacheprovider` (the variable makes the isolation
-  tests fail instead of skipping when the sandbox probe fails). 153 tests as of round 7.
+  tests fail instead of skipping when the sandbox probe fails). 161 tests as of round 8.
 * Experiments: every run is listed in `lab/EXPERIMENTS.jsonl` (code version, command, config, seeds, raw output
   location, result). Raw outputs are under `lab/<round>/`. Pre-registrations (`PREREG.md`) are written before a run
   that touches an untouched test split.
@@ -46,11 +46,10 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 5b | `47be67a` | fixes from the second independent review (MILP mixed-integer certificates, ties, verifier errors, SLSQP vector constraints, cache key, test-access ledger, held-out family) | review scripts in `lab/r5-review2`; 200/200 random mixed-integer models certify |
 | 6 | (this commit) | development loop on `continuous_general` v2, pre-registered in `lab/r6-develop-v2/PREREG.md` | no champion; test: hybrid 0.047, cmaes 0.051, best candidate 0.056; **no improvement shown**; test split now historical (`lab/r6-develop-v2`) |
 | 7 | (this commit) | behavioural fingerprints: validated candidates that behave like an earlier candidate or a baseline are not benchmarked (status `duplicate`) | 2 new tests; round-6 re-fingerprint: 45 candidates, 38 behaviours, fingerprint groups match identical train means exactly (`lab/r7-dedup`) |
+| 8 | (this commit) | discrete suite `discrete_general` v2 (4 new exactly-solved families); evaluator snaps near-domain points; categorical decode range check | brute-force optimum tests; pilot + train/validation characterisation (`lab/r8-discrete-v2`); portfolio 1190/1190 identical |
 
 ## Audit findings still open
 
-* `Space.domain_violations` accepts integer-like values within 1e-9 and passes the unrounded vector to user code;
-  categorical decode of values below -0.5 wraps to the last choice.
 * Noisy verification takes feasibility from the last repeat only.
 * Resuming a checkpoint taken at a converged iteration iterates again (pattern_search 136 vs 132 evaluations, same
   x); `guarantee_hints` are not checkpointed.
@@ -75,8 +74,9 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 
 1. (Optional) rerun the development loop with de-duplication on a fresh suite version (`continuous_general` v3, new
    instance seeds); v2's test split is historical.
-2. Discrete suite: most runs reach the optimum, so comparisons are ties. Add larger / harder instances (fixed-budget
-   gap metric) as a version-2 discrete suite, then analyse representation, neighbourhoods and repair.
+2. Discrete neighbourhoods: on `discrete_general` v2 (train+validation) tabu and greedy_ls are worse than the
+   random-search median on correlated knapsacks (single-flip moves stall at tight capacity). Develop exchange (add-one /
+   drop-one) moves as a new solver version, compare on train/validation, pre-register, then run the v2 test split once.
 3. Mixed suite: reproduce the 0.1.0 code-operator champion on new independent instances and constraint scenarios.
 4. Selection: count the feature-probe cost of `auto`; compare it with `hybrid` and `cmaes` with practical thresholds.
 5. Remaining audit items above.

@@ -54,6 +54,17 @@ def _rng(name: str, seed: int) -> np.random.Generator:
     return np.random.default_rng([sum((i + 1) * ord(ch) for i, ch in enumerate(name)), int(seed)])
 
 
+_OPTIMA: dict = {}
+
+
+def _cached(key, compute):
+    """Memoise an expensive exact optimum per process (benchmark runs rebuild each instance for every run; the
+    runner builds every instance once before forking workers, so they inherit the cache)."""
+    if key not in _OPTIMA:
+        _OPTIMA[key] = compute()
+    return _OPTIMA[key]
+
+
 def _box(dim, lo, hi):
     return Space([Real(f"x{i}", lo, hi) for i in range(dim)])
 
@@ -320,6 +331,12 @@ def maxcut(seed=0, n=14):
         s = np.asarray(x)
         return float(0.5 * np.sum(W * (s[:, None] != s[None, :])))
     # vectorised complete enumeration (fix node 0 by symmetry)
+    best = _cached(("maxcut", seed, n), lambda: _enumerate_cut(W, n))
+    return Problem(Space([Binary(f"s{i}") for i in range(n)]), cut, sense="max", name=f"maxcut-n{n}-s{seed}",
+                   known_optimum=KnownOptimum(best, None, "complete enumeration (2^(n-1) cuts)", 1e-9))
+
+
+def _enumerate_cut(W, n):
     best = 0.0
     for chunk in range(0, 1 << (n - 1), 4096):
         ids = np.arange(chunk, min(chunk + 4096, 1 << (n - 1)))
@@ -328,8 +345,7 @@ def maxcut(seed=0, n=14):
         diff = (S[:, :, None] != S[:, None, :])
         vals = 0.5 * np.einsum("bij,ij->b", diff, W)
         best = max(best, float(vals.max()))
-    return Problem(Space([Binary(f"s{i}") for i in range(n)]), cut, sense="max", name=f"maxcut-n{n}-s{seed}",
-                   known_optimum=KnownOptimum(best, None, "complete enumeration (2^(n-1) cuts)", 1e-9))
+    return best
 
 
 @family("integer_quadratic", {"discrete", "integer"}, "Convex quadratic over an integer box; optimum by enumeration.")
@@ -339,12 +355,117 @@ def integer_quadratic(seed=0, n=4, radius=6):
     Q = A @ A.T + 0.5 * np.eye(n)
     a = r.uniform(-radius + 1, radius - 1, n)
     f = lambda z: float((z - a) @ Q @ (z - a))
-    grid = np.array(list(itertools.product(range(-radius, radius + 1), repeat=n)), dtype=float)
-    d = grid - a
-    vals = np.einsum("bi,ij,bj->b", d, Q, d)
-    k = int(np.argmin(vals))
+    fstar, zstar = _cached(("integer_quadratic", seed, n, radius), lambda: _enumerate_quadratic(Q, a, n, radius))
     return Problem(Space([Integer(f"z{i}", -radius, radius) for i in range(n)]), f, name=f"integer_quadratic-n{n}-s{seed}",
-                   known_optimum=KnownOptimum(float(vals[k]), grid[k], "complete enumeration", 1e-9))
+                   known_optimum=KnownOptimum(fstar, zstar, "complete enumeration", 1e-9))
+
+
+def _enumerate_quadratic(Q, a, n, radius, chunk=1 << 18):
+    side = 2 * radius + 1
+    total = side ** n
+    best, arg = np.inf, None
+    for start in range(0, total, chunk):
+        ids = np.arange(start, min(start + chunk, total))
+        # digits in the same (lexicographic) order as itertools.product, so ties resolve identically
+        grid = np.stack([(ids // side ** (n - 1 - i)) % side for i in range(n)], axis=1).astype(float) - radius
+        d = grid - a
+        vals = np.einsum("bi,ij,bj->b", d, Q, d)
+        k = int(np.argmin(vals))
+        if vals[k] < best:
+            best, arg = float(vals[k]), grid[k].copy()
+    return best, arg
+
+
+@family("knapsack_correlated", {"discrete", "binary", "constrained", "combinatorial"},
+        "Strongly correlated 0/1 knapsack (value = weight + 10; maximise); optimum by dynamic programming.")
+def knapsack_correlated(seed=0, n=50):
+    r = _rng(f"knapsack_correlated-n{n}", seed)
+    w = r.integers(10, 101, n)
+    v = (w + 10).astype(float)
+    cap = int(0.5 * w.sum())
+
+    def dp():
+        best = np.zeros(cap + 1)
+        for i in range(n):
+            best[w[i]:] = np.maximum(best[w[i]:], best[: cap + 1 - w[i]] + v[i])
+        return float(best[cap])
+    fstar = _cached(("knapsack_correlated", seed, n), dp)
+    sp = Space([Binary(f"b{i}") for i in range(n)])
+    return Problem(sp, lambda x: float(v @ x), sense="max",
+                   constraints=[ineq(lambda x: float(w @ x - cap), "capacity", tol=0.0)],
+                   name=f"knapsack_correlated-n{n}-s{seed}",
+                   known_optimum=KnownOptimum(fstar, None, "dynamic programming"),
+                   metadata={"weights": w.tolist(), "values": v.tolist(), "capacity": cap})
+
+
+def _milp_max(c, A, ub, *, integrality_n):
+    """Exact 0/1 maximisation of c @ x subject to A @ x <= ub with HiGHS (relative gap 0). Raises unless HiGHS
+    reports proven optimality."""
+    from scipy.optimize import Bounds, LinearConstraint, milp
+    res = milp(-np.asarray(c, float), constraints=LinearConstraint(A, -np.inf, ub), bounds=Bounds(0, 1),
+               integrality=np.ones(integrality_n), options={"mip_rel_gap": 0.0, "time_limit": 600})
+    if res.status != 0:
+        raise RuntimeError(f"HiGHS did not prove optimality: {res.message}")
+    x = np.round(res.x)
+    if np.any(A @ x > ub) or abs(float(c @ x) + res.fun) > 1e-6 * max(1.0, abs(res.fun)):
+        raise RuntimeError("rounded MILP solution is infeasible or does not attain the reported optimum")
+    return float(np.asarray(c, float) @ x), x
+
+
+@family("multi_knapsack", {"discrete", "binary", "constrained", "combinatorial"},
+        "Multidimensional 0/1 knapsack (Chu-Beasley style, tightness 0.5; maximise); optimum by MILP (HiGHS, gap 0).")
+def multi_knapsack(seed=0, n=40, m=5):
+    r = _rng(f"multi_knapsack-n{n}-m{m}", seed)
+    W = r.integers(1, 101, (m, n)).astype(float)
+    cap = np.floor(0.5 * W.sum(axis=1))
+    v = np.round(W.sum(axis=0) / m + 50 * r.random(n))
+    fstar, xstar = _cached(("multi_knapsack", seed, n, m), lambda: _milp_max(v, W, cap, integrality_n=n))
+    sp = Space([Binary(f"b{i}") for i in range(n)])
+    return Problem(sp, lambda x: float(v @ x), sense="max",
+                   constraints=[ineq(lambda x, i=i: float(W[i] @ x - cap[i]), f"resource{i}", tol=0.0) for i in range(m)],
+                   name=f"multi_knapsack-n{n}-m{m}-s{seed}",
+                   known_optimum=KnownOptimum(fstar, xstar, "MILP (HiGHS, relative gap 0)", 1e-9))
+
+
+@family("independent_set", {"discrete", "binary", "constrained", "combinatorial"},
+        "Maximum-weight independent set on a random graph (maximise; constraint counts conflicting edges); optimum by "
+        "MILP (HiGHS, gap 0).")
+def independent_set(seed=0, n=40, density=0.15):
+    r = _rng(f"independent_set-n{n}", seed)
+    E = np.array([(i, j) for i in range(n) for j in range(i + 1, n) if r.random() < density], dtype=int).reshape(-1, 2)
+    wts = r.integers(1, 21, n).astype(float)
+    A = np.zeros((len(E), n))
+    A[np.arange(len(E)), E[:, 0]] = 1
+    A[np.arange(len(E)), E[:, 1]] = 1
+    fstar, xstar = _cached(("independent_set", seed, n, density),
+                           lambda: _milp_max(wts, A, np.ones(len(E)), integrality_n=n))
+
+    def conflicts(x):
+        s = np.asarray(x)
+        return float(np.sum(s[E[:, 0]] * s[E[:, 1]]))
+    return Problem(Space([Binary(f"v{i}") for i in range(n)]), lambda x: float(wts @ np.asarray(x)), sense="max",
+                   constraints=[ineq(conflicts, "conflicting_edges", tol=0.0)], name=f"independent_set-n{n}-s{seed}",
+                   known_optimum=KnownOptimum(fstar, xstar, "MILP (HiGHS, relative gap 0)", 1e-9),
+                   metadata={"edges": E.tolist(), "weights": wts.tolist()})
+
+
+@family("set_cover", {"discrete", "binary", "constrained", "combinatorial"},
+        "Weighted set cover (minimise cost; constraint counts uncovered elements); optimum by MILP (HiGHS, gap 0).")
+def set_cover(seed=0, n_sets=40, n_elements=30, density=0.12):
+    r = _rng(f"set_cover-n{n_sets}-e{n_elements}", seed)
+    A = (r.random((n_elements, n_sets)) < density).astype(float)
+    for e in range(n_elements):  # every element is coverable by at least two sets
+        while A[e].sum() < 2:
+            A[e, r.integers(n_sets)] = 1.0
+    cost = r.integers(1, 21, n_sets).astype(float) + A.sum(axis=0)
+    neg, xstar = _cached(("set_cover", seed, n_sets, n_elements, density),
+                         lambda: _milp_max(-cost, -A, -np.ones(n_elements), integrality_n=n_sets))
+
+    def uncovered(x):
+        return float(np.sum(A @ np.asarray(x) < 0.5))
+    return Problem(Space([Binary(f"s{i}") for i in range(n_sets)]), lambda x: float(cost @ np.asarray(x)),
+                   constraints=[ineq(uncovered, "uncovered_elements", tol=0.0)], name=f"set_cover-n{n_sets}-s{seed}",
+                   known_optimum=KnownOptimum(-neg, xstar, "MILP (HiGHS, relative gap 0)", 1e-9))
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,500 @@
+{
+ "meta": {
+  "suite": {
+   "name": "discrete_general",
+   "version": "2",
+   "families": [
+    [
+     "knapsack_correlated",
+     {
+      "n": 50
+     }
+    ],
+    [
+     "knapsack_correlated",
+     {
+      "n": 100
+     }
+    ],
+    [
+     "multi_knapsack",
+     {
+      "n": 40,
+      "m": 5
+     }
+    ],
+    [
+     "independent_set",
+     {
+      "n": 40
+     }
+    ],
+    [
+     "integer_quadratic",
+     {
+      "n": 6,
+      "radius": 7
+     }
+    ]
+   ],
+   "test_only": [
+    [
+     "set_cover",
+     {
+      "n_sets": 40,
+      "n_elements": 30
+     }
+    ]
+   ],
+   "splits": {
+    "train": [
+     2010,
+     2011
+    ],
+    "validation": [
+     2020,
+     2021
+    ],
+    "test": [
+     2030,
+     2031,
+     2032
+    ]
+   },
+   "description": "Correlated and multidimensional knapsacks, weighted independent set and an integer quadratic, with exact optima (dynamic programming, MILP with HiGHS at gap 0, enumeration); test adds a held-out family (weighted set cover) that no other suite uses.",
+   "test_status": "untouched"
+  },
+  "splits_used": [
+   "train",
+   "validation"
+  ],
+  "budget": 5000,
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "solvers": [
+   "random_search",
+   "simulated_annealing",
+   "genetic",
+   "tabu",
+   "greedy_ls",
+   "auto",
+   "ope-pyt-c4d678ee14"
+  ],
+  "git": "9acbbcc91ccc26c6c72f596f3da5063218fdb063",
+  "src_dirty": true,
+  "wall_s": 88.6,
+  "python": "3.13.16 (main, Oct  1 2026, 15:40:24) [GCC 13.3.0]",
+  "numpy": "2.5.3"
+ },
+ "summary": {
+  "random_search": {
+   "runs": 60,
+   "mean_score": 1.1962491639851458,
+   "median_score": 1.0,
+   "std_score": 0.43879724613038606,
+   "iqr_score": 0.20931874401028128,
+   "feasibility_rate": 0.8,
+   "failure_rate": 0.0,
+   "solved_rate": 0.0,
+   "median_gap": 81.5,
+   "mean_runtime_s": 0.29814746898340067,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.05962949379668013,
+   "not_applicable_runs": 0
+  },
+  "simulated_annealing": {
+   "runs": 60,
+   "mean_score": 0.7525499618253636,
+   "median_score": 0.8689143452225983,
+   "std_score": 0.3514393539050248,
+   "iqr_score": 0.30219780219780223,
+   "feasibility_rate": 1.0,
+   "failure_rate": 0.0,
+   "solved_rate": 0.08333333333333333,
+   "median_gap": 70.5,
+   "mean_runtime_s": 0.6690180136999818,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.13380360273999636,
+   "not_applicable_runs": 0
+  },
+  "genetic": {
+   "runs": 60,
+   "mean_score": 0.26119754764434444,
+   "median_score": 0.2778706800445931,
+   "std_score": 0.1936985619575182,
+   "iqr_score": 0.30394202571621926,
+   "feasibility_rate": 1.0,
+   "failure_rate": 0.0,
+   "solved_rate": 0.2,
+   "median_gap": 22.5,
+   "mean_runtime_s": 0.7886122727667195,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.1577224545533439,
+   "not_applicable_runs": 0
+  },
+  "tabu": {
+   "runs": 60,
+   "mean_score": 0.724386037968387,
+   "median_score": 0.5299539170506913,
+   "std_score": 0.6224066627624973,
+   "iqr_score": 1.1622467148666138,
+   "feasibility_rate": 1.0,
+   "failure_rate": 0.0,
+   "solved_rate": 0.08333333333333333,
+   "median_gap": 62.5,
+   "mean_runtime_s": 0.28168181028334704,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.05633636205666941,
+   "not_applicable_runs": 0
+  },
+  "greedy_ls": {
+   "runs": 60,
+   "mean_score": 0.6206888556616784,
+   "median_score": 0.5782030409227628,
+   "std_score": 0.543402184066159,
+   "iqr_score": 1.1349983738049068,
+   "feasibility_rate": 1.0,
+   "failure_rate": 0.0,
+   "solved_rate": 0.21666666666666667,
+   "median_gap": 54.5,
+   "mean_runtime_s": 0.29788805093341275,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.059577610186682554,
+   "not_applicable_runs": 0
+  },
+  "auto": {
+   "runs": 60,
+   "mean_score": 0.27435548370894397,
+   "median_score": 0.2778706800445931,
+   "std_score": 0.1795009536113667,
+   "iqr_score": 0.2495722880919637,
+   "feasibility_rate": 1.0,
+   "failure_rate": 0.0,
+   "solved_rate": 0.08333333333333333,
+   "median_gap": 22.5,
+   "mean_runtime_s": 0.5848422838833206,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.11696845677666412,
+   "not_applicable_runs": 0
+  },
+  "ope-pyt-c4d678ee14": {
+   "runs": 60,
+   "mean_score": 0.5641423014767244,
+   "median_score": 0.6379723502304148,
+   "std_score": 0.32132771290345624,
+   "iqr_score": 0.3247609212855803,
+   "feasibility_rate": 1.0,
+   "failure_rate": 0.0,
+   "solved_rate": 0.18333333333333332,
+   "median_gap": 63.0,
+   "mean_runtime_s": 1.9953345015333221,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.3990669003066645,
+   "not_applicable_runs": 0
+  }
+ },
+ "by_family": {
+  "knapsack_correlated[n=50]": {
+   "random_search": {
+    "mean_score": 0.9876100628930818,
+    "solved": 0.0,
+    "median_gap": 50.0
+   },
+   "simulated_annealing": {
+    "mean_score": 0.859212373848179,
+    "solved": 0.0,
+    "median_gap": 40.5
+   },
+   "genetic": {
+    "mean_score": 0.3663682901857539,
+    "solved": 0.0,
+    "median_gap": 18.0
+   },
+   "tabu": {
+    "mean_score": 1.5113580517770953,
+    "solved": 0.0,
+    "median_gap": 76.0
+   },
+   "greedy_ls": {
+    "mean_score": 1.2326444346935792,
+    "solved": 0.0,
+    "median_gap": 60.0
+   },
+   "auto": {
+    "mean_score": 0.3663682901857539,
+    "solved": 0.0,
+    "median_gap": 18.0
+   },
+   "ope-pyt-c4d678ee14": {
+    "mean_score": 0.6400153576129881,
+    "solved": 0.0,
+    "median_gap": 32.0
+   }
+  },
+  "knapsack_correlated[n=100]": {
+   "random_search": {
+    "mean_score": 1.0077245454020023,
+    "solved": 0.0,
+    "median_gap": 128.5
+   },
+   "simulated_annealing": {
+    "mean_score": 0.9867888785334817,
+    "solved": 0.0,
+    "median_gap": 124.0
+   },
+   "genetic": {
+    "mean_score": 0.4849175573849378,
+    "solved": 0.0,
+    "median_gap": 65.5
+   },
+   "tabu": {
+    "mean_score": 1.3202472676393306,
+    "solved": 0.0,
+    "median_gap": 165.0
+   },
+   "greedy_ls": {
+    "mean_score": 1.1771887893631359,
+    "solved": 0.0,
+    "median_gap": 150.5
+   },
+   "auto": {
+    "mean_score": 0.4849175573849378,
+    "solved": 0.0,
+    "median_gap": 65.5
+   },
+   "ope-pyt-c4d678ee14": {
+    "mean_score": 0.7737278201627004,
+    "solved": 0.0,
+    "median_gap": 95.5
+   }
+  },
+  "multi_knapsack[m=5,n=40]": {
+   "random_search": {
+    "mean_score": 0.9945272047689179,
+    "solved": 0.0,
+    "median_gap": 181.5
+   },
+   "simulated_annealing": {
+    "mean_score": 0.9186609070780198,
+    "solved": 0.0,
+    "median_gap": 163.0
+   },
+   "genetic": {
+    "mean_score": 0.2608049397349196,
+    "solved": 0.0,
+    "median_gap": 49.0
+   },
+   "tabu": {
+    "mean_score": 0.4104883223710447,
+    "solved": 0.0,
+    "median_gap": 76.5
+   },
+   "greedy_ls": {
+    "mean_score": 0.49842494379290664,
+    "solved": 0.0,
+    "median_gap": 101.5
+   },
+   "auto": {
+    "mean_score": 0.2608049397349196,
+    "solved": 0.0,
+    "median_gap": 49.0
+   },
+   "ope-pyt-c4d678ee14": {
+    "mean_score": 0.6061984727808932,
+    "solved": 0.0,
+    "median_gap": 119.0
+   }
+  },
+  "independent_set[n=40]": {
+   "random_search": {
+    "mean_score": 2.0,
+    "solved": 0.0,
+    "median_gap": Infinity
+   },
+   "simulated_annealing": {
+    "mean_score": 0.881847414437687,
+    "solved": 0.0,
+    "median_gap": 70.5
+   },
+   "genetic": {
+    "mean_score": 0.1938969509161108,
+    "solved": 0.0,
+    "median_gap": 14.0
+   },
+   "tabu": {
+    "mean_score": 0.3140468677314661,
+    "solved": 0.0,
+    "median_gap": 21.5
+   },
+   "greedy_ls": {
+    "mean_score": 0.19518611045877074,
+    "solved": 0.08333333333333333,
+    "median_gap": 7.0
+   },
+   "auto": {
+    "mean_score": 0.1938969509161108,
+    "solved": 0.0,
+    "median_gap": 14.0
+   },
+   "ope-pyt-c4d678ee14": {
+    "mean_score": 0.7893218629401386,
+    "solved": 0.0,
+    "median_gap": 63.0
+   }
+  },
+  "integer_quadratic[n=6,radius=7]": {
+   "random_search": {
+    "mean_score": 0.991384006861726,
+    "solved": 0.0,
+    "median_gap": 21.357880904386498
+   },
+   "simulated_annealing": {
+    "mean_score": 0.11624023522944969,
+    "solved": 0.4166666666666667,
+    "median_gap": 0.7652538636095167
+   },
+   "genetic": {
+    "mean_score": 1.5882845569117307e-19,
+    "solved": 1.0,
+    "median_gap": -2.220446049250313e-16
+   },
+   "tabu": {
+    "mean_score": 0.06578968032299788,
+    "solved": 0.4166666666666667,
+    "median_gap": 0.9266645878182235
+   },
+   "greedy_ls": {
+    "mean_score": 1.5882845569117307e-19,
+    "solved": 1.0,
+    "median_gap": -2.220446049250313e-16
+   },
+   "auto": {
+    "mean_score": 0.06578968032299788,
+    "solved": 0.4166666666666667,
+    "median_gap": 0.9266645878182235
+   },
+   "ope-pyt-c4d678ee14": {
+    "mean_score": 0.01144799388690168,
+    "solved": 0.9166666666666666,
+    "median_gap": 0.0
+   }
+  }
+ },
+ "comparisons": {
+  "ope-pyt-c4d678ee14": {
+   "genetic": {
+    "pairs": 60,
+    "mean_diff": 0.30294475383238,
+    "wins": 0,
+    "losses": 48,
+    "ties": 12,
+    "min_effect": 0.01,
+    "practical_wins": 0,
+    "practical_losses": 48,
+    "practical_ties": 12,
+    "median_diff": 0.3245554035567716,
+    "ci95_mean_diff": [
+     0.24287919820864964,
+     0.36312776308243344
+    ],
+    "rank_biserial": 1.0,
+    "p_value_a_better": 0.9999999999459135
+   },
+   "tabu": {
+    "pairs": 60,
+    "mean_diff": -0.16024373649166254,
+    "wins": 32,
+    "losses": 23,
+    "ties": 5,
+    "min_effect": 0.01,
+    "practical_wins": 32,
+    "practical_losses": 23,
+    "practical_ties": 5,
+    "median_diff": -0.06837423811643017,
+    "ci95_mean_diff": [
+     -0.30077009178153924,
+     -0.023501249805697816
+    ],
+    "rank_biserial": -0.3012987012987013,
+    "p_value_a_better": 0.03048812806988745
+   },
+   "auto": {
+    "pairs": 60,
+    "mean_diff": 0.2897868177677804,
+    "wins": 6,
+    "losses": 48,
+    "ties": 6,
+    "min_effect": 0.01,
+    "practical_wins": 6,
+    "practical_losses": 48,
+    "practical_ties": 6,
+    "median_diff": 0.3245554035567716,
+    "ci95_mean_diff": [
+     0.22374400974272682,
+     0.3544408036915516
+    ],
+    "rank_biserial": 0.934006734006734,
+    "p_value_a_better": 0.9999999991983176
+   }
+  },
+  "auto": {
+   "genetic": {
+    "pairs": 60,
+    "mean_diff": 0.01315793606459958,
+    "wins": 0,
+    "losses": 7,
+    "ties": 53,
+    "min_effect": 0.01,
+    "practical_wins": 0,
+    "practical_losses": 7,
+    "practical_ties": 53,
+    "median_diff": 0.0,
+    "ci95_mean_diff": [
+     0.004125892276813398,
+     0.0244965485183615
+    ],
+    "rank_biserial": 1.0,
+    "p_value_a_better": 0.9463157643623692
+   },
+   "tabu": {
+    "pairs": 60,
+    "mean_diff": -0.4500305542594428,
+    "wins": 42,
+    "losses": 5,
+    "ties": 13,
+    "min_effect": 0.01,
+    "practical_wins": 41,
+    "practical_losses": 5,
+    "practical_ties": 14,
+    "median_diff": -0.2305959805959806,
+    "ci95_mean_diff": [
+     -0.5802058076277504,
+     -0.3175369453804204
+    ],
+    "rank_biserial": -0.9024822695035462,
+    "p_value_a_better": 1.6533112424800065e-08
+   },
+   "greedy_ls": {
+    "pairs": 60,
+    "mean_diff": -0.34633337195273445,
+    "wins": 40,
+    "losses": 14,
+    "ties": 6,
+    "min_effect": 0.01,
+    "practical_wins": 40,
+    "practical_losses": 14,
+    "practical_ties": 6,
+    "median_diff": -0.22520737327188942,
+    "ci95_mean_diff": [
+     -0.4580685526431701,
+     -0.23733405462003554
+    ],
+    "rank_biserial": -0.7575757575757576,
+    "p_value_a_better": 1.2043245723942115e-06
+   }
+  }
+ }
+}

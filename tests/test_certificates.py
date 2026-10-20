@@ -276,3 +276,24 @@ def test_raising_verifier_is_not_reported_as_dense_rejection():
     r = get_solver("exhaustive").solve(p, seed=0)
     assert r.status == "feasible" and not r.certified_optimal
     assert not any("denser grid" in g.statement for g in r.guarantees)
+
+
+def test_user_code_receives_exact_in_domain_point():
+    from optiforge import Budget, Integer, Problem, Real, Space
+    from optiforge.core.evaluator import Evaluator
+    seen = []
+    p = Problem(Space([Integer("k", 0, 5), Real("r", 0.0, 1.0)]), lambda x: seen.append(np.array(x)) or 0.0)
+    ev = Evaluator(p, Budget(max_evaluations=5))
+    e = ev.evaluate(np.array([3.0 + 5e-10, 1.0 + 5e-10]))
+    assert e.feasible
+    assert seen[0][0] == 3.0 and seen[0][1] == 1.0
+    assert e.x[0] == 3.0 and e.x[1] == 1.0
+
+
+def test_categorical_decode_rejects_out_of_range_codes():
+    from optiforge import Categorical, Space
+    sp = Space([Categorical("c", ["a", "b", "c"])])
+    assert sp.decode(np.array([2.0]))["c"] == "c"
+    for bad in (-0.6, 2.6):
+        with pytest.raises(ValueError):
+            sp.decode(np.array([bad]))

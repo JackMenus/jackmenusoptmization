@@ -93,6 +93,8 @@ def run_matrix(solvers: list[SolverSpec], instances: list[InstanceSpec], seeds: 
         ledger.reserve(category, reserve)
     try:
         workers = workers if workers is not None else min(len(jobs), os.cpu_count() or 1)
+        for inst in instances:  # computes (and caches) exact optima once, before workers are forked
+            inst.make()
         if workers <= 1 or len(jobs) <= 1:
             rows = [_one(j) for j in jobs]
         else:
