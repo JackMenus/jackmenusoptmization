@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 9 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 11 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -28,7 +28,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
   folder instead: `git clone /mnt/project-files/optimization-platform/ <dir>` (needs `git config --global
   safe.directory '*'`).
 * Tests: `OPTIFORGE_REQUIRE_ISOLATION=1 python -m pytest -q -p no:cacheprovider` (the variable makes the isolation
-  tests fail instead of skipping when the sandbox probe fails). 163 tests as of round 9.
+  tests fail instead of skipping when the sandbox probe fails). 166 tests as of round 11.
 * Experiments: every run is listed in `lab/EXPERIMENTS.jsonl` (code version, command, config, seeds, raw output
   location, result). Raw outputs are under `lab/<round>/`. Pre-registrations (`PREREG.md`) are written before a run
   that touches an untouched test split.
@@ -48,39 +48,35 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 7 | (this commit) | behavioural fingerprints: validated candidates that behave like an earlier candidate or a baseline are not benchmarked (status `duplicate`) | 2 new tests; round-6 re-fingerprint: 45 candidates, 38 behaviours, fingerprint groups match identical train means exactly (`lab/r7-dedup`) |
 | 8 | (this commit) | discrete suite `discrete_general` v2 (4 new exactly-solved families); evaluator snaps near-domain points; categorical decode range check | brute-force optimum tests; pilot + train/validation characterisation (`lab/r8-discrete-v2`); portfolio 1190/1190 identical |
 | 9 | (this commit) | opt-in binary exchange moves for tabu / SA | validation: tabu+exchange beats tabu (CI below 0), SA no effect, both behind genetic; defaults unchanged (`lab/r9-exchange`) |
+| 10 | `df8c9f1` | pre-registered development loop on `discrete_general` v2 + exchange confirmation (one test pass) | champion not confirmed on test (CI [-0.050, +0.004]); exchange confirmed (CI [-0.256, -0.134]); test split historical (`lab/r10-develop-discrete`) |
+| 10b | `29b56a3` | audit fixes: noisy feasibility over all repeats, converged checkpoint resume, fork-safe sandbox objects, evidence selector requires adjusted p + CI | each regression test fails on the old code |
+| 11 | (this commit) | tabu 1.1.0: exchange moves by default | portfolio: 5/1190 runs changed (tabu on knapsack, 4 better, 1 worse) |
 
 ## Audit findings still open
 
-* Noisy verification takes feasibility from the last repeat only.
-* Resuming a checkpoint taken at a converged iteration iterates again (pattern_search 136 vs 132 evaluations, same
-  x); `guarantee_hints` are not checkpointed.
-* Status `error` is also used when every evaluation returns non-finite values (a reviewer questioned whether that is
-  an execution failure or an unsuccessful search).
-* Sandbox: `RLIMIT_NPROC` only set as root (fork is blocked by seccomp, so this is defence in depth only);
-  benchmark runner uses `fork` pools, which could inherit live sandbox pipes. Empirical escape probing beyond the
-  tests was not completed.
-* Evidence selector: champions recorded before 2026-10-20 have no adjusted p-value and pass on the raw one.
+* Status `error` is kept for "every evaluation non-finite" (documented in docs/guarantees.md; the message gives counts).
+* Sandbox: `RLIMIT_NPROC` is only set as root (seccomp blocks fork and clone, so this is defence in depth). Fork-pool
+  children now detach inherited sandbox objects. Empirical escape probing beyond the tests was not done.
 
 ## Known limitations (carried from DELIVERY_REPORT, re-checked)
 
 * Live Anthropic proposal path: **unverified** (no credentials, no budget). Only the scripted client is tested.
 * Multi-objective: scalarisation only.
-* Benchmarks: multimodal continuous families are separable; the generated continuous algorithm fails on rotated
-  Rastrigin (post-hoc diagnostic). Each family has 2-3 instances per split.
-* The test-split instances of the three development suites (instance seeds 200-202) and the portfolio test
-  instance (seed 300) were viewed in the 0.1.0 delivery and in round 0. They are now **historical diagnostic /
-  regression data**; new confirmatory claims need fresh, versioned test instances.
+* Benchmarks: each family has 2-3 instances per split; one generator seed per development run.
+* Every suite's test split is now historical: v1 suites (viewed in 0.1.0 and round 0), `continuous_general` v2
+  (round 6) and `discrete_general` v2 (round 10). New confirmatory claims need new suite versions.
+* Normalised scores on correlated knapsacks are sensitive: the random-search median is within about 2% of the
+  optimum, so small gaps give large score differences; raw gaps are in the run records.
 
 ## Next tasks (directly executable)
 
-1. (Optional) rerun the development loop with de-duplication on a fresh suite version (`continuous_general` v3, new
-   instance seeds); v2's test split is historical.
-2. Round 10: pre-registered development loop on `discrete_general` v2 plus the secondary tabu+exchange comparison,
-   one test pass (`lab/r10-develop-discrete/PREREG.md`). Note: genetic is the strongest discrete baseline; the
-   normalised score is sensitive on correlated knapsacks because the random-search median is within ~2% of optimum.
-3. Mixed suite: reproduce the 0.1.0 code-operator champion on new independent instances and constraint scenarios.
-4. Selection: count the feature-probe cost of `auto`; compare it with `hybrid` and `cmaes` with practical thresholds.
-5. Remaining audit items above.
+1. Fresh confirmation of the round-10 exploratory finding: `alg-dsl-f18700ed7f` beat genetic on the (now
+   historical) discrete test split. Needs a `discrete_general` v3 (new instance seeds, maybe a new held-out family)
+   and a pre-registered comparison, not a re-run on the same data.
+2. Mixed suite v2: the 0.1.0 mixed champion does not transfer to discrete problems (round 8) and its record
+   predates the current selection rule (now ignored by the evidence selector). Re-evaluate it on new mixed instances.
+3. Selection: count the feature-probe cost of `auto`; compare it with `hybrid` / `genetic` with practical thresholds.
+4. Continuous: v2 test historical; a v3 suite is needed before any new continuous claim.
 
 ## Blockers
 

@@ -4,7 +4,7 @@
 * ``greedy_ls``           - greedy coordinate construction + best-improvement neighbourhood search with
                             perturbation restarts (iterated local search).
 * ``simulated_annealing`` - Metropolis acceptance, geometric cooling, reheating on stagnation.
-* ``tabu``                - tabu search over sampled single-move neighbourhoods with aspiration.
+* ``tabu``                - tabu search over sampled single-move and binary-exchange neighbourhoods with aspiration.
 * ``genetic``             - generational GA with elitism, tournament selection, type-aware variation
                             (also the mixed-variable baseline).
 """
@@ -180,14 +180,17 @@ class SimulatedAnnealing(IterativeSolver):
 @register_solver
 class TabuSearch(IterativeSolver):
     name = "tabu"
-    version = "1.0.0"
+    # 1.1.0 (round 10): binary exchange moves on by default, after a pre-registered test-split confirmation
+    # (lab/r10-develop-discrete); exchange=False restores 1.0.0 behaviour exactly
+    version = "1.1.0"
     family = "local"
     space_kinds = frozenset({"discrete"})
-    description = "Tabu search: best non-tabu move from a sampled single-move neighbourhood, aspiration by incumbent."
+    description = ("Tabu search: best non-tabu move from a sampled neighbourhood of single moves and (for binary "
+                   "variables) 1-0 exchanges, aspiration by incumbent.")
 
     @classmethod
     def default_params(cls) -> dict:
-        return {"tenure": 7, "sample": 40, "exchange": False}
+        return {"tenure": 7, "sample": 40, "exchange": True}
 
     def initialize(self, ctx):
         x = ctx.warm_start[0].copy() if ctx.warm_start else ctx.space.sample(ctx.rng)

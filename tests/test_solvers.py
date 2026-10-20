@@ -181,10 +181,11 @@ def test_binary_exchange_moves_keep_the_number_of_ones():
     assert P.random_exchange(np.ones(6), sp, rng) is None
 
 
-def test_tabu_exchange_is_opt_in_and_reproducible():
+def test_tabu_exchange_default_and_reproducible():
     from optiforge.benchmarks.problems import make_problem
+    assert get_solver("tabu").params["exchange"] is True
     p = make_problem("knapsack_correlated", 0, n=30)
-    a = get_solver("tabu").solve(p, Budget(max_evaluations=800), seed=3)
+    a = get_solver("tabu", exchange=False).solve(p, Budget(max_evaluations=800), seed=3)
     b = get_solver("tabu", exchange=True).solve(p, Budget(max_evaluations=800), seed=3)
     c = get_solver("tabu", exchange=True).solve(p, Budget(max_evaluations=800), seed=3)
     assert b.objective == c.objective and np.array_equal(b.x, c.x)

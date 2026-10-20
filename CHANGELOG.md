@@ -69,6 +69,15 @@
 * Expensive exact optima are cached per process, and the benchmark runner builds every instance once before forking.
 * `integer_quadratic` enumerates in chunks (same optimum and tie-breaking, bounded memory).
 
+### Development loop on discrete_general v2 (round 10) and tabu 1.1.0 (round 11)
+* Pre-registered run (`lab/r10-develop-discrete`): a champion was selected on validation (beat genetic, CI below
+  zero) but was **not confirmed** on test (CI [-0.050, +0.004]); the registry record carries that limitation. The
+  best generated algorithm (not the selected champion) did better than genetic on test (CI [-0.080, -0.016]); that is
+  exploratory and needs fresh instances. The `discrete_general` v2 test split is now historical.
+* **Behaviour change.** The pre-registered secondary analysis confirmed exchange moves for tabu on the test split
+  (mean -0.19 vs tabu 1.0.0, CI [-0.256, -0.134]), so `tabu` 1.1.0 uses them by default (`exchange=False` restores
+  1.0.0). Portfolio benchmark: only the five tabu runs on knapsack changed (mean 421.2 -> 435.8, maximise).
+
 ### Exchange moves for binary problems (round 9)
 * `operators.primitives.binary_exchanges` / `random_exchange` (one 1 -> 0 plus one 0 -> 1); `neighborhood(...,
   exchange=True)`. Opt-in parameters `tabu(exchange=True)` (half of the sampled neighbourhood from exchanges, both
