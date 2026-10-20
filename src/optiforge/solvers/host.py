@@ -7,6 +7,8 @@ beat the default operator in the same host, not only a different GA.
 """
 from __future__ import annotations
 
+import copy
+
 from ..dsl.interpreter import DSLAlgorithm
 from ..dsl.spec import DEFAULT_OPERATOR, host_algorithm
 from .base import register_solver
@@ -21,11 +23,13 @@ class HostGA(DSLAlgorithm):
     description = ("(mu+lambda) evolutionary algorithm: tournament(2) selection, uniform crossover + type-aware "
                    "mutation, plus-survival, one-fifth step rule, stagnation restarts (the operator-language host).")
 
-    def __init__(self, population: int = 20) -> None:
-        super().__init__(host_algorithm(DEFAULT_OPERATOR, population=int(population), name="host_ga"), "host_ga")
+    def __init__(self, population: int = 20, sigma: float = 0.1) -> None:
+        op = copy.deepcopy(DEFAULT_OPERATOR)
+        op["children"][1]["sigma"] = float(sigma)  # type_aware mutation scale (0.1 = the default operator)
+        super().__init__(host_algorithm(op, population=int(population), name="host_ga"), "host_ga")
         self.name, self.version = "host_ga", "1.0.0"
-        self.params = {"population": int(population)}
+        self.params = {"population": int(population), "sigma": float(sigma)}
 
     @classmethod
     def default_params(cls) -> dict:
-        return {"population": 20}
+        return {"population": 20, "sigma": 0.1}

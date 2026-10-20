@@ -76,6 +76,8 @@
   CI [-0.065, -0.020]) and the new rules beat the old ones (mean -0.022, CI [-0.042, -0.003]).
 * Known regression: on `mixed_constrained` the new rules are worse (score 0.079 vs 0.017); also slightly worse on
   set_cover and independent_set. The benchmark runner passes `auto` parameters to the rules.
+* `host_ga` takes a `sigma` parameter (mutation scale, default 0.1). Round 18 found no variant (sigma 0.3,
+  population 40) clearly better on development data, so the defaults are unchanged.
 
 ### Host control baseline (round 14)
 * Ablation on development instances (`lab/r14-ablation`): the multi-knapsack advantage of the round-10 candidates

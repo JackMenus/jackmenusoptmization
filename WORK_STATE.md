@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 17 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 18 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -57,6 +57,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 15 | `528d966` | development-data comparison host_ga vs genetic; rules option `ga` | host_ga better (mean -0.055, CI [-0.077, -0.034]) (`lab/r15-host-vs-genetic`) |
 | 16 | `78fa51a` | pre-registered confirmation on 55 fresh instances; rule default `ga=host_ga` | H1 and H2 confirmed; regression on mixed_constrained (0.079 vs 0.017) (`lab/r16-host-confirm`); portfolio: 12/1190 `auto` runs changed |
 | 17 | (this commit) | exploratory look at the mixed_constrained regression | heavy tail: a few host_ga runs stuck at a wrong binary pattern; sigma 0.3 / population 40 look better (untested) (`lab/r17-mixed-constrained`) |
+| 18 | (this commit) | host_ga `sigma` parameter; development comparison of variants across 11 families | no variant clearly better (all CIs include 0); defaults unchanged (`lab/r18-host-params`) |
 
 ## Audit findings still open
 
@@ -76,9 +77,9 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 
 ## Next tasks (directly executable)
 
-1. host_ga stuck runs on `mixed_constrained` (round 17): candidate fixes are a wider mutation (sigma 0.3) or
-   population 40. Choose one on development data across all discrete/mixed families (not only mixed_constrained),
-   then pre-register a test on fresh instances.
+1. host_ga's occasional stuck runs on `mixed_constrained` stay a known limitation: neither sigma 0.3 nor
+   population 40 helped consistently (round 18). A structural fix (e.g. a binary-pattern restart) would be the
+   next idea, tested the same way (development data first, then a pre-registered fresh-instance test).
 2. Mixed suite v2: the 0.1.0 mixed champion does not transfer to discrete problems (round 8) and its record
    predates the current selection rule (now ignored by the evidence selector). Re-evaluate it on new mixed instances.
 3. Selection: count the feature-probe cost of `auto`; compare it with `hybrid` / `genetic` with practical thresholds.
