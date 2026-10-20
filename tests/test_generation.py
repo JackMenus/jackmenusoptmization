@@ -152,3 +152,29 @@ def test_development_loop_end_to_end(tmp_path, monkeypatch):
     assert rep["ledger"]["used_total"] <= cfg.total_evaluations
     assert rep["selection"]["decision"]
     assert Registry(str(tmp_path / "reg")).list()
+
+
+def test_v2_suite_has_fresh_seeds_and_test_only_families():
+    from optiforge.benchmarks.suites import SUITES, get_suite
+    s = get_suite("continuous_general")
+    used = set()
+    for name, other in SUITES.items():
+        if name != s.name:
+            for split in other.splits.values():
+                used |= set(split)
+    for split in ("train", "validation", "test"):
+        assert not set(s.splits[split]) & used
+    fam = lambda split: {i.family for i in s.instances(split)}
+    held_out = {f for f, _ in s.test_only}
+    assert held_out and held_out <= fam("test")
+    assert not held_out & (fam("train") | fam("validation"))
+    assert s.test_status == "untouched"
+
+
+def test_rotated_families_have_verified_optimum_inside_the_box():
+    from optiforge.benchmarks.problems import make_problem
+    for fam in ("rastrigin_rotated", "ackley_rotated", "schwefel_1_2", "bent_cigar_rotated"):
+        for dim in (5, 10):
+            p = make_problem(fam, 3, dim=dim)
+            x = p.known_optimum.x
+            assert p.space.contains(x) and abs(p.objective(x) - p.known_optimum.value) < 1e-12

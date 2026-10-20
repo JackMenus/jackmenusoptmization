@@ -70,12 +70,12 @@ def sphere(seed=0, dim=5):
                    known_optimum=KnownOptimum(0.0, o, "analytic"))
 
 
-@family("ellipsoid", {"continuous", "convex", "ill_conditioned"}, "Rotated ellipsoid, condition number 1e4.")
-def ellipsoid(seed=0, dim=5):
+@family("ellipsoid", {"continuous", "convex", "ill_conditioned"}, "Rotated ellipsoid, condition number 1e4 (log10_cond).")
+def ellipsoid(seed=0, dim=5, log10_cond=4):
     r = _rng("ellipsoid", seed)
     o = r.uniform(-3, 3, dim)
     Q, _ = np.linalg.qr(r.standard_normal((dim, dim)))
-    w = 10 ** (4 * np.arange(dim) / max(dim - 1, 1))
+    w = 10 ** (log10_cond * np.arange(dim) / max(dim - 1, 1))
     f = lambda x: float(np.sum(w * (Q @ (x - o)) ** 2))
     grad = lambda x: 2 * Q.T @ (w * (Q @ (x - o)))
     return Problem(_box(dim, -5, 5), f, name=f"ellipsoid-d{dim}-s{seed}", gradient=grad, convex=True,
@@ -128,6 +128,66 @@ def styblinski_tang(seed=0, dim=5):
     fstar = float(f(xstar))
     return Problem(_box(dim, -5, 5), f, name=f"styblinski_tang-d{dim}-s{seed}",
                    known_optimum=KnownOptimum(fstar, xstar, "analytic (separable; 1-D minimiser -2.9035340277711770)", 1e-9))
+
+
+# ---------------------------------------------------------------------------
+# continuous, rotated / non-separable (added 2026-10-20: the original multimodal families are all separable)
+# ---------------------------------------------------------------------------
+
+def _haar_rotation(r: np.random.Generator, dim: int) -> np.ndarray:
+    """Uniformly distributed random orthogonal matrix (QR of a Gaussian matrix with sign correction)."""
+    Q, R = np.linalg.qr(r.standard_normal((dim, dim)))
+    return Q * np.sign(np.diag(R))
+
+
+@family("rastrigin_rotated", {"continuous", "nonconvex", "multimodal", "nonseparable", "rotated"},
+        "Shifted Rastrigin composed with a random rotation; coordinate-wise moves no longer decompose it.")
+def rastrigin_rotated(seed=0, dim=5):
+    r = _rng("rastrigin_rotated", seed)
+    o = r.uniform(-2, 2, dim)
+    Q = _haar_rotation(r, dim)
+    f = lambda x: float(10 * dim + np.sum((z := Q @ (x - o)) ** 2 - 10 * np.cos(2 * np.pi * z)))
+    g = lambda x: Q.T @ (2 * (z := Q @ (x - o)) + 20 * np.pi * np.sin(2 * np.pi * z))
+    return Problem(_box(dim, -5.12, 5.12), f, name=f"rastrigin_rotated-d{dim}-s{seed}", gradient=g,
+                   known_optimum=KnownOptimum(0.0, o, "analytic (rotation preserves the minimiser at the shift)"))
+
+
+@family("ackley_rotated", {"continuous", "nonconvex", "multimodal", "nonseparable", "rotated"},
+        "Shifted Ackley composed with a random rotation.")
+def ackley_rotated(seed=0, dim=5):
+    r = _rng("ackley_rotated", seed)
+    o = r.uniform(-5, 5, dim)
+    Q = _haar_rotation(r, dim)
+
+    def f(x):
+        z = Q @ (x - o)
+        return float(-20 * np.exp(-0.2 * np.sqrt(np.mean(z ** 2))) - np.exp(np.mean(np.cos(2 * np.pi * z))) + 20 + math.e)
+    return Problem(_box(dim, -10, 10), f, name=f"ackley_rotated-d{dim}-s{seed}",
+                   known_optimum=KnownOptimum(0.0, o, "analytic (rotation preserves the minimiser at the shift)"))
+
+
+@family("schwefel_1_2", {"continuous", "convex", "unimodal", "nonseparable", "ill_conditioned"},
+        "Shifted Schwefel 1.2 (sum of squared prefix sums): convex, fully non-separable, ill-conditioned.")
+def schwefel_1_2(seed=0, dim=5):
+    o = _rng("schwefel_1_2", seed).uniform(-3, 3, dim)
+    f = lambda x: float(np.sum(np.cumsum(x - o) ** 2))
+    g = lambda x: np.cumsum(np.cumsum(x - o)[::-1])[::-1] * 2
+    return Problem(_box(dim, -5, 5), f, name=f"schwefel_1_2-d{dim}-s{seed}", gradient=g, convex=True,
+                   known_optimum=KnownOptimum(0.0, o, "analytic"))
+
+
+@family("bent_cigar_rotated", {"continuous", "convex", "unimodal", "nonseparable", "ill_conditioned", "rotated"},
+        "Rotated bent cigar: one direction 1e6 times flatter than all others.")
+def bent_cigar_rotated(seed=0, dim=5):
+    r = _rng("bent_cigar_rotated", seed)
+    o = r.uniform(-3, 3, dim)
+    Q = _haar_rotation(r, dim)
+    w = np.full(dim, 1e6)
+    w[0] = 1.0
+    f = lambda x: float(np.sum(w * (Q @ (x - o)) ** 2))
+    g = lambda x: 2 * Q.T @ (w * (Q @ (x - o)))
+    return Problem(_box(dim, -5, 5), f, name=f"bent_cigar_rotated-d{dim}-s{seed}", gradient=g, convex=True,
+                   known_optimum=KnownOptimum(0.0, o, "analytic"))
 
 
 # ---------------------------------------------------------------------------
