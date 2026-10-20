@@ -138,7 +138,9 @@ SUITES: dict[str, Suite] = {
         "discrete_general v2 families with fresh instance seeds; five test instances per family; test also includes "
         "set_cover (seen as a held-out family in the v2 test split, new instances here).",
         version="3",
-        test_only=[("set_cover", {"n_sets": 40, "n_elements": 30})]),
+        test_only=[("set_cover", {"n_sets": 40, "n_elements": 30})],
+        test_status="historical: test split run once in round 12 (2026-10-20, lab/r12-confirm-discrete); "
+                    "regression/diagnostic use only"),
 }
 
 

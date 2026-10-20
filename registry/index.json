@@ -1968,7 +1968,7 @@
     "name": null
   },
   "alg-dsl-f18700ed7f": {
-    "version": 7,
+    "version": 8,
     "status": "discarded",
     "kind": "algorithm",
     "representation": "dsl",
@@ -2312,7 +2312,7 @@
     "name": null
   },
   "ope-dsl-d23ef2a66f": {
-    "version": 9,
+    "version": 10,
     "status": "champion",
     "kind": "operator",
     "representation": "dsl",

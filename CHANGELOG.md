@@ -69,6 +69,11 @@
 * Expensive exact optima are cached per process, and the benchmark runner builds every instance once before forking.
 * `integer_quadratic` enumerates in chunks (same optimum and tie-breaking, bounded memory).
 
+### Confirmation on fresh discrete instances (round 12)
+* Suite `discrete_general_v3` (fresh seeds, 5 test instances per family). Pre-registered confirmation of the two
+  round-10 candidates against genetic: neither confirmed (Holm p 0.071 for both; CIs include zero). Both are better
+  only on `multi_knapsack`, which is a post-hoc hypothesis. Registry records carry the result as a limitation.
+
 ### Development loop on discrete_general v2 (round 10) and tabu 1.1.0 (round 11)
 * Pre-registered run (`lab/r10-develop-discrete`): a champion was selected on validation (beat genetic, CI below
   zero) but was **not confirmed** on test (CI [-0.050, +0.004]); the registry record carries that limitation. The

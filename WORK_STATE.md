@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 11 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 12 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -28,7 +28,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
   folder instead: `git clone /mnt/project-files/optimization-platform/ <dir>` (needs `git config --global
   safe.directory '*'`).
 * Tests: `OPTIFORGE_REQUIRE_ISOLATION=1 python -m pytest -q -p no:cacheprovider` (the variable makes the isolation
-  tests fail instead of skipping when the sandbox probe fails). 166 tests as of round 11.
+  tests fail instead of skipping when the sandbox probe fails). 167 tests as of round 12.
 * Experiments: every run is listed in `lab/EXPERIMENTS.jsonl` (code version, command, config, seeds, raw output
   location, result). Raw outputs are under `lab/<round>/`. Pre-registrations (`PREREG.md`) are written before a run
   that touches an untouched test split.
@@ -50,7 +50,8 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 9 | (this commit) | opt-in binary exchange moves for tabu / SA | validation: tabu+exchange beats tabu (CI below 0), SA no effect, both behind genetic; defaults unchanged (`lab/r9-exchange`) |
 | 10 | `df8c9f1` | pre-registered development loop on `discrete_general` v2 + exchange confirmation (one test pass) | champion not confirmed on test (CI [-0.050, +0.004]); exchange confirmed (CI [-0.256, -0.134]); test split historical (`lab/r10-develop-discrete`) |
 | 10b | `29b56a3` | audit fixes: noisy feasibility over all repeats, converged checkpoint resume, fork-safe sandbox objects, evidence selector requires adjusted p + CI | each regression test fails on the old code |
-| 11 | (this commit) | tabu 1.1.0: exchange moves by default | portfolio: 5/1190 runs changed (tabu on knapsack, 4 better, 1 worse) |
+| 11 | `ae540ad` | tabu 1.1.0: exchange moves by default | portfolio: 5/1190 runs changed (tabu on knapsack, 4 better, 1 worse) |
+| 12 | (this commit) | suite `discrete_general_v3`; pre-registered confirmation of the round-10 candidates | neither confirmed vs genetic (Holm p 0.071; CIs include 0); both better only on multi_knapsack (`lab/r12-confirm-discrete`) |
 
 ## Audit findings still open
 
@@ -64,15 +65,15 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 * Multi-objective: scalarisation only.
 * Benchmarks: each family has 2-3 instances per split; one generator seed per development run.
 * Every suite's test split is now historical: v1 suites (viewed in 0.1.0 and round 0), `continuous_general` v2
-  (round 6) and `discrete_general` v2 (round 10). New confirmatory claims need new suite versions.
+  (round 6), `discrete_general` v2 (round 10) and `discrete_general_v3` (round 12). New confirmatory claims need new suite versions.
 * Normalised scores on correlated knapsacks are sensitive: the random-search median is within about 2% of the
   optimum, so small gaps give large score differences; raw gaps are in the run records.
 
 ## Next tasks (directly executable)
 
-1. Fresh confirmation of the round-10 exploratory finding: `alg-dsl-f18700ed7f` beat genetic on the (now
-   historical) discrete test split. Needs a `discrete_general` v3 (new instance seeds, maybe a new held-out family)
-   and a pre-registered comparison, not a re-run on the same data.
+1. Post-hoc hypothesis from rounds 10 and 12: the generated GA variants beat genetic on `multi_knapsack` only.
+   Testing it needs new multi_knapsack instances (e.g. other n / m / tightness) and a pre-registration; the
+   `discrete_general_v3` test split is historical.
 2. Mixed suite v2: the 0.1.0 mixed champion does not transfer to discrete problems (round 8) and its record
    predates the current selection rule (now ignored by the evidence selector). Re-evaluate it on new mixed instances.
 3. Selection: count the feature-probe cost of `auto`; compare it with `hybrid` / `genetic` with practical thresholds.
