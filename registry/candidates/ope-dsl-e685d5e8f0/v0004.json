@@ -1,0 +1,168 @@
+{
+  "id": "ope-dsl-e685d5e8f0",
+  "version": 4,
+  "created": "2026-10-20T12:19:25+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "de_current_to_pbest",
+        "F": 0.126,
+        "CR": 0.115
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "cauchy"
+          },
+          {
+            "op": "prob",
+            "p": 0.38,
+            "child": {
+              "op": "uniform_reset"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "parents": [
+    "ope-dsl-6e375ee624"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: replaced subtree at children/0 (uniform_cx -> de_current_to_pbest)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:19:25+00:00",
+      "operation": "replaced subtree at children/0 (uniform_cx -> de_current_to_pbest)",
+      "parents": [
+        "ope-dsl-6e375ee624"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:19:26+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T12:21:47+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T12:21:47+00:00",
+      "operation": "status -> retained",
+      "generation": 1
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.F": 0.126,
+    "children.0.CR": 0.115,
+    "children.1.children.1.p": 0.38
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 6, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=3.980397991968149e-07"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=68, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3118,
+    "seconds": 0.904
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 48,
+        "mean_score": 0.07473954176105758,
+        "median_score": 0.013179667496087965,
+        "std_score": 0.11005491802679995,
+        "iqr_score": 0.12837766623195968,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 1.138670869661632,
+        "mean_runtime_s": 1.0921750453750672,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.21843500907501343,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "cmaes",
+      "per_family": {
+        "rastrigin": {
+          "ope-dsl-e685d5e8f0": 0.014447143649138761
+        },
+        "rastrigin_rotated": {
+          "ope-dsl-e685d5e8f0": 0.22799090548139325
+        },
+        "ackley_rotated": {
+          "ope-dsl-e685d5e8f0": 0.022915474822293096
+        },
+        "ellipsoid": {
+          "ope-dsl-e685d5e8f0": 0.0430255548156293
+        },
+        "schwefel_1_2": {
+          "ope-dsl-e685d5e8f0": 0.03114901530460597
+        },
+        "rosenbrock": {
+          "ope-dsl-e685d5e8f0": 0.007481859711713817
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "retained",
+  "train_score": 0.07473954176105758
+}

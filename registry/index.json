@@ -1,6 +1,6 @@
 {
   "alg-bui-e4749925a4": {
-    "version": 3,
+    "version": 4,
     "status": "baseline",
     "kind": "algorithm",
     "representation": "builtin",
@@ -8,14 +8,6 @@
     "name": null
   },
   "alg-bui-ea01571103": {
-    "version": 1,
-    "status": "baseline",
-    "kind": "algorithm",
-    "representation": "builtin",
-    "provider": "baseline",
-    "name": null
-  },
-  "alg-bui-312deb6692": {
     "version": 2,
     "status": "baseline",
     "kind": "algorithm",
@@ -23,8 +15,16 @@
     "provider": "baseline",
     "name": null
   },
+  "alg-bui-312deb6692": {
+    "version": 3,
+    "status": "baseline",
+    "kind": "algorithm",
+    "representation": "builtin",
+    "provider": "baseline",
+    "name": null
+  },
   "alg-bui-830c505590": {
-    "version": 1,
+    "version": 2,
     "status": "baseline",
     "kind": "algorithm",
     "representation": "builtin",
@@ -1016,7 +1016,7 @@
     "name": null
   },
   "alg-bui-46ff16817a": {
-    "version": 1,
+    "version": 2,
     "status": "baseline",
     "kind": "algorithm",
     "representation": "builtin",
@@ -1498,6 +1498,366 @@
   "ope-pyt-c4d678ee14": {
     "version": 7,
     "status": "champion",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "ope-dsl-6e375ee624": {
+    "version": 5,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": null
+  },
+  "ope-dsl-1b6353c7e5": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": null
+  },
+  "alg-dsl-fe26d06010": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g0-2"
+  },
+  "alg-dsl-08f27f59a8": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g0-3"
+  },
+  "ope-dsl-e94cf46038": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": null
+  },
+  "alg-dsl-a6f98fdb1c": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g0-5"
+  },
+  "alg-dsl-bae8c02989": {
+    "version": 5,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g0-6"
+  },
+  "alg-dsl-ddc781d171": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g0-7"
+  },
+  "ope-pyt-8c511edca0": {
+    "version": 6,
+    "status": "retained",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "ope-pyt-2747822dae": {
+    "version": 5,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "ope-dsl-d6eb97cd29": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": null
+  },
+  "alg-dsl-b5e1987aeb": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g1-1"
+  },
+  "alg-dsl-dc9e7d49b3": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g1-2"
+  },
+  "alg-dsl-36da231a4b": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "evolution",
+    "name": "evo-g1-0"
+  },
+  "ope-dsl-8a08528cca": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "evolution",
+    "name": null
+  },
+  "ope-dsl-24de477545": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "evolution",
+    "name": null
+  },
+  "ope-dsl-e685d5e8f0": {
+    "version": 5,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "evolution",
+    "name": null
+  },
+  "ope-dsl-ab88614d78": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "evolution",
+    "name": null
+  },
+  "ope-pyt-d4f1dfe640": {
+    "version": 5,
+    "status": "retained",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "ope-pyt-80013ab744": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "alg-dsl-e1e804cae5": {
+    "version": 5,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g2-0"
+  },
+  "alg-dsl-382d7ebbc1": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g2-1"
+  },
+  "ope-dsl-651a351ce9": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": null
+  },
+  "ope-dsl-af6f1a5bbd": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "evolution",
+    "name": null
+  },
+  "ope-dsl-5215c0a083": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "evolution",
+    "name": null
+  },
+  "ope-dsl-8a7c40c3e1": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "evolution",
+    "name": null
+  },
+  "ope-dsl-9864890d6a": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "evolution",
+    "name": null
+  },
+  "ope-dsl-131f7c2f7b": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "evolution",
+    "name": null
+  },
+  "ope-pyt-0c80e10701": {
+    "version": 5,
+    "status": "retained",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "ope-pyt-db655d8f79": {
+    "version": 5,
+    "status": "retained",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "ope-dsl-ac35f1d54c": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": null
+  },
+  "alg-dsl-9e3d6eb629": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g3-1"
+  },
+  "ope-dsl-e921b575f1": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": null
+  },
+  "ope-pyt-aab2b89286": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "ope-pyt-c6cf82da88": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "ope-dsl-c483a9cffd": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": null
+  },
+  "alg-dsl-d0aa53dede": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g4-1"
+  },
+  "alg-dsl-8112f6be57": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g4-2"
+  },
+  "ope-pyt-e33d237988": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "ope-pyt-1a8b5feff3": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "alg-dsl-4b1523b064": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g5-0"
+  },
+  "alg-dsl-0bdf8163cc": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g5-1"
+  },
+  "alg-dsl-b248d2f5f2": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "algorithm",
+    "representation": "dsl",
+    "provider": "grammar",
+    "name": "grammar-g5-2"
+  },
+  "ope-pyt-b2f83185e9": {
+    "version": 4,
+    "status": "discarded",
+    "kind": "operator",
+    "representation": "python",
+    "provider": "code_template",
+    "name": null
+  },
+  "ope-pyt-052ae823e6": {
+    "version": 4,
+    "status": "discarded",
     "kind": "operator",
     "representation": "python",
     "provider": "code_template",

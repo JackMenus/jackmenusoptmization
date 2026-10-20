@@ -170,7 +170,7 @@ def test_v2_suite_has_fresh_seeds_and_test_only_families():
     assert not held_out & (fam("train") | fam("validation"))
     elsewhere = {f for name, other in SUITES.items() if name != s.name for f, _ in other.families + other.test_only}
     assert not held_out & elsewhere  # never seen by any earlier development run either
-    assert s.test_status == "untouched"
+    assert s.test_status.startswith("historical")  # test split run once in round 6
 
 
 def test_rotated_families_have_verified_optimum_inside_the_box():

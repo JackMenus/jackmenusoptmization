@@ -1,0 +1,136 @@
+{
+  "id": "alg-dsl-b5e1987aeb",
+  "version": 1,
+  "created": "2026-10-20T12:19:21+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g1-1",
+    "population": 50,
+    "offspring": 50,
+    "init": {
+      "op": "opposition"
+    },
+    "repair": {
+      "op": "reflect"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "random"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "copy"
+            },
+            {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "uniform_reset"
+                },
+                {
+                  "op": "cauchy"
+                }
+              ],
+              "weights": [
+                0.67,
+                0.99
+              ]
+            }
+          ]
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "constant"
+        },
+        "until": {
+          "pred": "evals_fraction",
+          "ge": 0.21
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "de_current_to_pbest",
+              "F": 1.036,
+              "p": 0.154
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "correlated_gaussian"
+                },
+                {
+                  "op": "prob",
+                  "p": 0.59,
+                  "child": {
+                    "op": "gaussian",
+                    "sigma": 0.0138
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "decay",
+          "rate": 0.9829,
+          "floor": 0.001
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:19:21+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 50,
+    "offspring": 50,
+    "stages.0.until.ge": 0.21,
+    "stages.1.parent_selection.k": 4,
+    "stages.1.variation.children.0.F": 1.036,
+    "stages.1.variation.children.0.p": 0.154,
+    "stages.1.variation.children.1.children.1.p": 0.59,
+    "stages.1.variation.children.1.children.1.child.sigma": 0.0138,
+    "stages.1.step.rate": 0.9829,
+    "stages.1.step.floor": 0.001
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

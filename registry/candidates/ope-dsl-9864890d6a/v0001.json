@@ -1,0 +1,51 @@
+{
+  "id": "ope-dsl-9864890d6a",
+  "version": 1,
+  "created": "2026-10-20T12:21:53+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "uniform_cx"
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "cauchy"
+          },
+          {
+            "op": "uniform_reset"
+          }
+        ]
+      }
+    ]
+  },
+  "parents": [
+    "ope-dsl-6e375ee624"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: replaced subtree at children/1/children/1 (prob -> uniform_reset)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:21:53+00:00",
+      "operation": "replaced subtree at children/1/children/1 (prob -> uniform_reset)",
+      "parents": [
+        "ope-dsl-6e375ee624"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {},
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

@@ -1,0 +1,149 @@
+{
+  "id": "ope-dsl-c483a9cffd",
+  "version": 4,
+  "created": "2026-10-20T12:25:37+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "uniform_cx"
+      },
+      {
+        "op": "correlated_gaussian",
+        "elite": 0.413
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:25:37+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:25:38+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T12:26:52+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T12:26:52+00:00",
+      "operation": "status -> discarded",
+      "generation": 4
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.1.elite": 0.413
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 3, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=4.423627614730641e-08"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=105, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3119,
+    "seconds": 0.804
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 48,
+        "mean_score": 0.06249243706243768,
+        "median_score": 0.0014833029606038865,
+        "std_score": 0.08812529099250038,
+        "iqr_score": 0.11706516502857033,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.08333333333333333,
+        "median_gap": 2.4873976427687907,
+        "mean_runtime_s": 0.6965704873333038,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.13931409746666076,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "cmaes",
+      "per_family": {
+        "rastrigin": {
+          "ope-dsl-c483a9cffd": 0.08554211806877195
+        },
+        "rastrigin_rotated": {
+          "ope-dsl-c483a9cffd": 0.1894110833109217
+        },
+        "ackley_rotated": {
+          "ope-dsl-c483a9cffd": 2.195429447252267e-05
+        },
+        "ellipsoid": {
+          "ope-dsl-c483a9cffd": 0.03405716093524698
+        },
+        "schwefel_1_2": {
+          "ope-dsl-c483a9cffd": 3.092674039780369e-05
+        },
+        "rosenbrock": {
+          "ope-dsl-c483a9cffd": 0.001443215544296182
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "discarded",
+  "train_score": 0.06249243706243768
+}

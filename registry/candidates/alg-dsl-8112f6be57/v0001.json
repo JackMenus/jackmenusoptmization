@@ -1,0 +1,180 @@
+{
+  "id": "alg-dsl-8112f6be57",
+  "version": 1,
+  "created": "2026-10-20T12:25:39+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g4-2",
+    "population": 10,
+    "offspring": 20,
+    "init": {
+      "op": "lhs"
+    },
+    "repair": {
+      "op": "resample"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 3
+        },
+        "variation": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "arithmetic_cx"
+                },
+                {
+                  "op": "gaussian",
+                  "sigma": 0.2532,
+                  "rate": 0.57
+                }
+              ]
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "blend_cx",
+                  "alpha": 0.486
+                },
+                {
+                  "op": "toward_best"
+                }
+              ]
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "survival": {
+          "op": "comma"
+        },
+        "step": {
+          "op": "one_fifth",
+          "factor": 1.25,
+          "target": 0.22
+        },
+        "until": {
+          "pred": "stagnation",
+          "ge": 53
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "de_best1"
+                },
+                {
+                  "op": "cauchy",
+                  "rate": 0.25
+                }
+              ]
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "copy"
+                },
+                {
+                  "op": "if",
+                  "cond": {
+                    "pred": "feasible_fraction",
+                    "lt": 0.34
+                  },
+                  "then": {
+                    "op": "cauchy",
+                    "sigma": 0.0838
+                  },
+                  "else": {
+                    "op": "cauchy",
+                    "sigma": 0.0815
+                  }
+                }
+              ]
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "survival": {
+          "op": "comma"
+        },
+        "step": {
+          "op": "one_fifth",
+          "factor": 1.35,
+          "target": 0.27
+        }
+      }
+    ],
+    "restart": null,
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.14,
+      "step0": 0.009
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:25:39+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 10,
+    "offspring": 20,
+    "stages.0.parent_selection.k": 3,
+    "stages.0.variation.children.0.children.1.sigma": 0.2532,
+    "stages.0.variation.children.0.children.1.rate": 0.57,
+    "stages.0.variation.children.1.children.0.alpha": 0.486,
+    "stages.0.step.factor": 1.25,
+    "stages.0.step.target": 0.22,
+    "stages.0.until.ge": 53,
+    "stages.1.parent_selection.k": 4,
+    "stages.1.variation.children.0.children.1.rate": 0.25,
+    "stages.1.variation.children.1.children.1.cond.lt": 0.34,
+    "stages.1.variation.children.1.children.1.then.sigma": 0.0838,
+    "stages.1.variation.children.1.children.1.else.sigma": 0.0815,
+    "stages.1.step.factor": 1.35,
+    "stages.1.step.target": 0.27,
+    "refine.evals_fraction": 0.14,
+    "refine.step0": 0.009
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

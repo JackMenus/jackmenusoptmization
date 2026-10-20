@@ -1,0 +1,133 @@
+{
+  "id": "ope-dsl-ab88614d78",
+  "version": 1,
+  "created": "2026-10-20T12:19:26+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "success_rate",
+      "lt": 0.11
+    },
+    "then": {
+      "op": "if",
+      "cond": {
+        "pred": "feasible_fraction",
+        "lt": 0.3
+      },
+      "then": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_current_to_pbest",
+            "CR": 0.43
+          },
+          {
+            "op": "seq",
+            "children": [
+              {
+                "op": "gaussian",
+                "rate": 0.16
+              },
+              {
+                "op": "prob",
+                "p": 0.35,
+                "child": {
+                  "op": "toward_best",
+                  "w": 0.853
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "else": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "blend_cx",
+            "alpha": 0.284
+          },
+          {
+            "op": "seq",
+            "children": [
+              {
+                "op": "toward_best",
+                "w": 0.702
+              },
+              {
+                "op": "prob",
+                "p": 0.47,
+                "child": {
+                  "op": "toward_best",
+                  "w": 0.19
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "uniform_cx"
+        },
+        {
+          "op": "seq",
+          "children": [
+            {
+              "op": "cauchy"
+            },
+            {
+              "op": "prob",
+              "p": 0.38,
+              "child": {
+                "op": "uniform_reset"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "parents": [
+    "ope-dsl-6e375ee624"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: wrapped operator in a conditional with a new alternative branch",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:19:26+00:00",
+      "operation": "wrapped operator in a conditional with a new alternative branch",
+      "parents": [
+        "ope-dsl-6e375ee624"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.lt": 0.11,
+    "then.cond.lt": 0.3,
+    "then.then.children.0.CR": 0.43,
+    "then.then.children.1.children.0.rate": 0.16,
+    "then.then.children.1.children.1.p": 0.35,
+    "then.then.children.1.children.1.child.w": 0.853,
+    "then.else.children.0.alpha": 0.284,
+    "then.else.children.1.children.0.w": 0.702,
+    "then.else.children.1.children.1.p": 0.47,
+    "then.else.children.1.children.1.child.w": 0.19,
+    "else.children.1.children.1.p": 0.38
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

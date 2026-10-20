@@ -1,0 +1,129 @@
+{
+  "id": "alg-dsl-ddc781d171",
+  "version": 1,
+  "created": "2026-10-20T12:17:00+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g0-7",
+    "population": 30,
+    "offspring": 30,
+    "init": {
+      "op": "lhs"
+    },
+    "repair": {
+      "op": "project"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "random"
+        },
+        "variation": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "arithmetic_cx"
+                },
+                {
+                  "op": "seq",
+                  "children": [
+                    {
+                      "op": "toward_best",
+                      "w": 0.943
+                    },
+                    {
+                      "op": "prob",
+                      "p": 0.5,
+                      "child": {
+                        "op": "toward_best",
+                        "w": 0.152
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "copy"
+                },
+                {
+                  "op": "cauchy",
+                  "sigma": 0.0118
+                }
+              ]
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "survival": {
+          "op": "comma"
+        },
+        "step": {
+          "op": "decay",
+          "rate": 0.9894,
+          "floor": 0.001
+        }
+      }
+    ],
+    "restart": {
+      "op": "stagnation",
+      "patience": 88,
+      "keep_best": 0,
+      "reinit": "lhs",
+      "scale": 0.248
+    },
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.24,
+      "step0": 0.0092
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:17:00+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 30,
+    "offspring": 30,
+    "stages.0.variation.children.0.children.1.children.0.w": 0.943,
+    "stages.0.variation.children.0.children.1.children.1.p": 0.5,
+    "stages.0.variation.children.0.children.1.children.1.child.w": 0.152,
+    "stages.0.variation.children.1.children.1.sigma": 0.0118,
+    "stages.0.step.rate": 0.9894,
+    "stages.0.step.floor": 0.001,
+    "restart.patience": 88,
+    "restart.keep_best": 0,
+    "restart.scale": 0.248,
+    "refine.evals_fraction": 0.24,
+    "refine.step0": 0.0092
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

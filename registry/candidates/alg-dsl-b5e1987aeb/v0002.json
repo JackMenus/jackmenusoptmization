@@ -1,0 +1,184 @@
+{
+  "id": "alg-dsl-b5e1987aeb",
+  "version": 2,
+  "created": "2026-10-20T12:19:21+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g1-1",
+    "population": 50,
+    "offspring": 50,
+    "init": {
+      "op": "opposition"
+    },
+    "repair": {
+      "op": "reflect"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "random"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "copy"
+            },
+            {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "uniform_reset"
+                },
+                {
+                  "op": "cauchy"
+                }
+              ],
+              "weights": [
+                0.67,
+                0.99
+              ]
+            }
+          ]
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "constant"
+        },
+        "until": {
+          "pred": "evals_fraction",
+          "ge": 0.21
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "de_current_to_pbest",
+              "F": 1.036,
+              "p": 0.154
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "correlated_gaussian"
+                },
+                {
+                  "op": "prob",
+                  "p": 0.59,
+                  "child": {
+                    "op": "gaussian",
+                    "sigma": 0.0138
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "decay",
+          "rate": 0.9829,
+          "floor": 0.001
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:19:21+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:19:22+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 50,
+    "offspring": 50,
+    "stages.0.until.ge": 0.21,
+    "stages.1.parent_selection.k": 4,
+    "stages.1.variation.children.0.F": 1.036,
+    "stages.1.variation.children.0.p": 0.154,
+    "stages.1.variation.children.1.children.1.p": 0.59,
+    "stages.1.variation.children.1.children.1.child.sigma": 0.0138,
+    "stages.1.step.rate": 0.9829,
+    "stages.1.step.floor": 0.001
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 11, 'stages': 2, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=9.656355423627088e-05"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.305s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=86, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3121,
+    "seconds": 0.925
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "validated"
+}

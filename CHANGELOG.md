@@ -51,6 +51,9 @@
 * Suites carry a `version` and a `test_status`; version-1 suites whose test splits were reported in 0.1.0 are marked
   historical. Suite `continuous_general` (version 2) adds held-out test-only families.
 
+* Round 6 ran the pre-registered development loop on `continuous_general` v2 (`lab/r6-develop-v2`): no champion,
+  no improvement shown on test. That suite's test split is now marked historical.
+
 ### Operator language
 * New transformer `correlated_gaussian`: a rotation-invariant mutation from the elite population covariance; the
   grammar can now propose it for real variables. Existing candidates and their hashes are unchanged.

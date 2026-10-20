@@ -1,0 +1,68 @@
+{
+  "id": "ope-dsl-d6eb97cd29",
+  "version": 1,
+  "created": "2026-10-20T12:19:20+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "mix",
+    "children": [
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_rand1",
+            "F": 0.685,
+            "CR": 0.438
+          },
+          {
+            "op": "toward_best",
+            "w": 0.809
+          }
+        ]
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "uniform_cx"
+          },
+          {
+            "op": "correlated_gaussian",
+            "scale": 1.673
+          }
+        ]
+      }
+    ],
+    "weights": [
+      0.5,
+      0.5
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:19:20+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.children.0.F": 0.685,
+    "children.0.children.0.CR": 0.438,
+    "children.0.children.1.w": 0.809,
+    "children.1.children.1.scale": 1.673
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

@@ -1,0 +1,101 @@
+{
+  "id": "ope-dsl-6e375ee624",
+  "version": 2,
+  "created": "2026-10-20T12:16:53+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "uniform_cx"
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "cauchy"
+          },
+          {
+            "op": "prob",
+            "p": 0.38,
+            "child": {
+              "op": "uniform_reset"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:16:53+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:16:54+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.1.children.1.p": 0.38
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 6, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=7.315460258636507e-07"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.302s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=86, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3124,
+    "seconds": 0.825
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "validated"
+}

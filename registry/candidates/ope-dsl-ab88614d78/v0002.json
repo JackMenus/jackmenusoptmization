@@ -1,0 +1,181 @@
+{
+  "id": "ope-dsl-ab88614d78",
+  "version": 2,
+  "created": "2026-10-20T12:19:26+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "success_rate",
+      "lt": 0.11
+    },
+    "then": {
+      "op": "if",
+      "cond": {
+        "pred": "feasible_fraction",
+        "lt": 0.3
+      },
+      "then": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_current_to_pbest",
+            "CR": 0.43
+          },
+          {
+            "op": "seq",
+            "children": [
+              {
+                "op": "gaussian",
+                "rate": 0.16
+              },
+              {
+                "op": "prob",
+                "p": 0.35,
+                "child": {
+                  "op": "toward_best",
+                  "w": 0.853
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "else": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "blend_cx",
+            "alpha": 0.284
+          },
+          {
+            "op": "seq",
+            "children": [
+              {
+                "op": "toward_best",
+                "w": 0.702
+              },
+              {
+                "op": "prob",
+                "p": 0.47,
+                "child": {
+                  "op": "toward_best",
+                  "w": 0.19
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "uniform_cx"
+        },
+        {
+          "op": "seq",
+          "children": [
+            {
+              "op": "cauchy"
+            },
+            {
+              "op": "prob",
+              "p": 0.38,
+              "child": {
+                "op": "uniform_reset"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "parents": [
+    "ope-dsl-6e375ee624"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: wrapped operator in a conditional with a new alternative branch",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:19:26+00:00",
+      "operation": "wrapped operator in a conditional with a new alternative branch",
+      "parents": [
+        "ope-dsl-6e375ee624"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:19:27+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.lt": 0.11,
+    "then.cond.lt": 0.3,
+    "then.then.children.0.CR": 0.43,
+    "then.then.children.1.children.0.rate": 0.16,
+    "then.then.children.1.children.1.p": 0.35,
+    "then.then.children.1.children.1.child.w": 0.853,
+    "then.else.children.0.alpha": 0.284,
+    "then.else.children.1.children.0.w": 0.702,
+    "then.else.children.1.children.1.p": 0.47,
+    "then.else.children.1.children.1.child.w": 0.19,
+    "else.children.1.children.1.p": 0.38
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 20, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=1.890252125905667e-05"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=46, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3122,
+    "seconds": 0.763
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "validated"
+}

@@ -1,0 +1,94 @@
+{
+  "id": "ope-dsl-651a351ce9",
+  "version": 2,
+  "created": "2026-10-20T12:21:49+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "de_current_to_pbest",
+        "F": 0.663,
+        "p": 0.109
+      },
+      {
+        "op": "gaussian",
+        "sigma": 0.0026
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:21:49+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:21:50+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.F": 0.663,
+    "children.0.p": 0.109,
+    "children.1.sigma": 0.0026
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 3, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=2.515685389780128e-07"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=80, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3119,
+    "seconds": 1.065
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "validated"
+}

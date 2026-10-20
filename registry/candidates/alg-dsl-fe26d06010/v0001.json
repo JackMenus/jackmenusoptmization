@@ -1,0 +1,96 @@
+{
+  "id": "alg-dsl-fe26d06010",
+  "version": 1,
+  "created": "2026-10-20T12:16:55+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g0-2",
+    "population": 20,
+    "offspring": 20,
+    "init": {
+      "op": "lhs"
+    },
+    "repair": {
+      "op": "reflect"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "random"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "arithmetic_cx"
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "toward_best",
+                  "w": 0.276
+                },
+                {
+                  "op": "prob",
+                  "p": 0.56,
+                  "child": {
+                    "op": "correlated_gaussian",
+                    "scale": 0.903,
+                    "elite": 0.759
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "survival": {
+          "op": "comma"
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": null,
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.07,
+      "step0": 0.0289
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:16:55+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 20,
+    "offspring": 20,
+    "stages.0.variation.children.1.children.0.w": 0.276,
+    "stages.0.variation.children.1.children.1.p": 0.56,
+    "stages.0.variation.children.1.children.1.child.scale": 0.903,
+    "stages.0.variation.children.1.children.1.child.elite": 0.759,
+    "refine.evals_fraction": 0.07,
+    "refine.step0": 0.0289
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

@@ -1,0 +1,164 @@
+{
+  "id": "ope-dsl-5215c0a083",
+  "version": 3,
+  "created": "2026-10-20T12:21:51+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "de_current_to_pbest",
+        "F": 0.126,
+        "CR": 0.115
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "cauchy"
+          },
+          {
+            "op": "prob",
+            "p": 0.38,
+            "child": {
+              "op": "uniform_reset",
+              "rate": 0.17
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "parents": [
+    "ope-dsl-e685d5e8f0"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: perturbed uniform_reset.rate at children/1/children/1/child",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:21:51+00:00",
+      "operation": "perturbed uniform_reset.rate at children/1/children/1/child",
+      "parents": [
+        "ope-dsl-e685d5e8f0"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:21:52+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T12:24:10+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.F": 0.126,
+    "children.0.CR": 0.115,
+    "children.1.children.1.p": 0.38,
+    "children.1.children.1.child.rate": 0.17
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 6, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=6.305924101957681e-06"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.305s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=90, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3119,
+    "seconds": 0.919
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 48,
+        "mean_score": 0.08560266436074555,
+        "median_score": 0.016041358784272652,
+        "std_score": 0.12254389142057419,
+        "iqr_score": 0.14672215276941156,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.020833333333333332,
+        "median_gap": 2.001833278058319,
+        "mean_runtime_s": 1.030991569937309,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.20619831398746177,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "cmaes",
+      "per_family": {
+        "rastrigin": {
+          "ope-dsl-5215c0a083": 0.00020113604140780704
+        },
+        "rastrigin_rotated": {
+          "ope-dsl-5215c0a083": 0.25773276478484075
+        },
+        "ackley_rotated": {
+          "ope-dsl-5215c0a083": 0.04540320549004686
+        },
+        "ellipsoid": {
+          "ope-dsl-5215c0a083": 0.060621867489597046
+        },
+        "schwefel_1_2": {
+          "ope-dsl-5215c0a083": 0.012705763178278456
+        },
+        "rosenbrock": {
+          "ope-dsl-5215c0a083": 0.005020607626905889
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "validated",
+  "train_score": 0.08560266436074555
+}

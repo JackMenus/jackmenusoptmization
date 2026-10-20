@@ -1,0 +1,161 @@
+{
+  "id": "ope-dsl-8a7c40c3e1",
+  "version": 4,
+  "created": "2026-10-20T12:21:52+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "uniform_cx"
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "cauchy"
+          },
+          {
+            "op": "toward_best",
+            "w": 0.676
+          }
+        ]
+      }
+    ]
+  },
+  "parents": [
+    "ope-dsl-6e375ee624"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: replaced subtree at children/1/children/1 (prob -> toward_best)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:21:52+00:00",
+      "operation": "replaced subtree at children/1/children/1 (prob -> toward_best)",
+      "parents": [
+        "ope-dsl-6e375ee624"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:21:53+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T12:24:10+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T12:24:10+00:00",
+      "operation": "status -> discarded",
+      "generation": 2
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.1.children.1.w": 0.676
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 5, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=7.454832007767336e-10"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=81, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3119,
+    "seconds": 0.795
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 48,
+        "mean_score": 0.21051558748525276,
+        "median_score": 0.033121820458116916,
+        "std_score": 0.3278377978863795,
+        "iqr_score": 0.3315505835054722,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.08333333333333333,
+        "median_gap": 2.1650820241605815,
+        "mean_runtime_s": 0.7897727062709426,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.15795454125418854,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "cmaes",
+      "per_family": {
+        "rastrigin": {
+          "ope-dsl-8a7c40c3e1": 0.018451808097871433
+        },
+        "rastrigin_rotated": {
+          "ope-dsl-8a7c40c3e1": 0.6067012269429019
+        },
+        "ackley_rotated": {
+          "ope-dsl-8a7c40c3e1": 0.20151156154766783
+        },
+        "ellipsoid": {
+          "ope-dsl-8a7c40c3e1": 0.030511305559632343
+        },
+        "schwefel_1_2": {
+          "ope-dsl-8a7c40c3e1": 0.018092152967104782
+        },
+        "rosenbrock": {
+          "ope-dsl-8a7c40c3e1": 0.0006438562762740101
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "discarded",
+  "train_score": 0.21051558748525276
+}

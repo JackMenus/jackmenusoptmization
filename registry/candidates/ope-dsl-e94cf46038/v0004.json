@@ -1,0 +1,191 @@
+{
+  "id": "ope-dsl-e94cf46038",
+  "version": 4,
+  "created": "2026-10-20T12:16:57+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "success_rate",
+      "lt": 0.17
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "sbx",
+          "eta": 47.138
+        },
+        {
+          "op": "gaussian",
+          "sigma": 0.2302
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_rand1",
+          "F": 1.278,
+          "CR": 0.598
+        },
+        {
+          "op": "if",
+          "cond": {
+            "pred": "feasible_fraction",
+            "lt": 0.31
+          },
+          "then": {
+            "op": "toward_best",
+            "w": 0.174
+          },
+          "else": {
+            "op": "cauchy",
+            "sigma": 0.0509,
+            "rate": 0.06
+          }
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:16:57+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:16:58+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T12:19:20+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T12:19:20+00:00",
+      "operation": "status -> discarded",
+      "generation": 0
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.lt": 0.17,
+    "then.children.0.eta": 47.138,
+    "then.children.1.sigma": 0.2302,
+    "else.children.0.F": 1.278,
+    "else.children.0.CR": 0.598,
+    "else.children.1.cond.lt": 0.31,
+    "else.children.1.then.w": 0.174,
+    "else.children.1.else.sigma": 0.0509,
+    "else.children.1.else.rate": 0.06
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 9, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=2.036230449832983e-06"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.305s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=78, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3119,
+    "seconds": 0.97
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 48,
+        "mean_score": 0.11094423166661849,
+        "median_score": 0.007391773207198261,
+        "std_score": 0.17663774116126527,
+        "iqr_score": 0.18631189015248945,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.020833333333333332,
+        "median_gap": 1.6463881892619914,
+        "mean_runtime_s": 0.9059040362083124,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.18118080724166247,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "cmaes",
+      "per_family": {
+        "rastrigin": {
+          "ope-dsl-e94cf46038": 0.019455583101828874
+        },
+        "rastrigin_rotated": {
+          "ope-dsl-e94cf46038": 0.36462409227914727
+        },
+        "ackley_rotated": {
+          "ope-dsl-e94cf46038": 0.04000250859794737
+        },
+        "ellipsoid": {
+          "ope-dsl-e94cf46038": 0.05161543250480124
+        },
+        "schwefel_1_2": {
+          "ope-dsl-e94cf46038": 0.0058077767112247256
+        },
+        "rosenbrock": {
+          "ope-dsl-e94cf46038": 0.00142185926090385
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "discarded",
+  "train_score": 0.11094423166661849
+}

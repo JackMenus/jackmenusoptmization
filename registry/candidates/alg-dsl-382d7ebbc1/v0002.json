@@ -1,0 +1,186 @@
+{
+  "id": "alg-dsl-382d7ebbc1",
+  "version": 2,
+  "created": "2026-10-20T12:21:48+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g2-1",
+    "population": 20,
+    "offspring": 40,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "resample"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "random"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "blend_cx",
+              "alpha": 0.185
+            },
+            {
+              "op": "if",
+              "cond": {
+                "pred": "stagnation",
+                "ge": 4
+              },
+              "then": {
+                "op": "uniform_reset"
+              },
+              "else": {
+                "op": "uniform_reset"
+              }
+            }
+          ]
+        },
+        "survival": {
+          "op": "comma"
+        },
+        "step": {
+          "op": "one_fifth",
+          "factor": 1.1,
+          "target": 0.12
+        },
+        "until": {
+          "pred": "stagnation",
+          "ge": 18
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 3
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "uniform_cx"
+            },
+            {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "uniform_reset"
+                },
+                {
+                  "op": "correlated_gaussian",
+                  "scale": 0.583,
+                  "elite": 0.699
+                }
+              ],
+              "weights": [
+                0.97,
+                0.55
+              ]
+            }
+          ]
+        },
+        "survival": {
+          "op": "comma"
+        },
+        "step": {
+          "op": "decay",
+          "rate": 0.9809,
+          "floor": 0.001
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:21:48+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:21:49+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 20,
+    "offspring": 40,
+    "stages.0.variation.children.0.alpha": 0.185,
+    "stages.0.variation.children.1.cond.ge": 4,
+    "stages.0.step.factor": 1.1,
+    "stages.0.step.target": 0.12,
+    "stages.0.until.ge": 18,
+    "stages.1.parent_selection.k": 3,
+    "stages.1.variation.children.1.children.1.scale": 0.583,
+    "stages.1.variation.children.1.children.1.elite": 0.699,
+    "stages.1.step.rate": 0.9809,
+    "stages.1.step.floor": 0.001
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 10, 'stages': 2, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0002819949028436277"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=88, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3121,
+    "seconds": 0.935
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "validated"
+}

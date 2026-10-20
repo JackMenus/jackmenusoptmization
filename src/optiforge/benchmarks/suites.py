@@ -99,7 +99,8 @@ SUITES: dict[str, Suite] = {
         {"train": [], "validation": [], "test": [300]},
         "One test instance of every family, including both simulation-based systems.", test_status=V1_TEST_STATUS),
     # Version 2 (2026-10-20). Rotated / non-separable / ill-conditioned families in two dimensions, fresh instance
-    # seeds, and two families that appear only in the test split. Its test split has not been run.
+    # seeds, and two families that appear only in the test split. Its test split was run once in round 6
+    # (lab/r6-develop-v2) and is now historical.
     "continuous_general": Suite(
         "continuous_general",
         [("rastrigin", {"dim": 5}), ("rastrigin_rotated", {"dim": 5}), ("rastrigin_rotated", {"dim": 10}),
@@ -109,7 +110,9 @@ SUITES: dict[str, Suite] = {
         "Separable and rotated multimodal, ill-conditioned and non-separable unimodal continuous functions, "
         "dimensions 5 and 10; test adds two held-out families that no suite uses elsewhere (rotated bent cigar at dimension 10, rotated Griewank at dimension 8).",
         version="2",
-        test_only=[("bent_cigar_rotated", {"dim": 10}), ("griewank_rotated", {"dim": 8})]),
+        test_only=[("bent_cigar_rotated", {"dim": 10}), ("griewank_rotated", {"dim": 8})],
+        test_status="historical: test split run once in round 6 (2026-10-20, lab/r6-develop-v2); "
+                    "regression/diagnostic use only"),
 }
 
 

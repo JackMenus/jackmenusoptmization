@@ -1,0 +1,251 @@
+{
+  "id": "alg-dsl-9e3d6eb629",
+  "version": 3,
+  "created": "2026-10-20T12:24:10+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g3-1",
+    "population": 4,
+    "offspring": 2,
+    "init": {
+      "op": "lhs"
+    },
+    "repair": {
+      "op": "resample"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "random"
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "uniform_cx",
+              "p": 0.094
+            },
+            {
+              "op": "gaussian",
+              "sigma": 0.4709
+            }
+          ]
+        },
+        "survival": {
+          "op": "plus"
+        },
+        "step": {
+          "op": "constant"
+        },
+        "until": {
+          "pred": "stagnation",
+          "ge": 45
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "best"
+        },
+        "variation": {
+          "op": "if",
+          "cond": {
+            "pred": "stagnation",
+            "ge": 27
+          },
+          "then": {
+            "op": "seq",
+            "children": [
+              {
+                "op": "de_current_to_pbest",
+                "F": 0.435,
+                "CR": 0.59,
+                "p": 0.423
+              },
+              {
+                "op": "gaussian"
+              }
+            ]
+          },
+          "else": {
+            "op": "seq",
+            "children": [
+              {
+                "op": "de_rand1",
+                "F": 0.736,
+                "CR": 0.136
+              },
+              {
+                "op": "mix",
+                "children": [
+                  {
+                    "op": "correlated_gaussian",
+                    "scale": 1.292,
+                    "elite": 0.964
+                  },
+                  {
+                    "op": "toward_best",
+                    "w": 0.337
+                  }
+                ],
+                "weights": [
+                  0.51,
+                  0.38
+                ]
+              }
+            ]
+          }
+        },
+        "survival": {
+          "op": "plus"
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:24:10+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T12:24:11+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T12:25:37+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 4,
+    "offspring": 2,
+    "stages.0.variation.children.0.p": 0.094,
+    "stages.0.variation.children.1.sigma": 0.4709,
+    "stages.0.until.ge": 45,
+    "stages.1.variation.cond.ge": 27,
+    "stages.1.variation.then.children.0.F": 0.435,
+    "stages.1.variation.then.children.0.CR": 0.59,
+    "stages.1.variation.then.children.0.p": 0.423,
+    "stages.1.variation.else.children.0.F": 0.736,
+    "stages.1.variation.else.children.0.CR": 0.136,
+    "stages.1.variation.else.children.1.children.0.scale": 1.292,
+    "stages.1.variation.else.children.1.children.0.elite": 0.964,
+    "stages.1.variation.else.children.1.children.1.w": 0.337
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 12, 'stages': 2, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=1.736810738488315e-05"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=39, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3118,
+    "seconds": 0.88
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 48,
+        "mean_score": 0.6108645964664207,
+        "median_score": 0.5078955758148372,
+        "std_score": 0.482769119585289,
+        "iqr_score": 0.5136912358758211,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.0,
+        "median_gap": 14.099290888893954,
+        "mean_runtime_s": 1.2103608608541474,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.24207217217082946,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "cmaes",
+      "per_family": {
+        "rastrigin": {
+          "alg-dsl-9e3d6eb629": 0.2531428909733966
+        },
+        "rastrigin_rotated": {
+          "alg-dsl-9e3d6eb629": 0.8444811550544088
+        },
+        "ackley_rotated": {
+          "alg-dsl-9e3d6eb629": 0.4287365140576685
+        },
+        "ellipsoid": {
+          "alg-dsl-9e3d6eb629": 0.9572253221489947
+        },
+        "schwefel_1_2": {
+          "alg-dsl-9e3d6eb629": 1.063454540431397
+        },
+        "rosenbrock": {
+          "alg-dsl-9e3d6eb629": 0.06665867995342227
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite continuous_general"
+  ],
+  "status": "validated",
+  "train_score": 0.6108645964664207
+}

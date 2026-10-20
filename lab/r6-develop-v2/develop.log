@@ -1,0 +1,63 @@
+# Development run report: suite `continuous_general`
+
+Wall time 1027.1 s. Stop reason: generations_completed. Ledger: 18470779 of 34000000 units used ({'analysis': 1280, 'train_baselines': 984388, 'validation': 139933, 'train': 10800000, 'selection': 1945141, 'test': 4600037}).
+
+Isolation available: True (linux namespaces (user, mount, pid, net, ipc, uts) + pivot_root + capability drop + rlimits + seccomp syscall allowlist (x86_64)).
+Candidates by final status: {'baseline': 8, 'retained': 15, 'discarded': 185, 'rejected': 24, 'champion': 1}
+
+## Generations
+
+| gen | proposed | duplicates | rejected | validated | benchmarked | best candidate train score | best baseline train score |
+|---|---|---|---|---|---|---|---|
+| 0 | 10 | 0 | 0 | 10 | 10 | 0.0464 | 0.0526 |
+| 1 | 10 | 0 | 0 | 10 | 10 | 0.0464 | 0.0526 |
+| 2 | 10 | 0 | 0 | 10 | 10 | 0.0464 | 0.0526 |
+| 3 | 5 | 0 | 0 | 5 | 5 | 0.0464 | 0.0526 |
+| 4 | 5 | 0 | 0 | 5 | 5 | 0.0464 | 0.0526 |
+| 5 | 5 | 0 | 0 | 5 | 5 | 0.0464 | 0.0526 |
+
+Scores: 0 = known optimum (or best baseline value), 1 = random-search median at the same budget, 2 = infeasible. Lower is better.
+
+## Selection (validation split)
+
+no retained candidate beat the best baseline 'cmaes' on the validation split (alpha=0.05, holm adjustment, minimum improvement 0.01, CI below zero); the baselines are retained for ordinary use
+
+| solver | runs | mean score | median | std | feasible | failures | solved (gap<=1e-6) | ms/eval |
+|---|---|---|---|---|---|---|---|---|
+| `ope-pyt-8c511edca0` | 48 | 0.0506 | 0.0028 | 0.0752 | 1.00 | 0.00 | 0.00 | 0.336 |
+| `ope-pyt-d4f1dfe640` | 48 | 0.0506 | 0.0028 | 0.0752 | 1.00 | 0.00 | 0.00 | 0.332 |
+| `ope-pyt-0c80e10701` | 48 | 0.0506 | 0.0028 | 0.0752 | 1.00 | 0.00 | 0.00 | 0.320 |
+| `ope-pyt-db655d8f79` | 48 | 0.0506 | 0.0028 | 0.0752 | 1.00 | 0.00 | 0.00 | 0.319 |
+| `cmaes` | 48 | 0.0592 | 0.0000 | 0.1008 | 1.00 | 0.00 | 0.38 | 0.083 |
+| `hybrid` | 48 | 0.0595 | 0.0000 | 0.0991 | 1.00 | 0.00 | 0.60 | 0.478 |
+| `de` | 48 | 0.2382 | 0.1659 | 0.2468 | 1.00 | 0.00 | 0.00 | 0.134 |
+| `nelder_mead` | 48 | 0.2978 | 0.2026 | 0.4214 | 1.00 | 0.00 | 0.38 | 0.089 |
+| `random_search` | 48 | 0.9833 | 1.0000 | 0.2023 | 1.00 | 0.00 | 0.00 | 0.039 |
+
+## Held-out test split (evaluated once, after selection)
+
+Suite version 2; test-split status before this run: untouched.
+
+| solver | runs | mean score | median | std | feasible | failures | solved (gap<=1e-6) | ms/eval |
+|---|---|---|---|---|---|---|---|---|
+| `hybrid` | 150 | 0.0471 | 0.0000 | 0.0855 | 1.00 | 0.00 | 0.61 | 0.419 |
+| `cmaes` | 150 | 0.0512 | 0.0000 | 0.0916 | 1.00 | 0.00 | 0.42 | 0.081 |
+| `ope-pyt-8c511edca0` | 150 | 0.0559 | 0.0027 | 0.0902 | 1.00 | 0.00 | 0.00 | 0.314 |
+| `alg-dsl-e1e804cae5` | 150 | 0.0676 | 0.0036 | 0.1021 | 1.00 | 0.00 | 0.01 | 0.149 |
+| `nelder_mead` | 150 | 0.1269 | 0.0000 | 0.1617 | 1.00 | 0.00 | 0.50 | 0.075 |
+| `de` | 150 | 0.2537 | 0.1489 | 0.2513 | 1.00 | 0.00 | 0.00 | 0.117 |
+| `random_search` | 150 | 1.0077 | 1.0000 | 0.2358 | 1.00 | 0.00 | 0.00 | 0.037 |
+
+Best baseline on test: `hybrid`.
+
+- `ope-pyt-8c511edca0` vs `hybrid`: mean score difference +0.0088 over 150 paired runs (95% CI [-0.0034, +0.0211]; wins 22, losses 128, ties 0; beyond 0.01: 22 better, 46 worse; one-sided Wilcoxon p=1)
+- `alg-dsl-e1e804cae5` vs `hybrid`: mean score difference +0.0205 over 150 paired runs (95% CI [+0.0073, +0.0337]; wins 16, losses 134, ties 0; beyond 0.01: 16 better, 54 worse; one-sided Wilcoxon p=1)
+
+Demonstration candidates: {'operator': 'ope-pyt-8c511edca0', 'algorithm': 'alg-dsl-e1e804cae5', 'code_operator': 'ope-pyt-8c511edca0'}
+
+run record: /home/claude/dev/rounds/r6/runs/20261020T121614112770Z-develop-1d1e243d
+
+real	17m8.231s
+user	62m29.343s
+sys	1m15.125s
+EXIT=0

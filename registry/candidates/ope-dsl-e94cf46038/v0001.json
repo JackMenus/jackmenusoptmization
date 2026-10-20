@@ -1,0 +1,84 @@
+{
+  "id": "ope-dsl-e94cf46038",
+  "version": 1,
+  "created": "2026-10-20T12:16:57+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "success_rate",
+      "lt": 0.17
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "sbx",
+          "eta": 47.138
+        },
+        {
+          "op": "gaussian",
+          "sigma": 0.2302
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_rand1",
+          "F": 1.278,
+          "CR": 0.598
+        },
+        {
+          "op": "if",
+          "cond": {
+            "pred": "feasible_fraction",
+            "lt": 0.31
+          },
+          "then": {
+            "op": "toward_best",
+            "w": 0.174
+          },
+          "else": {
+            "op": "cauchy",
+            "sigma": 0.0509,
+            "rate": 0.06
+          }
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T12:16:57+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.lt": 0.17,
+    "then.children.0.eta": 47.138,
+    "then.children.1.sigma": 0.2302,
+    "else.children.0.F": 1.278,
+    "else.children.0.CR": 0.598,
+    "else.children.1.cond.lt": 0.31,
+    "else.children.1.then.w": 0.174,
+    "else.children.1.else.sigma": 0.0509,
+    "else.children.1.else.rate": 0.06
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}
