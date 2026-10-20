@@ -49,15 +49,18 @@
   |---|---|
   | continuous local (gradient) | `lbfgsb` (analytic or finite-difference gradient), `slsqp` (constraints) |
   | continuous local (derivative-free) | `nelder_mead`, `pattern_search` (also used on the integer coordinates of mixed problems) |
-  | population global | `cmaes` (IPOP restarts), `de` (rand/1 and current-to-pbest), `genetic` (type-aware) |
+  | population global | `cmaes` (IPOP restarts), `de` (rand/1 and current-to-pbest), `genetic` (generational, type-aware), `host_ga` ((mu+lambda) host of the operator language with its default operator) |
   | multistart and global+local | `multistart`, `hybrid` (global stage on a share of the budget, then local refinement) |
-  | discrete | `random_search`, `greedy_ls` (greedy construction plus neighbourhood search), `simulated_annealing`, `tabu`, `genetic` |
-  | exact | `exhaustive` (enumeration certificate), `milp` (SciPy HiGHS on a declared `LinearStructure`, spot-checked first) |
+  | discrete | `random_search`, `greedy_ls` (greedy construction plus neighbourhood search), `simulated_annealing`, `tabu` (single moves plus binary 1-0 exchanges since 1.1.0), `genetic`, `host_ga` |
+  | exact | `exhaustive` (enumeration certificate), `milp` (SciPy HiGHS; certifies only `Problem.from_linear` problems, a `linear=` declaration on user functions gives a conditional statement after spot checks) |
 * **`selection.rules`.** Rules R1 to R13 are applied in order, and each decision records which rule fired and why. A
-  `mode` argument (`local`, `global` or `hybrid`) restricts the strategy. `selection.evidence` can override the
-  rules with a champion candidate only when validated benchmark evidence matches the problem profile: same space
-  kind, covered variable types, dimension within a factor of 1.5, same constraint class, budget within a factor of
-  2, at least 12 paired runs, and p < alpha.
+  `mode` argument (`local`, `global` or `hybrid`) restricts the strategy; `ga` (default `host_ga` since round 16,
+  `genetic` before) is the evolutionary solver of the constrained-discrete and mixed rules. Rule selection uses the
+  problem description only and spends no evaluations. `selection.evidence` can override the rules with a champion
+  candidate only when validated benchmark evidence matches the problem profile: same space kind, covered variable
+  types, dimension within a factor of 1.5, same constraint class, budget within a factor of 2, at least 12 paired
+  runs, and a record of the current selection rule (Holm-adjusted p < alpha, CI below zero, mean improvement of at
+  least `min_effect`).
 * **`dynamics`.** `DiscreteTimeSystem` is exact for its own model. `ContinuousTimeSystem` integrates with SciPy
   `solve_ivp` and enforces path constraints on a sample grid. `simulation_problem` attaches a verifier that
   re-integrates on a 10x denser grid with tolerances 100x tighter. Results are labelled

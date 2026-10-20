@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 18 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 19 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -58,6 +58,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 16 | `78fa51a` | pre-registered confirmation on 55 fresh instances; rule default `ga=host_ga` | H1 and H2 confirmed; regression on mixed_constrained (0.079 vs 0.017) (`lab/r16-host-confirm`); portfolio: 12/1190 `auto` runs changed |
 | 17 | (this commit) | exploratory look at the mixed_constrained regression | heavy tail: a few host_ga runs stuck at a wrong binary pattern; sigma 0.3 / population 40 look better (untested) (`lab/r17-mixed-constrained`) |
 | 18 | (this commit) | host_ga `sigma` parameter; development comparison of variants across 11 families | no variant clearly better (all CIs include 0); defaults unchanged (`lab/r18-host-params`) |
+| 19 | (this commit) | docs brought up to date (architecture solver table and rules, README tests and layout); GitHub Actions workflow `.github/workflows/ci.yml` | docs reviewed against code; the workflow has **not been run** (no remote repository) |
 
 ## Audit findings still open
 

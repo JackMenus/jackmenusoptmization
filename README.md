@@ -78,7 +78,8 @@ versions, platform, git revision if any), a JSON-lines event log and the result 
 ## Tests
 
 ```sh
-python3 -m pytest -q            # 111 tests: unit, numerical, sandbox (skipped without isolation), CLI, integration
+python3 -m pytest -q            # 170 tests: unit, numerical, sandbox (skipped without isolation), CLI, integration
+OPTIFORGE_REQUIRE_ISOLATION=1 python3 -m pytest -q   # fail instead of skipping when the sandbox is unavailable
 ```
 
 ## Layout
@@ -102,4 +103,7 @@ python3 -m pytest -q            # 111 tests: unit, numerical, sandbox (skipped w
 | `results/` | the experiment outputs and test log produced for this delivery (`results/run_all.sh` reproduces them) |
 | `docs/` | architecture, operator language, isolation, guarantees, benchmarking methodology |
 
-Read `DELIVERY_REPORT.md` for what was run and what it showed.
+| `lab/` | experiments after 0.1.0: one directory per round with scripts, pre-registrations and raw outputs; `lab/EXPERIMENTS.jsonl` lists every run |
+
+Read `DELIVERY_REPORT.md` for the 0.1.0 delivery, `CHANGELOG.md` for every change since, and `WORK_STATE.md` for the
+current state of development (rounds, open issues, next tasks).

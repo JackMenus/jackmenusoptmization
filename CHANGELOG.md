@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Documentation and CI (round 19)
+* Architecture and README updated for host_ga, tabu 1.1.0, the rules' `ga` option, the evidence rule and `lab/`.
+* `.github/workflows/ci.yml` runs the tests with `OPTIFORGE_REQUIRE_ISOLATION=1`. Not run yet: the project has no
+  remote repository.
+
 ### Security
 * Generated Python operators now run under a seccomp-BPF system-call allowlist (x86_64) loaded inside the sandbox
   before the candidate is compiled. Process creation, exec, sockets, ptrace, signals to other processes, mount and

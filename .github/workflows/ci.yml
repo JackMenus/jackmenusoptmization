@@ -1,0 +1,22 @@
+# Runs the test suite on every push and pull request. The sandbox tests need unprivileged user namespaces, which
+# GitHub's Ubuntu runners provide; OPTIFORGE_REQUIRE_ISOLATION makes them fail instead of skip if that changes.
+name: tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Allow unprivileged user namespaces (Ubuntu 24.04 restricts them through AppArmor)
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Install
+        run: |
+          python -m pip install -r requirements-lock.txt
+          python -m pip install -e .
+      - name: Test
+        env:
+          OPTIFORGE_REQUIRE_ISOLATION: "1"
+        run: python -m pytest -q -p no:cacheprovider
