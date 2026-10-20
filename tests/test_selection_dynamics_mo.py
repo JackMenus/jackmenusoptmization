@@ -148,3 +148,16 @@ def test_paired_comparison_reports_effect_sizes_and_practical_ties():
     assert c["rank_biserial"] == 0.0  # 1e-10 differences are ties for the effect size too
     adj = holm_adjust({"x": 0.01, "y": 0.04, "z": None})
     assert adj == {"x": 0.02, "y": 0.04, "z": None}
+
+
+def test_rule_selection_spends_no_objective_evaluations():
+    from optiforge import Real, Space as Sp
+    calls = {"n": 0}
+
+    def f(x):
+        calls["n"] += 1
+        return float(np.sum(np.asarray(x) ** 2))
+    for p in (Problem(Sp([Real(f"x{i}", -1, 1) for i in range(4)]), f), make_problem("knapsack_correlated", 0, n=20)):
+        before = calls["n"]
+        select_by_rules(p, Budget(3000))
+        assert calls["n"] == before  # the plan is chosen from the problem description alone
