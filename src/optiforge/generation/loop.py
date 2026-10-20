@@ -41,10 +41,12 @@ from .providers import ProposalContext, default_providers
 
 log = logging.getLogger("optiforge.development")
 
+# host_ga is the operator language's own host with the default operator: a generated operator must beat it to show
+# that the operator, not the host, makes the difference (round 14).
 DEFAULT_BASELINES = {
-    "continuous": ["random_search", "cmaes", "de", "nelder_mead"],
-    "discrete": ["random_search", "simulated_annealing", "genetic", "tabu"],
-    "mixed": ["random_search", "genetic", "de", "hybrid"],
+    "continuous": ["random_search", "cmaes", "de", "nelder_mead", "host_ga"],
+    "discrete": ["random_search", "simulated_annealing", "genetic", "tabu", "host_ga"],
+    "mixed": ["random_search", "genetic", "de", "hybrid", "host_ga"],
 }
 
 

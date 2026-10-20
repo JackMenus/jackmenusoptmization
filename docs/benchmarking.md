@@ -63,6 +63,9 @@ so that statistical and practical significance are not confused:
 
 ## Candidate selection rule (development loop)
 
+Default baselines include `host_ga`, the (mu+lambda) host in which generated operators run, with the default
+operator. Without it, an operator can look better than `genetic` only because its host differs (round 14).
+
 Fixed before the runs it governs, in `DevelopmentConfig`:
 
 * the best baseline on the validation split is the comparator;

@@ -69,6 +69,14 @@
 * Expensive exact optima are cached per process, and the benchmark runner builds every instance once before forking.
 * `integer_quadratic` enumerates in chunks (same optimum and tie-breaking, bounded memory).
 
+### Host control baseline (round 14)
+* Ablation on development instances (`lab/r14-ablation`): the multi-knapsack advantage of the round-10 candidates
+  comes from the operator language's (mu+lambda) host, not from the generated operators (the default operator in the
+  same host scores 0.225 vs the champion's 0.212 and genetic's 0.318; comma survival 0.796).
+* New solver `host_ga` (that host with the default operator). **Behaviour change:** it is now one of the development
+  loop's default baselines for every problem kind, so a generated operator must beat the default operator in the same
+  host. Rounds 6 and 10 ran without this control.
+
 ### Multi-knapsack hypothesis (round 13)
 * Pre-registered on 20 new multidimensional knapsack instances (n 40/60, m 5/10): both round-10 GA variants beat
   genetic (Holm p 7e-6, CIs below zero), reducing the mean relative gap to the optimum by about 0.6-1.0 percentage

@@ -203,3 +203,12 @@ def test_resume_from_checkpoint_of_converged_run_does_not_iterate_again(tmp_path
     assert again.termination_reason == full.termination_reason
     assert [g.kind for g in again.guarantees] == [g.kind for g in full.guarantees]
     assert again.x == full.x
+
+
+def test_host_ga_is_the_operator_language_host_with_the_default_operator():
+    from optiforge.dsl.interpreter import DSLAlgorithm
+    from optiforge.dsl.spec import DEFAULT_OPERATOR, host_algorithm
+    p = make_problem("knapsack", 0, n=20)
+    a = get_solver("host_ga").solve(p, Budget(1500), seed=2)
+    b = DSLAlgorithm(host_algorithm(DEFAULT_OPERATOR, name="ref"), "ref").solve(p, Budget(1500), seed=2)
+    assert a.objective == b.objective and np.array_equal(a.x, b.x) and a.n_evaluations == b.n_evaluations

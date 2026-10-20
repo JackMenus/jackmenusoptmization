@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 13 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 14 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -28,7 +28,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
   folder instead: `git clone /mnt/project-files/optimization-platform/ <dir>` (needs `git config --global
   safe.directory '*'`).
 * Tests: `OPTIFORGE_REQUIRE_ISOLATION=1 python -m pytest -q -p no:cacheprovider` (the variable makes the isolation
-  tests fail instead of skipping when the sandbox probe fails). 167 tests as of round 12.
+  tests fail instead of skipping when the sandbox probe fails). 170 tests as of round 14.
 * Experiments: every run is listed in `lab/EXPERIMENTS.jsonl` (code version, command, config, seeds, raw output
   location, result). Raw outputs are under `lab/<round>/`. Pre-registrations (`PREREG.md`) are written before a run
   that touches an untouched test split.
@@ -53,6 +53,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 11 | `ae540ad` | tabu 1.1.0: exchange moves by default | portfolio: 5/1190 runs changed (tabu on knapsack, 4 better, 1 worse) |
 | 12 | (this commit) | suite `discrete_general_v3`; pre-registered confirmation of the round-10 candidates | neither confirmed vs genetic (Holm p 0.071; CIs include 0); both better only on multi_knapsack (`lab/r12-confirm-discrete`) |
 | 13 | (this commit) | pre-registered multi-knapsack hypothesis on 20 new instances (4 sizes) | supported for both candidates (CI below 0; ~0.6-1.0 pp smaller relative gap); family-specific (`lab/r13-mkp`) |
+| 14 | (this commit) | ablation of the multi-knapsack gain; new baseline `host_ga`, added to the loop's default baselines | the gain is the host's plus-survival, not the generated operator (`lab/r14-ablation`) |
 
 ## Audit findings still open
 
@@ -72,10 +73,9 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 
 ## Next tasks (directly executable)
 
-1. Use the round-13 result: the GA variants are better than genetic on multi-knapsacks (confirmed on new
-   instances) and not elsewhere. Options: let the evidence selector route multi-constraint binary knapsack-like
-   problems to them (needs a problem-profile feature that distinguishes these, which `matches()` does not have),
-   or find which operator part causes the gain (ablation on train instances).
+1. Round 14 showed the round-13 gain is the host (plus-survival), now available as `host_ga`. Next: compare
+   `host_ga` with `genetic` across discrete and mixed families on development instances; if it is broadly better,
+   pre-register a test on fresh instances before changing any default (selection rules use `genetic`).
 2. Mixed suite v2: the 0.1.0 mixed champion does not transfer to discrete problems (round 8) and its record
    predates the current selection rule (now ignored by the evidence selector). Re-evaluate it on new mixed instances.
 3. Selection: count the feature-probe cost of `auto`; compare it with `hybrid` / `genetic` with practical thresholds.
