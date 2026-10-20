@@ -38,8 +38,14 @@ def characteristics(problem: Problem, budget: Budget, eval_cost_s: float | None 
 
 
 def select_by_rules(problem: Problem, budget: Budget, eval_cost_s: float | None = None,
-                    mode: str = "auto", exhaustive_limit: int = 200_000) -> SolverPlan:
-    """``mode``: ``auto`` | ``local`` | ``global`` | ``hybrid`` (restricts the strategy)."""
+                    mode: str = "auto", exhaustive_limit: int = 200_000, ga: str = "genetic") -> SolverPlan:
+    """``mode``: ``auto`` | ``local`` | ``global`` | ``hybrid`` (restricts the strategy).
+
+    ``ga`` is the evolutionary solver used by the discrete-constrained and mixed rules (R10, R12, R13):
+    ``genetic`` (generational) or ``host_ga`` ((mu+lambda)); see lab/r15-host-vs-genetic.
+    """
+    if ga not in ("genetic", "host_ga"):
+        raise ValueError(f"ga must be 'genetic' or 'host_ga', not {ga!r}")
     c = characteristics(problem, budget, eval_cost_s)
     why: list[str] = [f"characteristics: kind={c['space_kind']} dim={c['dim']} constraints={c['n_constraints']} "
                       f"(eq={c['n_equality']}) gradient={c['gradient']} noisy={c['noisy']} budget={c['budget_evaluations']}"]
@@ -99,18 +105,19 @@ def select_by_rules(problem: Problem, budget: Budget, eval_cost_s: float | None 
             why.append("R9: permutation variables -> simulated annealing with swap/insert/reversal moves")
             return SolverPlan("simulated_annealing", {}, "global", why)
         if c["n_constraints"]:
-            why.append("R10: constrained discrete -> genetic algorithm with feasibility-first selection")
-            return SolverPlan("genetic", {}, "global", why)
+            why.append(f"R10: constrained discrete -> evolutionary algorithm ({ga}) with feasibility-first selection")
+            return SolverPlan(ga, {}, "global", why)
         why.append("R11: unconstrained discrete -> tabu search")
         return SolverPlan("tabu", {}, "global", why)
 
     # mixed
     if c["has_permutation"]:
-        why.append("R12: mixed with permutations -> type-aware genetic algorithm")
-        return SolverPlan("genetic", {}, "global", why)
+        why.append(f"R12: mixed with permutations -> type-aware evolutionary algorithm ({ga})")
+        return SolverPlan(ga, {}, "global", why)
     if mode == "local":
         why.append("R13a: local mode -> compass search on real/integer coordinates")
         return SolverPlan("pattern_search", {}, "local", why)
-    why.append("R13: mixed variables -> hybrid: type-aware GA exploration, then compass-search refinement")
-    return SolverPlan("hybrid", {"global_solver": "genetic", "local": "pattern_search", "global_fraction": 0.8},
+    why.append(f"R13: mixed variables -> hybrid: type-aware evolutionary exploration ({ga}), then compass-search "
+               "refinement")
+    return SolverPlan("hybrid", {"global_solver": ga, "local": "pattern_search", "global_fraction": 0.8},
                       "hybrid", why)

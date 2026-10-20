@@ -60,7 +60,7 @@ def _one(args) -> dict:
         if spec.builtin == "auto":  # benchmark the rule-based selection layer itself
             from ..selection.rules import select_by_rules
             from ..solvers import get_solver
-            plan = select_by_rules(p, budget)
+            plan = select_by_rules(p, budget, **dict(spec.params))
             s = get_solver(plan.solver, **plan.params)
         else:
             s = spec.build()
