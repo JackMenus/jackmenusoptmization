@@ -254,7 +254,7 @@ def test_discrete_general_v2_uses_fresh_seeds_and_a_held_out_family():
     s = get_suite("discrete_general")
     other_seeds, other_fams = set(), set()
     for name, o in SUITES.items():
-        if name != s.name:
+        if not name.startswith("discrete_general"):  # later versions of this suite reuse its families
             other_fams |= {f for f, _ in o.families} | {f for f, _ in o.test_only}
             for split in o.splits.values():
                 other_seeds |= set(split)
@@ -264,3 +264,14 @@ def test_discrete_general_v2_uses_fresh_seeds_and_a_held_out_family():
     for split in ("train", "validation", "test"):
         for inst in s.instances(split):
             assert inst.make().known_optimum is not None
+
+
+def test_discrete_general_v3_test_instances_are_fresh():
+    s = get_suite("discrete_general_v3")
+    used = set()
+    for name, o in SUITES.items():
+        if name != s.name:
+            for split in o.splits.values():
+                used |= set(split)
+    assert not used & {x for v in s.splits.values() for x in v}
+    assert len(s.instances("test")) == 6 * 5
