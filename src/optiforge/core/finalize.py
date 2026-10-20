@@ -78,10 +78,11 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
     # -- verification against the original problem ---------------------------
     verifier = Evaluator(p, Budget(max_evaluations=10**9))
     reps = NOISY_VERIFICATION_REPEATS if p.noisy else 1
-    vals, last = [], None
+    vals, last, repeats = [], None, []
     for _ in range(reps):
         last = verifier.evaluate(best.x)
         n_verif += 1
+        repeats.append(last)
         if last.valid:
             vals.append(last.f)
     verification_failed = False
@@ -92,7 +93,15 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
         verification_failed = True
     else:
         objective = float(np.mean(vals))
-        feasible = bool(last.feasible)
+        # noisy problems: the point counts as feasible only if every repeat was valid and feasible; the violation
+        # report uses the worst repeat (a single lucky repeat must not decide feasibility)
+        feasible = all(r.valid and r.feasible for r in repeats)
+        if p.noisy and len(repeats) > 1:
+            n_feas = sum(bool(r.valid and r.feasible) for r in repeats)
+            if not feasible:
+                messages.append(f"noisy verification: the point was feasible in {n_feas} of {len(repeats)} repeats, "
+                                "so it is reported as infeasible")
+            last = max((r for r in repeats if r.valid), key=lambda r: r.total_violation)
         try:
             viol = _named_violations(p, best.x, last.raw_constraints)
             max_v = float(max(viol.values())) if viol else 0.0
@@ -100,7 +109,7 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
             messages.append(f"per-constraint violation report failed: {type(exc).__name__}: {exc}")
             viol, max_v = {}, (0.0 if feasible else math.inf)
     if p.noisy and vals:
-        noise = {"verification_repeats": reps, "mean": float(np.mean(vals)), "std": float(np.std(vals, ddof=1)) if len(vals) > 1 else 0.0,
+        noise = {"verification_repeats": reps, "feasible_repeats": sum(bool(r.valid and r.feasible) for r in repeats), "mean": float(np.mean(vals)), "std": float(np.std(vals, ddof=1)) if len(vals) > 1 else 0.0,
                  "search_value_of_reported_point": best.f,
                  "note": "objective is noisy; reported value is the mean of repeated verification evaluations"}
     nondeterministic = False

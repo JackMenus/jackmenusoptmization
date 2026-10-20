@@ -46,6 +46,7 @@ import sys
 import tempfile
 import threading
 import time
+import weakref
 from dataclasses import dataclass, field
 
 from ..core.errors import IsolationUnavailable
@@ -269,8 +270,31 @@ def _prereqs() -> str | None:
     return None
 
 
+_LIVE: "weakref.WeakSet[SandboxProcess]" = weakref.WeakSet()
+
+
+def _detach_inherited_sandboxes() -> None:
+    """In a child created by ``fork`` (e.g. a benchmark worker pool), sandbox objects copied from the parent refer to
+    the parent's worker processes. Close the child's copies of their pipes and mark them unusable, so the child can
+    neither talk to nor kill (on close or garbage collection) a worker that belongs to the parent."""
+    for sb in list(_LIVE):
+        sb._inherited = True
+        for fh in (getattr(sb.proc, "stdin", None), getattr(sb.proc, "stdout", None), getattr(sb, "_err", None)):
+            try:
+                if fh is not None:
+                    fh.close()  # requests are flushed when written, so nothing is pending
+            except (OSError, ValueError):
+                pass
+
+
+if hasattr(os, "register_at_fork"):
+    os.register_at_fork(after_in_child=_detach_inherited_sandboxes)
+
+
 class SandboxProcess:
     """A persistent isolated worker running one candidate's source code."""
+
+    _inherited = False  # set in a forked child: the worker belongs to the parent process
 
     def __init__(self, source: str, entry: str = "mutate", config: SandboxConfig | None = None) -> None:
         self.config = config or SandboxConfig()
@@ -315,6 +339,7 @@ class SandboxProcess:
                                      cwd="/", preexec_fn=limits, close_fds=True)
         self._buf = b""
         self.calls = 0
+        _LIVE.add(self)
         resp = self._roundtrip({"source": source, "entry": entry}, cfg.startup_timeout)
         if not resp.get("ok"):
             self.close()
@@ -356,6 +381,8 @@ class SandboxProcess:
             raise RuntimeError(f"sandbox failure: {exc}") from exc
 
     def call(self, x: list, info: dict, seed: int) -> dict:
+        if self._inherited:
+            raise RuntimeError("sandbox failure: this sandbox belongs to the parent process (inherited through fork)")
         self.calls += 1
         return self._roundtrip({"id": self.calls, "x": x, "info": info, "seed": int(seed)}, self.config.request_timeout)
 
@@ -368,6 +395,8 @@ class SandboxProcess:
             return ""
 
     def kill(self) -> None:
+        if self._inherited:
+            return
         if self.proc.poll() is None:
             try:
                 os.killpg(self.proc.pid, 9)
@@ -379,6 +408,9 @@ class SandboxProcess:
             pass
 
     def close(self) -> None:
+        if self._inherited:
+            return
+        _LIVE.discard(self)
         if self.proc.poll() is None:
             try:
                 self.proc.stdin.write(b'{"cmd": "exit"}\n')
@@ -387,15 +419,16 @@ class SandboxProcess:
             except Exception:
                 pass
         self.kill()
-        try:
-            self._err.close()
-        except Exception:
-            pass
+        for fh in (self.proc.stdin, self.proc.stdout, self._err):
+            try:
+                fh.close()
+            except Exception:
+                pass
         shutil.rmtree(self.dir, ignore_errors=True)
 
     def __del__(self):  # best effort
         try:
-            if getattr(self, "proc", None) is not None and self.proc.poll() is None:
+            if not self._inherited and getattr(self, "proc", None) is not None and self.proc.poll() is None:
                 self.kill()
         except Exception:
             pass

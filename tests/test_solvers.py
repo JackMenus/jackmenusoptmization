@@ -189,3 +189,16 @@ def test_tabu_exchange_is_opt_in_and_reproducible():
     c = get_solver("tabu", exchange=True).solve(p, Budget(max_evaluations=800), seed=3)
     assert b.objective == c.objective and np.array_equal(b.x, c.x)
     assert b.feasible and a.feasible
+
+
+def test_resume_from_checkpoint_of_converged_run_does_not_iterate_again(tmp_path):
+    p = sphere_problem(dim=2)
+    ck = str(tmp_path / "ck.json")
+    full = get_solver("pattern_search").solve(p, Budget(5000), seed=1, checkpoint_path=ck, checkpoint_every=1)
+    assert full.termination_reason != "budget_evaluations"
+    again = get_solver("pattern_search").solve(p, Budget(5000), seed=1, checkpoint_path=ck, checkpoint_every=1,
+                                               resume=True)
+    assert again.n_evaluations == full.n_evaluations
+    assert again.termination_reason == full.termination_reason
+    assert [g.kind for g in again.guarantees] == [g.kind for g in full.guarantees]
+    assert again.x == full.x

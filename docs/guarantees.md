@@ -60,7 +60,11 @@ The following rules are enforced in `core/finalize.py` and are tested:
 | `feasible_discretized_only` | feasible on the simulation grid but rejected by the denser independent check |
 | `infeasible_certified` | proven that no feasible point exists |
 | `no_feasible_found` | the search ran but found no feasible point; **not** evidence of infeasibility |
-| `error` | an execution failure: every evaluation failed, nothing was evaluated, the solver raised before any valid evaluation, or the verification evaluation of the reported point failed |
+| `error` | an execution failure: every evaluation failed (raised, or returned a non-finite objective or constraint value; the message gives both counts; a function that is NaN everywhere the search looked cannot be told apart from a broken one), nothing was evaluated, the solver raised before any valid evaluation, or the verification evaluation of the reported point failed |
 
 The termination reason is reported separately (`budget_evaluations`, `budget_time`, `cancelled`, `converged`,
 `error`, ...). A time-out with a verified feasible incumbent has status `feasible` and termination `budget_time`.
+
+Noisy problems: the reported point is re-evaluated 5 times. Its objective is the mean, and it counts as feasible only
+if every repeat was valid and feasible; the violation report uses the worst repeat. `noise.feasible_repeats` gives
+the count.
