@@ -181,8 +181,10 @@ class SimulatedAnnealing(IterativeSolver):
 class TabuSearch(IterativeSolver):
     name = "tabu"
     # 1.1.0 (round 10): binary exchange moves on by default, after a pre-registered test-split confirmation
-    # (lab/r10-develop-discrete); exchange=False restores 1.0.0 behaviour exactly
-    version = "1.1.0"
+    # (lab/r10-develop-discrete); exchange=False restores 1.0.0 behaviour exactly.
+    # 1.1.1 (round 20): exchanges are sampled as index pairs instead of enumerating all of them (O(k) instead of
+    # O(n^2) arrays per iteration; same random draws and results as 1.1.0 while ones x zeros <= 10^7)
+    version = "1.1.1"
     family = "local"
     space_kinds = frozenset({"discrete"})
     description = ("Tabu search: best non-tabu move from a sampled neighbourhood of single moves and (for binary "
@@ -202,11 +204,8 @@ class TabuSearch(IterativeSolver):
         st["it"] += 1
         k = self.params["sample"]
         moves = list(P.neighborhood(st["x"], sp, max_values_per_var=4, rng=ctx.rng))
-        swaps = list(P.binary_exchanges(st["x"], sp)) if self.params["exchange"] else []
-        if swaps:  # half of the sample from exchanges, so they do not crowd out the single moves
-            k_x = min(len(swaps), k // 2)
-            swaps = [swaps[i] for i in ctx.rng.choice(len(swaps), size=k_x, replace=False)]
-            k -= k_x
+        swaps = P.sample_binary_exchanges(st["x"], sp, k // 2, ctx.rng) if self.params["exchange"] else []
+        k -= len(swaps)  # half of the sample from exchanges, so they do not crowd out the single moves
         if len(moves) > k:
             pick = ctx.rng.choice(len(moves), size=k, replace=False)
             moves = [moves[i] for i in pick]

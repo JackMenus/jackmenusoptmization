@@ -275,3 +275,13 @@ def test_discrete_general_v3_test_instances_are_fresh():
                 used |= set(split)
     assert not used & {x for v in s.splits.values() for x in v}
     assert len(s.instances("test")) == 6 * 5
+
+
+def test_horizon_signature_separates_late_acting_settings():
+    from optiforge.generation.fingerprint import horizon_signature
+    a = host_algorithm(DEFAULT_OPERATOR)
+    b = host_algorithm(DEFAULT_OPERATOR)
+    b["restart"]["patience"] = 200
+    assert horizon_signature(a) != horizon_signature(b)
+    assert horizon_signature(a) == horizon_signature(host_algorithm(DEFAULT_OPERATOR))
+    assert horizon_signature("def mutate(x, info, rng): return x") == ""

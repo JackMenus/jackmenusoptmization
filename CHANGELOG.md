@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Fixes from the third independent review (round 20)
+* Noisy problems: the constrained-discrete and mixed rules choose `genetic` instead of `host_ga` (which refuses noisy
+  objectives); `solve()` failed on such problems after round 16.
+* Behavioural fingerprints also hash settings that act after the probe budget (restarts, stage switches, conditions,
+  step rules, population sizes), so candidates that differ only there are no longer merged.
+* `tabu` 1.1.1 samples exchange pairs by index instead of enumerating all of them (n=1000: 1.7 s instead of about
+  14 s per iteration and 2 GB); results identical to 1.1.0 in the portfolio benchmark.
+* Knapsack dynamic programs skip items heavier than the capacity (crashed for tiny instances); checkpoint resume
+  refuses a checkpoint written with another solver version or other parameters; `host_ga` keeps its description and
+  rejects unknown parameters with `ValueError`; fingerprinting never draws on the test share of the ledger.
+
 ### Documentation and CI (round 19)
 * Architecture and README updated for host_ga, tabu 1.1.0, the rules' `ga` option, the evidence rule and `lab/`.
 * `.github/workflows/ci.yml` runs the tests with `OPTIFORGE_REQUIRE_ISOLATION=1`. Not run yet: the project has no

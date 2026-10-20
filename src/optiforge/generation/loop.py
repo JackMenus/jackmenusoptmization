@@ -34,7 +34,7 @@ from ..benchmarks.runner import (SolverSpec, builtin, holm_adjust, paired_compar
 from ..benchmarks.suites import get_suite
 from ..validation.gates import validate
 from .features import analyze
-from .fingerprint import behaviour_fingerprint, probe_instances
+from .fingerprint import behaviour_fingerprint, horizon_signature, probe_instances
 from .grammar import bias_from_features
 from .materialize import build_solver
 from .providers import ProposalContext, default_providers
@@ -112,6 +112,8 @@ class DevelopmentLoop:
     def _fingerprint(self, make_solver, probes) -> str:
         reserve = len(probes) * self.cfg.fingerprint_budget
         try:
+            if not self._can_afford(reserve):  # never take fingerprint budget from the test share
+                raise BudgetExhausted("fingerprint")
             self.ledger.reserve("fingerprint", reserve)
         except BudgetExhausted:
             return f"unfingerprinted-{self.rng.integers(1 << 62)}"  # never matches: no de-duplication without budget
@@ -208,7 +210,9 @@ class DevelopmentLoop:
                 gen_info["validated"] += 1
                 if cfg.fingerprint_budget > 0:
                     r = self.registry.get(rec["id"])
-                    fp = self._fingerprint(lambda r=r: build_solver(r), probes)
+                    # behaviour after the probe budget (restart patience, stagnation-triggered stages, ...) is not
+                    # observed by the probes, so candidates also have to agree on those settings to be merged
+                    fp = self._fingerprint(lambda r=r: build_solver(r), probes) + horizon_signature(r["source"])
                     first = fingerprints.setdefault(fp, rec["id"])
                     if first != rec["id"]:
                         gen_info["behavioural_duplicates"] += 1

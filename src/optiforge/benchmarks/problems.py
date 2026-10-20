@@ -277,6 +277,8 @@ def knapsack(seed=0, n=20):
     # dynamic programming over capacity gives the exact optimum
     best = np.zeros(cap + 1)
     for i in range(n):
+        if w[i] > cap:  # cannot be packed
+            continue
         best[w[i]:] = np.maximum(best[w[i]:], best[: cap + 1 - w[i]] + v[i])
     fstar = float(best[cap])
     sp = Space([Binary(f"b{i}") for i in range(n)])
@@ -387,6 +389,8 @@ def knapsack_correlated(seed=0, n=50):
     def dp():
         best = np.zeros(cap + 1)
         for i in range(n):
+            if w[i] > cap:  # cannot be packed
+                continue
             best[w[i]:] = np.maximum(best[w[i]:], best[: cap + 1 - w[i]] + v[i])
         return float(best[cap])
     fstar = _cached(("knapsack_correlated", seed, n), dp)

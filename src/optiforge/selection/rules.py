@@ -62,6 +62,9 @@ def select_by_rules(problem: Problem, budget: Budget, eval_cost_s: float | None 
         why.append("R2: linear structure declared -> MILP/LP adapter (HiGHS), certifiable after spot checks")
         return SolverPlan("milp", {}, "exact", why)
 
+    if c["noisy"] and ga == "host_ga":  # host_ga assumes a deterministic objective; genetic handles noise
+        ga = "genetic"
+        why.append("noisy objective: the evolutionary rules use genetic instead of host_ga")
     kind = c["space_kind"]
     if kind == "continuous":
         if mode == "local":

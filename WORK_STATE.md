@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 19 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 20 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -28,7 +28,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
   folder instead: `git clone /mnt/project-files/optimization-platform/ <dir>` (needs `git config --global
   safe.directory '*'`).
 * Tests: `OPTIFORGE_REQUIRE_ISOLATION=1 python -m pytest -q -p no:cacheprovider` (the variable makes the isolation
-  tests fail instead of skipping when the sandbox probe fails). 170 tests as of round 14.
+  tests fail instead of skipping when the sandbox probe fails). 176 tests as of round 20.
 * Experiments: every run is listed in `lab/EXPERIMENTS.jsonl` (code version, command, config, seeds, raw output
   location, result). Raw outputs are under `lab/<round>/`. Pre-registrations (`PREREG.md`) are written before a run
   that touches an untouched test split.
@@ -59,6 +59,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 17 | (this commit) | exploratory look at the mixed_constrained regression | heavy tail: a few host_ga runs stuck at a wrong binary pattern; sigma 0.3 / population 40 look better (untested) (`lab/r17-mixed-constrained`) |
 | 18 | (this commit) | host_ga `sigma` parameter; development comparison of variants across 11 families | no variant clearly better (all CIs include 0); defaults unchanged (`lab/r18-host-params`) |
 | 19 | (this commit) | docs brought up to date (architecture solver table and rules, README tests and layout); GitHub Actions workflow `.github/workflows/ci.yml` | docs reviewed against code; the workflow has **not been run** (no remote repository) |
+| 20 | (this commit) | fixes from the third independent review (noisy rule fallback, fingerprint horizon signature, sampled tabu exchanges, small fixes) | regression test per fix; 176 tests; portfolio 1190/1190 identical |
 
 ## Audit findings still open
 

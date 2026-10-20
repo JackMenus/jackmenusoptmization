@@ -23,11 +23,16 @@ class HostGA(DSLAlgorithm):
     description = ("(mu+lambda) evolutionary algorithm: tournament(2) selection, uniform crossover + type-aware "
                    "mutation, plus-survival, one-fifth step rule, stagnation restarts (the operator-language host).")
 
-    def __init__(self, population: int = 20, sigma: float = 0.1) -> None:
+    def __init__(self, **params) -> None:
+        unknown = set(params) - set(self.default_params())
+        if unknown:
+            raise ValueError(f"host_ga: unknown parameters {sorted(unknown)}; valid: {sorted(self.default_params())}")
+        p = {**self.default_params(), **params}
+        population, sigma = p["population"], p["sigma"]
         op = copy.deepcopy(DEFAULT_OPERATOR)
         op["children"][1]["sigma"] = float(sigma)  # type_aware mutation scale (0.1 = the default operator)
         super().__init__(host_algorithm(op, population=int(population), name="host_ga"), "host_ga")
-        self.name, self.version = "host_ga", "1.0.0"
+        self.name, self.version, self.description = "host_ga", "1.0.0", type(self).description
         self.params = {"population": int(population), "sigma": float(sigma)}
 
     @classmethod

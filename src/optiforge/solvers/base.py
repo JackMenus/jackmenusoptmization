@@ -22,6 +22,12 @@ log = logging.getLogger("optiforge.solvers")
 SOLVERS: dict[str, type["Solver"]] = {}
 
 
+def _plain(obj):
+    """JSON-normalised copy, so parameters compare equal after a checkpoint round trip."""
+    import json
+    return json.loads(json.dumps(obj, sort_keys=True, default=str))
+
+
 def register_solver(cls):
     SOLVERS[cls.name] = cls
     return cls
@@ -175,6 +181,9 @@ class IterativeSolver(Solver):
             payload = ckpt.load()
             if payload["solver"] != self.name:
                 raise ValueError(f"checkpoint was written by {payload['solver']}, not {self.name}")
+            if payload.get("version") != self.version or _plain(payload.get("params")) != _plain(self.params):
+                raise ValueError(f"checkpoint was written by {self.name} {payload.get('version')} with parameters "
+                                 f"{payload.get('params')}; this run is {self.version} with {self.params}")
             state = payload["state"]
             it = payload["iteration"]
             ctx.rng.bit_generator.state = payload["rng"]

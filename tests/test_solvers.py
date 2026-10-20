@@ -212,3 +212,52 @@ def test_host_ga_is_the_operator_language_host_with_the_default_operator():
     a = get_solver("host_ga").solve(p, Budget(1500), seed=2)
     b = DSLAlgorithm(host_algorithm(DEFAULT_OPERATOR, name="ref"), "ref").solve(p, Budget(1500), seed=2)
     assert a.objective == b.objective and np.array_equal(a.x, b.x) and a.n_evaluations == b.n_evaluations
+
+
+def test_noisy_constrained_discrete_and_mixed_problems_do_not_select_host_ga():
+    from optiforge.api import solve
+    from optiforge.selection.rules import select_by_rules
+    rng = np.random.default_rng(0)
+    sp = Space([Binary(f"b{i}") for i in range(12)])
+    p = Problem(sp, lambda x: float(-np.sum(x) + 0.01 * rng.normal()), noisy=True,
+                constraints=[ineq(lambda x: float(np.sum(x) - 6), "cap")])
+    assert select_by_rules(p, Budget(2000)).solver == "genetic"
+    assert solve(p, budget=1000).feasible
+    m = Problem(Space([Real("x", -1, 1), Integer("k", 0, 5)]), lambda x: float(x[0] ** 2 + x[1] + 0.01 * rng.normal()),
+                noisy=True)
+    plan = select_by_rules(m, Budget(2000))
+    assert plan.params.get("global_solver") == "genetic"
+    assert solve(m, budget=1000).feasible
+
+
+def test_sampled_binary_exchanges_are_distinct_valid_and_cheap():
+    from optiforge.operators import primitives as P
+    sp = Space([Binary(f"b{i}") for i in range(2000)])
+    x = np.zeros(2000)
+    x[::2] = 1
+    moves = P.sample_binary_exchanges(x, sp, 20, np.random.default_rng(0))
+    assert len(moves) == 20 and len({m[1:] for m, _ in moves}) == 20
+    assert all(x[m[1]] == 1 and x[m[2]] == 0 and y.sum() == x.sum() for m, y in moves)
+    assert P.sample_binary_exchanges(np.ones(5), Space([Binary(f"b{i}") for i in range(5)]), 4, np.random.default_rng(0)) == []
+
+
+def test_checkpoint_from_other_parameters_is_refused(tmp_path):
+    p = make_problem("knapsack", 0, n=20)
+    ck = str(tmp_path / "ck.json")
+    get_solver("host_ga", population=10).solve(p, Budget(600), seed=0, checkpoint_path=ck, checkpoint_every=1)
+    r = get_solver("host_ga", population=30).solve(p, Budget(600), seed=0, checkpoint_path=ck, resume=True)
+    assert r.status == "error" and any("parameters" in m for m in r.messages)
+
+
+def test_host_ga_parameters_and_description():
+    s = get_solver("host_ga")
+    assert "mu+lambda" in s.description
+    with pytest.raises(ValueError):
+        get_solver("host_ga", popsize=3)
+
+
+def test_knapsack_dp_skips_items_heavier_than_capacity():
+    from optiforge.benchmarks.problems import make_problem as mk
+    for seed in range(40):
+        mk("knapsack_correlated", seed, n=2)
+        mk("knapsack", seed, n=2)

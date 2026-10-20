@@ -342,6 +342,26 @@ def binary_exchanges(x, space: Space):
             yield ("exchange", int(i), int(j)), y
 
 
+def sample_binary_exchanges(x, space: Space, k: int, rng) -> list:
+    """Up to ``k`` distinct ("exchange", i, j) moves drawn uniformly without replacement from all 1 -> 0 / 0 -> 1
+    pairs, without materialising the full neighbourhood."""
+    x = np.asarray(x, dtype=float)
+    ones = np.flatnonzero(space.bin_mask & (x == 1))
+    zeros = np.flatnonzero(space.bin_mask & (x == 0))
+    total = len(ones) * len(zeros)
+    k = min(int(k), total)
+    if k <= 0:
+        return []
+    flat = rng.choice(total, size=k, replace=False) if total <= 10**7 else np.unique(rng.integers(0, total, 2 * k))[:k]
+    out = []
+    for f in flat:
+        i, j = ones[f // len(zeros)], zeros[f % len(zeros)]
+        y = x.copy()
+        y[i], y[j] = 0.0, 1.0
+        out.append((("exchange", int(i), int(j)), y))
+    return out
+
+
 def random_exchange(x, space: Space, rng) -> np.ndarray | None:
     """One random binary exchange (1 -> 0 and 0 -> 1), or None if no such pair exists."""
     x = np.asarray(x, dtype=float)

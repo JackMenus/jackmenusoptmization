@@ -14,6 +14,7 @@ call and is therefore never merged (the safe direction).
 from __future__ import annotations
 
 import hashlib
+import json
 from typing import Callable
 
 import numpy as np
@@ -68,3 +69,27 @@ def probe_instances(instances) -> list:
             seen.add(key)
             out.append(i)
     return out
+
+
+_HORIZON_KEYS = ("restart", "until", "cond", "step", "refine", "population", "offspring")
+
+
+def horizon_signature(source) -> str:
+    """Hash of the settings whose effect may only appear after the probe budget (restarts, stage switches,
+    conditions, step-size rules, refinement, population sizes). Empty for non-DSL sources (Python operators run in a
+    fixed host, so their behaviour is fully exercised by the probes' evaluation sequence)."""
+    if not isinstance(source, dict):
+        return ""
+    found = []
+
+    def walk(node, path):
+        if isinstance(node, dict):
+            for k, v in sorted(node.items()):
+                if k in _HORIZON_KEYS:
+                    found.append((path + "/" + k, json.dumps(v, sort_keys=True, default=str)))
+                walk(v, path + "/" + k)
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk(v, f"{path}[{i}]")
+    walk(source, "")
+    return ":" + hashlib.sha256(repr(found).encode()).hexdigest()[:12] if found else ""
