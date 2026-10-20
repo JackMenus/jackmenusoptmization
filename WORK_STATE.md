@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 20 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 21 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -60,6 +60,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 18 | (this commit) | host_ga `sigma` parameter; development comparison of variants across 11 families | no variant clearly better (all CIs include 0); defaults unchanged (`lab/r18-host-params`) |
 | 19 | (this commit) | docs brought up to date (architecture solver table and rules, README tests and layout); GitHub Actions workflow `.github/workflows/ci.yml` | docs reviewed against code; the workflow has **not been run** (no remote repository) |
 | 20 | (this commit) | fixes from the third independent review (noisy rule fallback, fingerprint horizon signature, sampled tabu exchanges, small fixes) | regression test per fix; 176 tests; portfolio 1190/1190 identical |
+| 21 | (this commit) | more frequent host_ga restarts as a fix for stuck runs (development data) | negative: all variants worse overall (CIs above 0), no clear help on mixed_constrained (`lab/r21-host-restart`) |
 
 ## Audit findings still open
 
@@ -79,9 +80,9 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 
 ## Next tasks (directly executable)
 
-1. host_ga's occasional stuck runs on `mixed_constrained` stay a known limitation: neither sigma 0.3 nor
-   population 40 helped consistently (round 18). A structural fix (e.g. a binary-pattern restart) would be the
-   next idea, tested the same way (development data first, then a pre-registered fresh-instance test).
+1. host_ga's occasional stuck runs on `mixed_constrained` stay a known limitation: sigma 0.3, population 40
+   (round 18) and earlier restarts (round 21) did not help. Remaining idea: in rule R13 give the hybrid's local stage
+   a binary-flip neighbourhood search (greedy_ls) before pattern search; test on development data first.
 2. Mixed suite v2: the 0.1.0 mixed champion does not transfer to discrete problems (round 8) and its record
    predates the current selection rule (now ignored by the evidence selector). Re-evaluate it on new mixed instances.
 3. Selection: count the feature-probe cost of `auto`; compare it with `hybrid` / `genetic` with practical thresholds.
