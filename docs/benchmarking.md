@@ -47,7 +47,29 @@ Reports include, per solver:
 * per-family means.
 
 Comparisons are paired by (instance, seed) and use a one-sided Wilcoxon signed-rank test with
-`zero_method="zsplit"`, reporting wins, losses and ties.
+`zero_method="zsplit"`, reporting wins, losses and ties. Since 2026-10-20 each comparison also reports effect sizes,
+so that statistical and practical significance are not confused:
+
+* `mean_diff`, `median_diff` and `ci95_mean_diff` (percentile bootstrap over pairs, 2000 resamples, fixed seed);
+* `rank_biserial`, the matched-pairs rank-biserial correlation (-1 means the first solver is better in every pair);
+* `practical_wins`, `practical_losses` and `practical_ties` at `min_effect` score units (default 0.01, where 1 is the
+  random-search level). Differences of order 1e-10 still count as Wilcoxon wins, so a small p-value alone is not a
+  practical improvement; see `lab/r3-continuous` for a case (`auto` vs `cmaes`: p = 8e-7, mean difference -0.0005).
+
+## Candidate selection rule (development loop)
+
+Fixed before the runs it governs, in `DevelopmentConfig`:
+
+* the best baseline on the validation split is the comparator;
+* a retained candidate becomes champion only if its one-sided Wilcoxon p-value, **Holm-adjusted across the
+  archive**, is below `alpha` (0.05), its mean validation score is at least `min_effect` (0.01) better, the bootstrap
+  95% CI of the paired mean difference lies entirely below zero, and its feasibility rate is not lower;
+* the held-out test split is run once, after selection is frozen, and never feeds back. Each suite records the
+  status of its test split (`test_status`); the version-1 suites' test splits were reported in 0.1.0 and are
+  historical, so confirmatory claims use the version-2 suite `continuous_general`, which has fresh instance seeds
+  and two families that appear only in its test split.
+
+`multiple_testing: none` and `min_effect: 0` restore the 0.1.0 rule.
 
 ## Caveats
 

@@ -41,3 +41,16 @@
   passed to SLSQP as its Jacobian.
 * `finalize` takes per-constraint violations from the verification evaluation instead of calling the constraints
   again.
+
+### Experiment methodology
+* `paired_comparison` reports a bootstrap 95% CI of the mean paired difference, the median difference, the
+  matched-pairs rank-biserial effect size and practical wins/losses/ties at `min_effect` (default 0.01 score units).
+* **Behaviour change.** Development-loop selection now requires a Holm-adjusted p-value below alpha, a mean
+  improvement of at least `min_effect`, and a CI entirely below zero (`multiple_testing: none`, `min_effect: 0`
+  restore the 0.1.0 rule). The evidence-based selector uses the adjusted p-value when it is recorded.
+* Suites carry a `version` and a `test_status`; version-1 suites whose test splits were reported in 0.1.0 are marked
+  historical. Suite `continuous_general` (version 2) adds held-out test-only families.
+
+### Operator language
+* New transformer `correlated_gaussian`: a rotation-invariant mutation from the elite population covariance; the
+  grammar can now propose it for real variables. Existing candidates and their hashes are unchanged.

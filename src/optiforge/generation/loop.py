@@ -29,8 +29,8 @@ from ..core.errors import BudgetExhausted, CandidateRejected
 from ..dsl.spec import check_algorithm, check_operator, compatible_kinds, host_algorithm
 from ..isolation.sandbox import probe
 from ..registry.store import Registry
-from ..benchmarks.runner import (SolverSpec, builtin, paired_comparison, per_family, reference_table, run_matrix,
-                                 summarize)
+from ..benchmarks.runner import (SolverSpec, builtin, holm_adjust, paired_comparison, per_family, reference_table,
+                                 run_matrix, summarize)
 from ..benchmarks.suites import get_suite
 from ..validation.gates import validate
 from .features import analyze
@@ -61,6 +61,10 @@ class DevelopmentConfig:
     max_wall_time: float | None = 3600.0
     test_share: float = 0.15  # fraction of the total budget reserved for the held-out test phase
     alpha: float = 0.05
+    # selection rule (fixed before any run): Holm-adjusted p < alpha over the archive AND mean score improvement of at
+    # least min_effect AND the bootstrap 95% CI of the paired mean difference entirely below zero
+    min_effect: float = 0.01
+    multiple_testing: str = "holm"  # "holm" or "none" (the 0.1.0 rule)
     baselines: list[str] | None = None
     operator_share: float = 0.4
     code_generation: bool = True
@@ -276,10 +280,16 @@ class DevelopmentLoop:
         ref = reference_table([r for r in rows if r["solver"] in baselines])
         summ = summarize(rows, ref)
         best_base = min(baselines, key=lambda b: summ[b]["mean_score"])
-        comps = {a["id"]: paired_comparison(rows, a["id"], best_base) for a in archive}
+        comps = {a["id"]: paired_comparison(rows, a["id"], best_base, cfg.min_effect) for a in archive}
+        raw_p = {k: c["p_value_a_better"] for k, c in comps.items()}
+        adj = holm_adjust(raw_p) if cfg.multiple_testing == "holm" else raw_p
+        for k in comps:
+            comps[k]["p_value_adjusted"] = adj[k]
+            comps[k]["multiple_testing"] = cfg.multiple_testing
         passing = [a["id"] for a in archive
-                   if comps[a["id"]]["p_value_a_better"] is not None and comps[a["id"]]["p_value_a_better"] < cfg.alpha
-                   and summ[a["id"]]["mean_score"] < summ[best_base]["mean_score"]
+                   if adj[a["id"]] is not None and adj[a["id"]] < cfg.alpha
+                   and summ[a["id"]]["mean_score"] <= summ[best_base]["mean_score"] - cfg.min_effect
+                   and comps[a["id"]]["ci95_mean_diff"] is not None and comps[a["id"]]["ci95_mean_diff"][1] < 0
                    and summ[a["id"]]["feasibility_rate"] >= summ[best_base]["feasibility_rate"]]
         champion = min(passing, key=lambda c: summ[c]["mean_score"]) if passing else None
         vp = [i.make() for i in val]
@@ -294,12 +304,16 @@ class DevelopmentLoop:
                                  history_entry={"operation": "benchmarked", "split": "validation"})
         if champion:
             self.registry.update(champion, status="champion", history_entry={"operation": "selected as champion on validation split"})
+            ci = comps[champion]["ci95_mean_diff"]
             decision = (f"{champion} beat the best baseline '{best_base}' on the validation split "
                         f"(mean score {summ[champion]['mean_score']:.4f} vs {summ[best_base]['mean_score']:.4f}, "
-                        f"one-sided Wilcoxon p={comps[champion]['p_value_a_better']:.3g} < {cfg.alpha})")
+                        f"95% CI of paired difference [{ci[0]:+.4f}, {ci[1]:+.4f}], one-sided Wilcoxon "
+                        f"p={comps[champion]['p_value_a_better']:.3g}, {cfg.multiple_testing}-adjusted "
+                        f"{comps[champion]['p_value_adjusted']:.3g} < {cfg.alpha}, required improvement {cfg.min_effect})")
         else:
-            decision = (f"no retained candidate beat the best baseline '{best_base}' on the validation split at alpha={cfg.alpha}; "
-                        "the baselines are retained for ordinary use")
+            decision = (f"no retained candidate beat the best baseline '{best_base}' on the validation split "
+                        f"(alpha={cfg.alpha}, {cfg.multiple_testing} adjustment, minimum improvement {cfg.min_effect}, "
+                        "CI below zero); the baselines are retained for ordinary use")
         self.event("selection", decision=decision)
         return {"champion": champion, "best_baseline": best_base, "decision": decision, "summary": summ,
                 "comparisons": comps, "per_family": per_family(rows)}
@@ -335,7 +349,7 @@ class DevelopmentLoop:
         ref = reference_table([r for r in rows if r["solver"] in baselines])
         summ = summarize(rows, ref)
         best_base = min(baselines, key=lambda b: summ[b]["mean_score"])
-        comps = {i: paired_comparison(rows, i, best_base) for i in ids}
+        comps = {i: paired_comparison(rows, i, best_base, cfg.min_effect) for i in ids}
         for i in ids:
             self.registry.update(i, benchmarks_append={"split": "test", "budget": cfg.run_budget, "summary": summ[i],
                                                        "used_for_selection": False,
@@ -394,14 +408,19 @@ def render_markdown(rep: dict) -> str:
     if rep["selection"].get("summary"):
         L += _table(rep["selection"]["summary"])
     t = rep["test"]
-    L += ["", "## Held-out test split (evaluated once, after selection)", ""]
+    L += ["", "## Held-out test split (evaluated once, after selection)", "",
+          f"Suite version {rep['suite'].get('version', '1')}; test-split status before this run: "
+          f"{rep['suite'].get('test_status', 'unknown')}.", ""]
     if "summary" in t:
         L += _table(t["summary"])
         L += ["", f"Best baseline on test: `{t['best_baseline']}`.", ""]
         for cid, c in t["comparisons"].items():
             p = c.get("p_value_a_better")
+            ci = c.get("ci95_mean_diff")
             L.append(f"- `{cid}` vs `{t['best_baseline']}`: mean score difference {c['mean_diff']:+.4f} over {c['pairs']} paired runs "
-                     f"(wins {c['wins']}, losses {c['losses']}, ties {c['ties']}; one-sided Wilcoxon p={'n/a' if p is None else f'{p:.3g}'})")
+                     f"(95% CI {'n/a' if ci is None else f'[{ci[0]:+.4f}, {ci[1]:+.4f}]'}; wins {c['wins']}, losses {c['losses']}, "
+                     f"ties {c['ties']}; beyond {c.get('min_effect')}: {c.get('practical_wins')} better, "
+                     f"{c.get('practical_losses')} worse; one-sided Wilcoxon p={'n/a' if p is None else f'{p:.3g}'})")
     else:
         L.append(str(t))
     L += ["", f"Demonstration candidates: {rep['demonstrations']}"]

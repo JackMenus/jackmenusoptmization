@@ -20,7 +20,11 @@ Every expression has a static node type.
   `de_best1` and `de_current_to_pbest`. A producer may appear only first in a `seq`.
 * **Transformers** modify a child: `gaussian` and `cauchy` (optionally with adaptive steps), `uniform_reset`,
   `bit_flip`, `categorical_reset`, `integer_step`, `perm_swap`, `perm_insert`, `perm_reverse`, `perm_scramble`,
-  `type_aware` and `toward_best`.
+  `type_aware`, `toward_best` and `correlated_gaussian`.
+* `correlated_gaussian` (added 2026-10-20, real variables only) adds `scale * L z`, where `L L^T` is the covariance
+  of the best `elite` fraction of the current population over the real coordinates and `z` is standard normal. It is
+  the only rotation-invariant mutation in the language: all other mutations act coordinate-wise, which is why
+  generated algorithms could exploit separable benchmarks but failed on rotated ones (`lab/r3-continuous`).
 
 The combinators are:
 

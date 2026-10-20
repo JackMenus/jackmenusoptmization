@@ -19,7 +19,7 @@ import numpy as np
 from ..dsl.spec import DSL_VERSION, OPS, STEP_OPS, SURVIVAL_OPS, check_algorithm, check_operator
 
 LEAVES_BY_TYPE = {
-    "real": ["gaussian", "cauchy", "uniform_reset", "toward_best"],
+    "real": ["gaussian", "cauchy", "uniform_reset", "toward_best", "correlated_gaussian"],
     "integer": ["integer_step", "gaussian", "uniform_reset"],
     "binary": ["bit_flip", "uniform_reset"],
     "categorical": ["categorical_reset", "uniform_reset"],

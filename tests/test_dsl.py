@@ -116,3 +116,39 @@ def test_mutation_and_crossover_preserve_validity_and_change_hash():
         c, _ = crossover_algorithms(a, b, rng)
         o, _ = mutate_operator(g.operator(rng), rng, g)
     assert changed >= 5
+
+
+CORR_SPEC = {"dsl_version": 1, "kind": "algorithm", "name": "corr", "population": 16, "offspring": 16,
+             "init": {"op": "lhs"}, "repair": {"op": "reflect"},
+             "stages": [{"name": "s", "parent_selection": {"op": "tournament", "k": 2},
+                         "variation": {"op": "seq", "children": [{"op": "arithmetic_cx"},
+                                                                 {"op": "correlated_gaussian", "scale": 0.8}]},
+                         "survival": {"op": "plus"}, "step": {"op": "one_fifth"}}]}
+
+
+def test_correlated_gaussian_is_checked_reproducible_and_resumable(tmp_path):
+    from optiforge import Budget
+    from optiforge.benchmarks.problems import make_problem
+    from optiforge.dsl.interpreter import DSLAlgorithm
+    from optiforge.dsl.spec import check_algorithm
+    assert check_algorithm(CORR_SPEC, {"real"}).ok
+    from optiforge.dsl.spec import check_operator
+    assert check_operator({"op": "correlated_gaussian"}, {"real"}).ok
+    rep = check_operator({"op": "correlated_gaussian"}, {"real", "binary"})
+    assert not rep.ok and "binary" in rep.errors[0]  # cannot change binary variables on its own
+    p = make_problem("ellipsoid", 1, dim=6)
+    a = DSLAlgorithm(CORR_SPEC).solve(p, Budget(1200), seed=3)
+    b = DSLAlgorithm(CORR_SPEC).solve(p, Budget(1200), seed=3)
+    assert a.x == b.x and a.objective < make_problem("ellipsoid", 1, dim=6).objective(p.space.lower)
+    ck = str(tmp_path / "ck.json")
+    full = a
+    part = DSLAlgorithm(CORR_SPEC).solve(p, Budget(1200), seed=3, checkpoint_path=ck, checkpoint_every=2,
+                                         callback=_stop_after(600))
+    assert part.termination_reason == "cancelled"
+    res = DSLAlgorithm(CORR_SPEC).solve(p, Budget(1200), seed=3, checkpoint_path=ck, checkpoint_every=2, resume=True)
+    assert res.x == full.x and res.n_evaluations == full.n_evaluations
+
+
+def _stop_after(n):
+    from tests.test_solvers import _stop_after as s
+    return s(n)

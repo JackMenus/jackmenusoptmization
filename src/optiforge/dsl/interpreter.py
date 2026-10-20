@@ -40,6 +40,28 @@ class _Env:
             return self.X[self.best]
         return self.X[P.tournament(self.ranks, self.rng, self.sel.get("k", 2))]
 
+    def elite_factor(self, elite: float) -> np.ndarray | None:
+        """Cholesky factor of the elite population covariance over the real coordinates (cached per generation)."""
+        key = (id(self.X), self.st["gen"], self.st.get("restarts", 0), round(float(elite), 6))
+        cache = self.algo.__dict__.setdefault("_chol_cache", {})  # not in st: st must stay checkpoint-serialisable
+        if key in cache:
+            return cache[key]
+        cache.clear()
+        m = self.space.real_mask
+        L = None
+        if m.any() and len(self.X) >= 2:
+            k = max(2, int(math.ceil(elite * len(self.X))))
+            E = self.X[np.argsort(self.ranks, kind="stable")[:k]][:, m]
+            C = np.cov(E, rowvar=False).reshape(int(m.sum()), int(m.sum()))
+            w = self.space.width[m]
+            C = C + np.diag((1e-12 + 1e-10 * w) ** 2)  # keep it positive definite when the elite collapses
+            try:
+                L = np.linalg.cholesky(C)
+            except np.linalg.LinAlgError:
+                L = np.diag(np.sqrt(np.maximum(np.diag(C), 0.0)))
+        cache[key] = L
+        return L
+
     def distinct(self, k: int, exclude: int) -> list[int]:
         n = len(self.X)
         pool = [j for j in range(n) if j != exclude]
@@ -225,6 +247,14 @@ class DSLAlgorithm(IterativeSolver):
         if op == "type_aware":
             s = e.get("sigma", 0.1) * (mult if e.get("adaptive", True) else 1.0)
             return P.type_aware_mutation(x, sp, rng, sigma=s)
+        if op == "correlated_gaussian":
+            L = env.elite_factor(e.get("elite", 0.5))
+            if L is None:
+                return x
+            s = e.get("scale", 1.0) * (mult if e.get("adaptive", True) else 1.0)
+            y = x.copy()
+            y[sp.real_mask] = x[sp.real_mask] + s * (L @ rng.standard_normal(L.shape[0]))
+            return y
         if op == "toward_best":
             y = x.copy()
             m = sp.real_mask | sp.int_mask

@@ -63,6 +63,10 @@ OPS: dict[str, tuple[str, frozenset, dict]] = {
     "perm_scramble": ("transformer", frozenset({"permutation"}), {"max_len": ("int", 2, 10, 4)}),
     "type_aware": ("transformer", frozenset(ALL_TYPES), {"sigma": ("float", 1e-4, 1.0, 0.1), "adaptive": ("bool", 0, 1, True)}),
     "toward_best": ("transformer", frozenset({"real", "integer"}), {"w": ("float", 0.0, 1.0, 0.3)}),
+    # rotation-invariant step drawn from the covariance of the elite part of the current population (real coordinates)
+    "correlated_gaussian": ("transformer", frozenset({"real"}),
+                            {"scale": ("float", 0.05, 3.0, 1.0), "elite": ("float", 0.1, 1.0, 0.5),
+                             "adaptive": ("bool", 0, 1, True)}),
 }
 COMBINATORS = ("seq", "mix", "if", "per_type", "prob", "repeat", "code")
 

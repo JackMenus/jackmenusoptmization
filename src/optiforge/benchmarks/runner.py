@@ -188,8 +188,17 @@ def per_family(rows: list[dict]) -> dict[str, dict[str, float]]:
     return {f: {s: float(np.nanmean(v)) for s, v in d.items()} for f, d in t.items()}
 
 
-def paired_comparison(rows: list[dict], a: str, b: str) -> dict:
-    """Paired comparison of solver a vs b on matched (instance, seed) pairs; one-sided Wilcoxon (a better)."""
+PRACTICAL_EFFECT = 0.01  # score units (1 = random-search level); smaller paired differences count as practical ties
+
+
+def paired_comparison(rows: list[dict], a: str, b: str, min_effect: float = PRACTICAL_EFFECT,
+                      n_boot: int = 2000) -> dict:
+    """Paired comparison of solver a vs b on matched (instance, seed) pairs; one-sided Wilcoxon (a better).
+
+    Besides the test it reports effect sizes, so statistical and practical significance are kept apart:
+    ``ci95_mean_diff`` (percentile bootstrap over pairs, fixed seed), ``rank_biserial`` (matched-pairs rank-biserial
+    correlation, -1 = a always better) and practical wins/losses/ties at ``min_effect`` score units.
+    """
     # not-applicable runs are excluded rather than counted as failures
     sa = {(r["instance"], r["seed"]): r.get("score", math.nan) for r in rows if r["solver"] == a and r.get("status") != "incompatible"}
     sb = {(r["instance"], r["seed"]): r.get("score", math.nan) for r in rows if r["solver"] == b and r.get("status") != "incompatible"}
@@ -201,6 +210,24 @@ def paired_comparison(rows: list[dict], a: str, b: str) -> dict:
     diff = da - db
     res = {"pairs": int(len(diff)), "mean_diff": float(diff.mean()) if len(diff) else None,
            "wins": int(np.sum(diff < -1e-9)), "losses": int(np.sum(diff > 1e-9)), "ties": int(np.sum(np.abs(diff) <= 1e-9))}
+    res["min_effect"] = min_effect
+    res["practical_wins"] = int(np.sum(diff < -min_effect))
+    res["practical_losses"] = int(np.sum(diff > min_effect))
+    res["practical_ties"] = int(np.sum(np.abs(diff) <= min_effect))
+    res["median_diff"] = float(np.median(diff)) if len(diff) else None
+    if len(diff) >= 2:
+        boot_rng = np.random.default_rng(12345)
+        idx = boot_rng.integers(0, len(diff), (n_boot, len(diff)))
+        means = diff[idx].mean(axis=1)
+        res["ci95_mean_diff"] = [float(np.percentile(means, 2.5)), float(np.percentile(means, 97.5))]
+    else:
+        res["ci95_mean_diff"] = None
+    nz = diff[np.abs(diff) > 1e-12]
+    if nz.size:
+        ranks = stats.rankdata(np.abs(nz))
+        res["rank_biserial"] = float((ranks[nz > 0].sum() - ranks[nz < 0].sum()) / ranks.sum())
+    else:
+        res["rank_biserial"] = 0.0
     if len(diff) >= 5 and np.any(np.abs(diff) > 1e-12):
         try:
             w = stats.wilcoxon(da, db, alternative="less", zero_method="zsplit")
@@ -210,3 +237,14 @@ def paired_comparison(rows: list[dict], a: str, b: str) -> dict:
     else:
         res["p_value_a_better"] = None
     return res
+
+
+def holm_adjust(pvalues: dict) -> dict:
+    """Holm-Bonferroni adjusted p-values (family-wise error control); None entries stay None."""
+    items = sorted(((p, k) for k, p in pvalues.items() if p is not None))
+    m = len(items)
+    out, running = {k: None for k in pvalues}, 0.0
+    for i, (p, k) in enumerate(items):
+        running = max(running, min(1.0, (m - i) * p))
+        out[k] = running
+    return out

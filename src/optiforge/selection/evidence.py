@@ -49,7 +49,7 @@ class EvidenceSelector:
         comp = entry.get("vs_best_baseline", {})
         if comp.get("pairs", 0) < self.min_runs:
             return False, f"only {comp.get('pairs', 0)} paired runs (< {self.min_runs})"
-        p = comp.get("p_value_a_better")
+        p = comp.get("p_value_adjusted", comp.get("p_value_a_better"))  # multiplicity-adjusted when recorded
         if p is None or p >= self.alpha:
             return False, f"validation p-value {p} not below {self.alpha}"
         return True, (f"champion beat baseline '{comp.get('baseline')}' on a validation split "

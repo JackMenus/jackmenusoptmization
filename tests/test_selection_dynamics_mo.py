@@ -129,3 +129,18 @@ def test_scoring_excludes_not_applicable_runs():
     assert "b" not in per_family(rows)["f"]
     assert paired_comparison(rows, "b", "random_search")["pairs"] == 0
     assert paired_comparison(rows, "a", "random_search")["wins"] == 6
+
+
+def test_paired_comparison_reports_effect_sizes_and_practical_ties():
+    from optiforge.benchmarks.runner import holm_adjust, paired_comparison
+    rows = []
+    for i in range(20):
+        rows.append({"solver": "a", "instance": f"i{i}", "seed": 0, "score": 0.1 - 1e-10})  # tiny, consistent edge
+        rows.append({"solver": "b", "instance": f"i{i}", "seed": 0, "score": 0.1})
+    c = paired_comparison(rows, "a", "b")
+    assert c["practical_ties"] == 20 and c["practical_wins"] == 0
+    lo, hi = c["ci95_mean_diff"]
+    assert lo <= c["mean_diff"] <= hi and abs(hi) < 1e-6
+    assert c["rank_biserial"] == -1.0
+    adj = holm_adjust({"x": 0.01, "y": 0.04, "z": None})
+    assert adj == {"x": 0.02, "y": 0.04, "z": None}
