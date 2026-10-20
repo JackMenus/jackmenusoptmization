@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 12 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 13 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -52,6 +52,7 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 10b | `29b56a3` | audit fixes: noisy feasibility over all repeats, converged checkpoint resume, fork-safe sandbox objects, evidence selector requires adjusted p + CI | each regression test fails on the old code |
 | 11 | `ae540ad` | tabu 1.1.0: exchange moves by default | portfolio: 5/1190 runs changed (tabu on knapsack, 4 better, 1 worse) |
 | 12 | (this commit) | suite `discrete_general_v3`; pre-registered confirmation of the round-10 candidates | neither confirmed vs genetic (Holm p 0.071; CIs include 0); both better only on multi_knapsack (`lab/r12-confirm-discrete`) |
+| 13 | (this commit) | pre-registered multi-knapsack hypothesis on 20 new instances (4 sizes) | supported for both candidates (CI below 0; ~0.6-1.0 pp smaller relative gap); family-specific (`lab/r13-mkp`) |
 
 ## Audit findings still open
 
@@ -71,9 +72,10 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 
 ## Next tasks (directly executable)
 
-1. Post-hoc hypothesis from rounds 10 and 12: the generated GA variants beat genetic on `multi_knapsack` only.
-   Testing it needs new multi_knapsack instances (e.g. other n / m / tightness) and a pre-registration; the
-   `discrete_general_v3` test split is historical.
+1. Use the round-13 result: the GA variants are better than genetic on multi-knapsacks (confirmed on new
+   instances) and not elsewhere. Options: let the evidence selector route multi-constraint binary knapsack-like
+   problems to them (needs a problem-profile feature that distinguishes these, which `matches()` does not have),
+   or find which operator part causes the gain (ablation on train instances).
 2. Mixed suite v2: the 0.1.0 mixed champion does not transfer to discrete problems (round 8) and its record
    predates the current selection rule (now ignored by the evidence selector). Re-evaluate it on new mixed instances.
 3. Selection: count the feature-probe cost of `auto`; compare it with `hybrid` / `genetic` with practical thresholds.

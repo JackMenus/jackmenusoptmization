@@ -69,6 +69,11 @@
 * Expensive exact optima are cached per process, and the benchmark runner builds every instance once before forking.
 * `integer_quadratic` enumerates in chunks (same optimum and tie-breaking, bounded memory).
 
+### Multi-knapsack hypothesis (round 13)
+* Pre-registered on 20 new multidimensional knapsack instances (n 40/60, m 5/10): both round-10 GA variants beat
+  genetic (Holm p 7e-6, CIs below zero), reducing the mean relative gap to the optimum by about 0.6-1.0 percentage
+  points at 5000 evaluations. The advantage is specific to this family (round 12 found none elsewhere).
+
 ### Confirmation on fresh discrete instances (round 12)
 * Suite `discrete_general_v3` (fresh seeds, 5 test instances per family). Pre-registered confirmation of the two
   round-10 candidates against genetic: neither confirmed (Holm p 0.071 for both; CIs include zero). Both are better
