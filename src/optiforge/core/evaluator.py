@@ -200,6 +200,16 @@ class Evaluator:
         g = np.asarray(self.problem.gradient(np.asarray(x, dtype=float)), dtype=float)
         return g if self.problem.sense == "min" else -g
 
+    def constraint_jacobian(self, c, x) -> np.ndarray:
+        """Declared Jacobian of one constraint (counted with the gradient evaluations; time- and cancel-gated)."""
+        reason = self.exhausted_reason()
+        if reason == "cancelled":
+            raise SearchCancelled("search cancelled")
+        if reason == "budget_time":
+            raise BudgetExhausted(reason)
+        self.stats.n_gradient_evaluations += 1
+        return np.atleast_2d(np.asarray(c.gradient(np.asarray(x, dtype=float)), dtype=float))
+
     # ------------------------------------------------------------------
     def snapshot(self) -> dict:
         """Serializable state for checkpoints."""

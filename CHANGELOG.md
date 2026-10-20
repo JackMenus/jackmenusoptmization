@@ -54,3 +54,27 @@
 ### Operator language
 * New transformer `correlated_gaussian`: a rotation-invariant mutation from the elite population covariance; the
   grammar can now propose it for real variables. Existing candidates and their hashes are unchanged.
+
+### Fixes from the second independent review (2026-10-20)
+* `milp` on `Problem.from_linear` problems with real variables usually failed verification (the tolerance-relaxed
+  optimum sat just outside the tolerance) and lost the certificate. It now takes the relaxed model's bound, finds a
+  point that verifies (relaxed optimum, else strict model, else strict model tightened by 1e-7 / 1e-6), and
+  certifies with an explicit objective tolerance. 200/200 random mixed-integer models certify at tol 1e-9.
+* Model problems skip spot checks (they are redundant), which also stops tied optima from losing the certificate
+  and lets the adapter work with budgets of a few evaluations.
+* An infeasibility certificate is dropped when the verification evaluation fails (status `error`).
+* A verifier that raises no longer produces the "denser re-simulation found violations" statement; it drops global
+  certificates and keeps status `feasible`.
+* SLSQP skips a start point whose constraints cannot be evaluated (vector constraints previously crashed the run);
+  declared constraint Jacobians are counted as gradient evaluations and are time- and cancel-gated.
+* `correlated_gaussian` caches its factor by population content, not `id()`.
+* Selection compares the paired mean difference (not unpaired means) with `min_effect`; the rank-biserial effect
+  uses the same 1e-9 zero threshold as the win/tie counts; the evidence selector also requires the CI below zero and
+  a mean improvement of at least `min_effect` (0.01 for older records).
+* The development loop records each test-split run in `<registry>/test_access.jsonl` and warns in the report when
+  the suite version's test split was run before.
+* Suite `continuous_general`: the held-out family `styblinski_tang` (used in 0.1.0 training) is replaced by the new
+  `griewank_rotated`; instance generation of the new families now depends on the dimension. The round-3
+  characterization used the earlier instance definitions (commit b72d9c1).
+* Adding `correlated_gaussian` to the grammar changes its random proposal stream: development runs of earlier
+  versions do not reproduce from their seeds on this version (existing candidates and their hashes are unchanged).

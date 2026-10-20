@@ -52,11 +52,14 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
             ))
             st = ev.stats
             failed = st.n_errors + st.n_nonfinite
-            if termination == "error" or (failed > 0 and failed >= ev.n_evals):
+            if failed > 0 and failed >= ev.n_evals:
                 # every evaluation that ran failed: an execution failure, not an unsuccessful search
                 status = "error"
                 messages.append(f"execution failure: all {ev.n_evals} evaluations failed "
                                 f"({st.n_errors} raised, {st.n_nonfinite} non-finite)")
+            elif termination == "error":
+                status = "error"
+                messages.append(f"execution failure: the solver stopped with an error after {ev.n_evals} evaluations")
             elif ev.n_evals == 0:
                 status = "error"
                 messages.append("no evaluation was performed")
@@ -113,12 +116,16 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
     # -- optional independent verifier (e.g. dense re-simulation) ------------
     verifier_report = None
     dense_rejected = False
+    verifier_failed = False
     if p.verifier is not None and objective is not None:
         try:
             verifier_report = dict(p.verifier(best.x))
         except Exception as exc:
-            verifier_report = {"feasible": False, "scope": "verifier_error", "error": repr(exc)}
-        if feasible and not verifier_report.get("feasible", False):
+            verifier_report = {"feasible": None, "scope": "verifier_error", "error": repr(exc)}
+            verifier_failed = True
+            messages.append(f"independent verifier raised {type(exc).__name__}: {exc}; its check is missing, so no "
+                            "global certificate is kept")
+        if feasible and not verifier_failed and not verifier_report.get("feasible", False):
             messages.append("independent verifier rejected the reported point: " + str(verifier_report))
             dense_rejected = True
 
@@ -138,8 +145,9 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
             if p.noisy:
                 messages.append(f"dropped guarantee '{g.kind}': objective is noisy")
                 continue
-            if dense_rejected:
-                messages.append(f"dropped guarantee '{g.kind}': the independent verifier rejected the reported point")
+            if dense_rejected or verifier_failed:
+                messages.append(f"dropped guarantee '{g.kind}': the independent verifier "
+                                f"{'raised' if verifier_failed else 'rejected the reported point'}")
                 continue
             certified = certified or g.kind == GLOBAL_CERTIFIED
         guarantees.append(g)
@@ -147,7 +155,7 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
         messages.append("dropped guarantee 'infeasibility_certified': the reported point verifies as feasible")
         guarantees = [g for g in guarantees if g.kind != INFEASIBILITY_CERTIFIED]
     if feasible:
-        scope = (verifier_report or {}).get("scope") or p.metadata.get("feasibility_scope", "exact")
+        scope = (None if verifier_failed else (verifier_report or {}).get("scope")) or p.metadata.get("feasibility_scope", "exact")
         if dense_rejected:
             guarantees.append(Guarantee(
                 FEASIBLE_SAMPLED,
@@ -177,6 +185,10 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
             status = "feasible_discretized_only"
     else:
         guarantees = [g for g in guarantees if g.kind not in (GLOBAL_CERTIFIED, GLOBAL_CONDITIONAL)]
+        if verification_failed and any(g.kind == INFEASIBILITY_CERTIFIED for g in guarantees):
+            # the problem changed behaviour between search and verification: the enumeration is not trustworthy
+            messages.append("dropped guarantee 'infeasibility_certified': the verification evaluation failed")
+            guarantees = [g for g in guarantees if g.kind != INFEASIBILITY_CERTIFIED]
         if any(g.kind == INFEASIBILITY_CERTIFIED for g in guarantees) and not p.noisy:
             status = "infeasible_certified"
         else:

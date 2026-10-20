@@ -107,9 +107,9 @@ SUITES: dict[str, Suite] = {
          ("schwefel_1_2", {"dim": 10}), ("rosenbrock", {"dim": 10})],
         {"train": [1010, 1011], "validation": [1020, 1021], "test": [1030, 1031, 1032]},
         "Separable and rotated multimodal, ill-conditioned and non-separable unimodal continuous functions, "
-        "dimensions 5 and 10; test adds two held-out families (rotated bent cigar at dimension 10, Styblinski-Tang at dimension 8).",
+        "dimensions 5 and 10; test adds two held-out families that no suite uses elsewhere (rotated bent cigar at dimension 10, rotated Griewank at dimension 8).",
         version="2",
-        test_only=[("bent_cigar_rotated", {"dim": 10}), ("styblinski_tang", {"dim": 8})]),
+        test_only=[("bent_cigar_rotated", {"dim": 10}), ("griewank_rotated", {"dim": 8})]),
 }
 
 

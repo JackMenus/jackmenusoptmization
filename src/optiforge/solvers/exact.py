@@ -81,7 +81,7 @@ class MILPSolver(Solver):
 
     @classmethod
     def default_params(cls) -> dict:
-        return {"spot_checks": 50, "check_tol": 1e-7, "time_limit": 60.0, "mip_rel_gap": 1e-9}
+        return {"spot_checks": 50, "check_tol": 1e-7, "time_limit": 60.0, "mip_rel_gap": 1e-9, "certificate_tol": 1e-6}
 
     def incompatibilities(self, problem):
         r = super().incompatibilities(problem)
@@ -137,57 +137,63 @@ class MILPSolver(Solver):
             if why:
                 raise UnsupportedProblemError(why + " at a sample point")
 
-    def _run(self, ctx):
-        p, sp = ctx.problem, ctx.problem.space
-        exact = p.linear_is_exact
-        model = self._model(p)
-        c, offset, A_ub, b_ub, A_eq, b_eq, tol_ub, tol_eq = model
-        self._spot_check(ctx, model)
-        ctx.diagnostics["linear_model_exact"] = exact
-        cmin = c * (1 if p.sense == "min" else -1)
-        integrality = np.where(sp.real_mask, 0, 1)
+    def _highs(self, ctx, cmin, model, relax: float, tighten: float):
+        """Solve min cmin@x over the box with every constraint shifted outward by ``relax`` x its tolerance and
+        inward by ``tighten`` (relative to 1 + |rhs|)."""
+        sp = ctx.problem.space
+        _, _, A_ub, b_ub, A_eq, b_eq, tol_ub, tol_eq = model
         cons = []
-        # The problem as defined accepts violations up to each constraint's tolerance, so the model solved is the
-        # tolerance-relaxed one; its optimum (or infeasibility) is then a statement about the problem as defined.
         if A_ub is not None:
-            cons.append(optimize.LinearConstraint(A_ub, -np.inf, b_ub + tol_ub))
+            cons.append(optimize.LinearConstraint(A_ub, -np.inf, b_ub + relax * tol_ub - tighten * (1 + np.abs(b_ub))))
         if A_eq is not None:
-            cons.append(optimize.LinearConstraint(A_eq, b_eq - tol_eq, b_eq + tol_eq))
+            w = relax * tol_eq - tighten * (1 + np.abs(b_eq))
+            lo, hi = b_eq - w, b_eq + w
+            if np.any(lo > hi):  # an equality cannot be tightened inward
+                lo, hi = b_eq.copy(), b_eq.copy()
+            cons.append(optimize.LinearConstraint(A_eq, lo, hi))
         time_limit = float(self.params["time_limit"])
         if ctx.evaluator.budget.max_time is not None:
             time_limit = max(0.01, min(time_limit, ctx.evaluator.budget.max_time - ctx.evaluator.elapsed()))
         ctx.diagnostics["highs_time_limit"] = time_limit
-        res = optimize.milp(cmin, integrality=integrality, bounds=optimize.Bounds(sp.lower, sp.upper), constraints=cons,
-                            options={"time_limit": time_limit, "mip_rel_gap": self.params["mip_rel_gap"],
-                                     "disp": False})
+        res = optimize.milp(cmin, integrality=np.where(sp.real_mask, 0, 1), bounds=optimize.Bounds(sp.lower, sp.upper),
+                            constraints=cons, options={"time_limit": time_limit, "mip_rel_gap": self.params["mip_rel_gap"],
+                                                       "disp": False})
+        ctx.diagnostics.setdefault("highs_solves", []).append(
+            {"relax": relax, "tighten": tighten, "status": int(res.status), "message": str(res.message),
+             "fun": None if res.fun is None else float(res.fun), "mip_gap": _f(getattr(res, "mip_gap", None)),
+             "dual_bound": _f(getattr(res, "mip_dual_bound", None))})
         ctx.diagnostics["highs_status"] = int(res.status)
         ctx.diagnostics["highs_message"] = str(res.message)
-        gap = getattr(res, "mip_gap", None)
-        ctx.diagnostics["mip_gap"] = None if gap is None else float(gap)
-        timed_out = res.status == 1
+        return res
+
+    def _run(self, ctx):
+        p, sp = ctx.problem, ctx.problem.space
+        exact = p.linear_is_exact
+        model = self._model(p)
+        c, offset = model[0], model[1]
+        ctx.diagnostics["linear_model_exact"] = exact
+        sgn = 1 if p.sense == "min" else -1
+        cmin = c * sgn
+        if exact:
+            return self._run_exact(ctx, cmin, model, sgn * offset)
+        self._spot_check(ctx, model)  # functions written by the user: compare them with the declaration first
+        res = self._highs(ctx, cmin, model, 0.0, 0.0)
+        if res.status == 1:
+            return "budget_time" if res.x is None else self._timed_out(ctx, sp, res)
         if res.status == 2:
-            if exact:
-                ctx.guarantee_hints.append(Guarantee(
-                    INFEASIBILITY_CERTIFIED,
-                    "HiGHS reported the linear model infeasible with every constraint relaxed by its declared "
-                    "tolerance. The objective and constraints of this problem are generated from that model "
-                    "(Problem.from_linear), so the statement is about the problem as defined.",
-                    method="HiGHS via scipy.optimize.milp",
-                    assumptions=["HiGHS feasibility/integrality tolerances (default 1e-7 / 1e-6)"]))
-            else:
-                ctx.messages.append(
-                    "HiGHS reported the declared linear model infeasible. The problem's own functions were only "
-                    "spot-checked against the declaration, so infeasibility is NOT certified (build the problem with "
-                    "Problem.from_linear for a certificate).")
+            ctx.messages.append(
+                "HiGHS reported the declared linear model infeasible. The problem's own functions were only "
+                "spot-checked against the declaration, so infeasibility is NOT certified (build the problem with "
+                "Problem.from_linear for a certificate).")
             return "exact_solver_finished"
         if res.x is None:
             ctx.messages.append(f"MILP solver returned no solution: {res.message}")
-            return "budget_time" if timed_out else "exact_solver_finished"
+            return "exact_solver_finished"
         x = sp.project(res.x)
         ev = ctx.evaluate(x)
         if res.status != 0:
             ctx.messages.append(f"HiGHS did not prove optimality ({res.message}); no optimality statement is made")
-            return "budget_time" if timed_out else "exact_solver_finished"
+            return "exact_solver_finished"
         if not ev.valid or not ev.feasible:
             ctx.messages.append("the MILP solution does not evaluate as feasible on the problem's functions")
             return "exact_solver_finished"
@@ -195,24 +201,90 @@ class MILPSolver(Solver):
         if why:
             ctx.messages.append(f"{why} at the MILP solution; the declaration is wrong, no optimality statement is made")
             return "exact_solver_finished"
-        gap_txt = f"relative MIP gap {0.0 if gap is None else gap:.2g} <= {self.params['mip_rel_gap']:g}"
-        if exact:
-            ctx.guarantee_hints.append(Guarantee(
-                GLOBAL_CERTIFIED,
-                f"HiGHS proved optimality of the linear model ({gap_txt}) with constraints relaxed by their declared "
-                "tolerances. The problem's functions are generated from that model (Problem.from_linear), and the "
-                "solution was re-evaluated on them.",
-                method="HiGHS branch-and-bound via scipy.optimize.milp", tolerance=self.params["mip_rel_gap"],
-                assumptions=["HiGHS feasibility/integrality tolerances (default 1e-7 / 1e-6)"],
-                point=x.tolist()))
-        else:
-            ctx.guarantee_hints.append(Guarantee(
-                GLOBAL_CONDITIONAL,
-                f"HiGHS proved optimality of the DECLARED linear model ({gap_txt}). The problem's own functions agreed "
-                f"with the declaration at the two box corners, {int(self.params['spot_checks'])} random points and the solution, but "
-                "agreement elsewhere is not proven; the point is globally optimal only if the declaration is exact.",
-                method="HiGHS branch-and-bound via scipy.optimize.milp", tolerance=self.params["mip_rel_gap"],
-                assumptions=["declared linear structure is exact (spot-checked, not proven)",
-                             "HiGHS feasibility/integrality tolerances (default 1e-7 / 1e-6)"],
-                point=x.tolist()))
+        gap = getattr(res, "mip_gap", None)
+        ctx.guarantee_hints.append(Guarantee(
+            GLOBAL_CONDITIONAL,
+            f"HiGHS proved optimality of the DECLARED linear model (relative MIP gap {0.0 if gap is None else gap:.2g} "
+            f"<= {self.params['mip_rel_gap']:g}). The problem's own functions agreed with the declaration at the two "
+            f"box corners, {int(self.params['spot_checks'])} random points and the solution, but agreement elsewhere "
+            "is not proven; the point is globally optimal only if the declaration is exact.",
+            method="HiGHS branch-and-bound via scipy.optimize.milp", tolerance=self.params["mip_rel_gap"],
+            assumptions=["declared linear structure is exact (spot-checked, not proven)",
+                         "HiGHS feasibility/integrality tolerances (default 1e-7 / 1e-6)"],
+            point=x.tolist()))
         return "exact_solver_finished"
+
+    def _run_exact(self, ctx, cmin, model, int_offset):
+        """Problem.from_linear: the model is the problem, so HiGHS can certify optimality or infeasibility."""
+        sp = ctx.problem.space
+        # 1. the problem as defined: every constraint relaxed by its declared tolerance
+        resR = self._highs(ctx, cmin, model, 1.0, 0.0)
+        if resR.status == 2:
+            ctx.guarantee_hints.append(Guarantee(
+                INFEASIBILITY_CERTIFIED,
+                "HiGHS reported the linear model infeasible with every constraint relaxed by its declared tolerance. "
+                "The problem's functions are generated from that model (Problem.from_linear), so the statement is about "
+                "the problem as defined.",
+                method="HiGHS via scipy.optimize.milp",
+                assumptions=["HiGHS feasibility/integrality tolerances (default 1e-7 / 1e-6)"]))
+            return "exact_solver_finished"
+        if resR.status == 1:
+            return "budget_time" if resR.x is None else self._timed_out(ctx, sp, resR)
+        if resR.status != 0 or resR.x is None:
+            ctx.messages.append(f"HiGHS did not solve the model ({resR.message}); no statement is made")
+            return "exact_solver_finished"
+        bound = getattr(resR, "mip_dual_bound", None)
+        bound = float(resR.fun if bound is None or not np.isfinite(bound) else min(bound, resR.fun))
+        lower = bound + int_offset  # lower bound on the internal (minimisation) objective over the feasible set
+        gap = getattr(resR, "mip_gap", None)
+        # 2. a point that verifies: the relaxed optimum itself, else the strict model, tightened inward if HiGHS's own
+        #    tolerances leave its point slightly outside the declared ones
+        cert = None
+        ev = ctx.evaluate(sp.project(resR.x))
+        if ev.valid and ev.feasible:
+            cert = ev
+        else:
+            for tighten in (0.0, 1e-7, 1e-6):
+                r = self._highs(ctx, cmin, model, 0.0, tighten)
+                if r.status == 1:
+                    return "budget_time" if r.x is None else self._timed_out(ctx, sp, r)
+                if r.status != 0 or r.x is None:
+                    break
+                ev = ctx.evaluate(sp.project(r.x))
+                if ev.valid and ev.feasible:
+                    cert = ev
+                    break
+        if cert is None:
+            ctx.messages.append("no MILP solution verified as feasible within the declared tolerances; "
+                                "no optimality statement is made")
+            return "exact_solver_finished"
+        best = ctx.evaluator.best
+        if best is not None and best.feasible and best.fmin <= cert.fmin:
+            cert = best  # ties and earlier equal points: certify the incumbent that will be reported
+        slack = max(0.0, cert.fmin - lower)
+        ctx.diagnostics["optimality_gap_vs_bound"] = slack
+        allowed = float(self.params["certificate_tol"]) * (1 + abs(cert.fmin))
+        if slack > allowed:
+            ctx.messages.append(f"the verified point is {slack:.3g} worse than HiGHS's lower bound for the problem as "
+                                f"defined (allowed {allowed:.3g}); no optimality statement is made")
+            return "exact_solver_finished"
+        ctx.guarantee_hints.append(Guarantee(
+            GLOBAL_CERTIFIED,
+            f"Global optimum of the problem as defined up to an absolute objective tolerance of {allowed:.3g}: the point "
+            f"is feasible on re-evaluation and is within {slack:.3g} of HiGHS's lower bound over all points that satisfy "
+            f"the constraints within their declared tolerances (relative MIP gap "
+            f"{0.0 if gap is None else gap:.2g} <= {self.params['mip_rel_gap']:g}). The problem's functions are "
+            "generated from the model (Problem.from_linear).",
+            method="HiGHS branch-and-bound via scipy.optimize.milp", tolerance=allowed,
+            assumptions=["HiGHS feasibility/integrality tolerances (default 1e-7 / 1e-6)"],
+            point=cert.x.tolist()))
+        return "exact_solver_finished"
+
+    def _timed_out(self, ctx, sp, res):
+        ctx.evaluate(sp.project(res.x))
+        ctx.messages.append(f"HiGHS stopped at its time limit ({res.message}); no optimality statement is made")
+        return "budget_time"
+
+
+def _f(v):
+    return None if v is None else float(v)

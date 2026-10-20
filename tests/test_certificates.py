@@ -208,3 +208,71 @@ def test_slsqp_uses_declared_constraint_jacobian():
     r = get_solver("slsqp").solve(p, Budget(500), seed=0)
     assert r.feasible and r.objective == pytest.approx(0.8 * 5 * 0.0 + 5 * 0.8 ** 2, rel=1e-6)
     assert r.n_evaluations < 40
+
+
+# --- review of 2026-10-20 (rounds 2-6) ----------------------------------------------------
+
+def test_milp_certifies_mixed_integer_model_problems_with_real_variables():
+    rng = np.random.default_rng(0)
+    certified = 0
+    for t in range(20):
+        A_eq = rng.normal(size=(2, 6))
+        x0 = np.concatenate([rng.integers(0, 20, 3), rng.uniform(0, 50, 3)])
+        A_ub = rng.normal(size=(3, 6))
+        m = LinearStructure(c=rng.normal(size=6), A_ub=A_ub, b_ub=A_ub @ x0 + rng.uniform(0, 5, 3), A_eq=A_eq, b_eq=A_eq @ x0)
+        sp = Space([Integer(f"i{k}", 0, 20) for k in range(3)] + [Real(f"r{k}", 0, 50) for k in range(3)])
+        r = get_solver("milp").solve(Problem.from_linear(sp, m, sense=["min", "max"][t % 2], tol=1e-9), Budget(200), seed=t)
+        assert r.feasible
+        certified += r.certified_optimal
+    assert certified == 20
+
+
+def test_milp_certificate_survives_tied_optima():
+    m = LinearStructure(c=np.array([1.0, 1.0]), A_ub=np.array([[-1.0, -1.0]]), b_ub=np.array([-3.0]))
+    p = Problem.from_linear(Space([Integer("a", 0, 5), Integer("b", 0, 5)]), m)
+    for seed in range(10):
+        r = get_solver("milp").solve(p, Budget(200), seed=seed)
+        assert r.status == "optimal_certified" and r.objective == 3.0
+
+
+def test_milp_model_problem_needs_only_a_few_evaluations():
+    m = LinearStructure(c=np.array([1.0, 1.0]), A_ub=np.array([[-1.0, -1.0]]), b_ub=np.array([-3.0]))
+    p = Problem.from_linear(Space([Integer("a", 0, 5), Integer("b", 0, 5)]), m)
+    r = get_solver("milp").solve(p, Budget(5), seed=0)
+    assert r.status == "optimal_certified" and r.n_evaluations <= 4
+
+
+def test_infeasibility_certificate_dropped_when_verification_fails():
+    calls = {"n": 0}
+
+    def f(x):
+        calls["n"] += 1
+        if calls["n"] > 4:
+            raise RuntimeError("flaky")
+        return float(x[0])
+    p = Problem(Space([Integer("x", 0, 3)]), f, constraints=[ineq(lambda x: 1.0, "never")])
+    r = get_solver("exhaustive").solve(p, seed=0)
+    assert r.status == "error" and "infeasibility_certified" not in kinds(r)
+
+
+def test_slsqp_skips_a_start_whose_vector_constraint_fails():
+    calls = {"n": 0}
+
+    def c(x):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("first call fails")
+        return np.array([x[0] - 1.0, x[1] - 1.0, x[0] + x[1] - 1.5])
+    p = Problem(Space([Real("a", -2, 2), Real("b", -2, 2)]), lambda x: float(-x[0] - x[1]), constraints=[ineq(c, "v")])
+    r = get_solver("slsqp", restarts=2).solve(p, Budget(300), seed=0)
+    assert r.feasible and r.objective == pytest.approx(-1.5, abs=1e-6)
+    assert not any("broadcast" in m for m in r.messages)
+
+
+def test_raising_verifier_is_not_reported_as_dense_rejection():
+    def bad(x):
+        raise RuntimeError("verifier crashed")
+    p = Problem(Space([Integer("x", 0, 5)]), lambda x: float(x[0]), verifier=bad)
+    r = get_solver("exhaustive").solve(p, seed=0)
+    assert r.status == "feasible" and not r.certified_optimal
+    assert not any("denser grid" in g.statement for g in r.guarantees)

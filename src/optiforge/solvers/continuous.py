@@ -171,13 +171,20 @@ class SLSQP(_ScipyLocal):
             # failed evaluation: report a large violation of the right shape
             return np.full(shapes.get(k, 1), -BIG if sign < 0 else BIG)
 
+        ev0 = at(x0)
+        if p.constraints and (ev0.raw_constraints is None or len(ev0.raw_constraints) != len(p.constraints)):
+            # SciPy fixes each constraint's dimension at x0, so a start whose constraints cannot be evaluated is skipped
+            return optimize.OptimizeResult(x=np.asarray(x0, dtype=float), success=False, nfev=1,
+                                           message=f"start point could not be evaluated: {ev0.error}")
+        for k, raw in enumerate(ev0.raw_constraints or []):
+            shapes[k] = np.asarray(raw).size
         cons = []
         for k, c in enumerate(p.constraints):
             sign = -1.0 if c.kind == "ineq" else 1.0  # SciPy convention for inequalities: fun(x) >= 0
             d = {"type": c.kind, "fun": (lambda z, k=k, sign=sign: con(z, k, sign))}
             if c.gradient is not None and p.input_format == "vector":
                 # a declared Jacobian spares the finite-difference evaluations (each of which is a counted evaluation)
-                d["jac"] = (lambda z, c=c, sign=sign: sign * np.atleast_2d(np.asarray(c.gradient(sp.project(z)), dtype=float)))
+                d["jac"] = (lambda z, c=c, sign=sign: sign * ctx.evaluator.constraint_jacobian(c, sp.project(z)))
             cons.append(d)
         jac = (lambda z: ctx.evaluator.gradient(sp.project(z))) if p.gradient is not None else None
         maxiter = max(10, ctx.evaluator.remaining())

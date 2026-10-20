@@ -50,6 +50,12 @@ class EvidenceSelector:
         if comp.get("pairs", 0) < self.min_runs:
             return False, f"only {comp.get('pairs', 0)} paired runs (< {self.min_runs})"
         p = comp.get("p_value_adjusted", comp.get("p_value_a_better"))  # multiplicity-adjusted when recorded
+        ci = comp.get("ci95_mean_diff")
+        if ci is not None and not ci[1] < 0:
+            return False, f"validation CI of the paired score difference {ci} does not exclude zero"
+        me = comp.get("min_effect", 0.01)  # records from before 2026-10-20 carry no threshold: use the default
+        if comp.get("mean_diff") is None or comp["mean_diff"] > -me:
+            return False, f"validation mean improvement {comp.get('mean_diff')} is smaller than {me}"
         if p is None or p >= self.alpha:
             return False, f"validation p-value {p} not below {self.alpha}"
         return True, (f"champion beat baseline '{comp.get('baseline')}' on a validation split "

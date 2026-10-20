@@ -219,7 +219,12 @@ class DevelopmentLoop:
         self._selection_frozen = True
         # ---- held-out test (never used for any decision above) -----------------
         demos = self._demonstrations(all_cands)
+        previous = self._test_accesses(suite)
+        if previous:
+            self.event("test_split_previously_used", accesses=previous)
         test_res = self._final_test(sel, demos, baselines, test, budget)
+        if "summary" in test_res:
+            self._record_test_access(suite)
         report = {
             "config": asdict(cfg), "suite": suite.to_dict(), "features": {k: v for k, v in feats.items() if k != "per_problem"},
             "bias_notes": bias.notes, "isolation": iso.to_dict(), "provider_notes": notes,
@@ -228,6 +233,7 @@ class DevelopmentLoop:
             "archive": [{"id": a["id"], "kind": a["kind"], "representation": a["representation"], "train_score": a.get("train_score"),
                          "provider": a.get("provider"), "parents": a.get("parents")} for a in archive],
             "selection": sel, "demonstrations": demos, "test": test_res, "ledger": self.ledger.summary(),
+            "test_split_previous_accesses": previous,
             "wall_time_s": round(time.time() - t0, 1),
             "candidate_counts": self._counts(),
         }
@@ -288,7 +294,7 @@ class DevelopmentLoop:
             comps[k]["multiple_testing"] = cfg.multiple_testing
         passing = [a["id"] for a in archive
                    if adj[a["id"]] is not None and adj[a["id"]] < cfg.alpha
-                   and summ[a["id"]]["mean_score"] <= summ[best_base]["mean_score"] - cfg.min_effect
+                   and comps[a["id"]]["mean_diff"] is not None and comps[a["id"]]["mean_diff"] <= -cfg.min_effect
                    and comps[a["id"]]["ci95_mean_diff"] is not None and comps[a["id"]]["ci95_mean_diff"][1] < 0
                    and summ[a["id"]]["feasibility_rate"] >= summ[best_base]["feasibility_rate"]]
         champion = min(passing, key=lambda c: summ[c]["mean_score"]) if passing else None
@@ -358,6 +364,28 @@ class DevelopmentLoop:
         return {"solvers": [s.label for s in specs], "summary": summ, "best_baseline": best_base, "comparisons": comps,
                 "per_family": per_family(rows), "rows": rows}
 
+    def _ledger_path(self) -> str:
+        return os.path.join(self.cfg.registry, "test_access.jsonl")
+
+    def _test_accesses(self, suite) -> list[dict]:
+        """Earlier runs of this suite version's test split recorded next to the registry."""
+        out = []
+        try:
+            with open(self._ledger_path()) as fh:
+                for line in fh:
+                    r = json.loads(line)
+                    if r.get("suite") == suite.name and str(r.get("version")) == str(suite.version):
+                        out.append(r)
+        except (OSError, ValueError):
+            pass
+        return out
+
+    def _record_test_access(self, suite) -> None:
+        os.makedirs(self.cfg.registry, exist_ok=True)
+        with open(self._ledger_path(), "a") as fh:
+            fh.write(json.dumps({"suite": suite.name, "version": suite.version, "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                                 "run_dir": os.path.abspath(self.out), "seed": self.cfg.seed}) + "\n")
+
     def _counts(self) -> dict:
         out: dict[str, int] = {}
         for r in self.registry.list():
@@ -410,7 +438,10 @@ def render_markdown(rep: dict) -> str:
     t = rep["test"]
     L += ["", "## Held-out test split (evaluated once, after selection)", "",
           f"Suite version {rep['suite'].get('version', '1')}; test-split status before this run: "
-          f"{rep['suite'].get('test_status', 'unknown')}.", ""]
+          f"{rep['suite'].get('test_status', 'unknown')}."
+          + (f" WARNING: this test split was already run {len(rep.get('test_split_previous_accesses') or [])} time(s) "
+             "(see test_access.jsonl next to the registry); its results are not confirmatory."
+             if rep.get("test_split_previous_accesses") else ""), ""]
     if "summary" in t:
         L += _table(t["summary"])
         L += ["", f"Best baseline on test: `{t['best_baseline']}`.", ""]

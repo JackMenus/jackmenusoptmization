@@ -143,7 +143,7 @@ def _haar_rotation(r: np.random.Generator, dim: int) -> np.ndarray:
 @family("rastrigin_rotated", {"continuous", "nonconvex", "multimodal", "nonseparable", "rotated"},
         "Shifted Rastrigin composed with a random rotation; coordinate-wise moves no longer decompose it.")
 def rastrigin_rotated(seed=0, dim=5):
-    r = _rng("rastrigin_rotated", seed)
+    r = _rng(f"rastrigin_rotated-d{dim}", seed)  # dimension in the key: instances of different dimension are independent
     o = r.uniform(-2, 2, dim)
     Q = _haar_rotation(r, dim)
     f = lambda x: float(10 * dim + np.sum((z := Q @ (x - o)) ** 2 - 10 * np.cos(2 * np.pi * z)))
@@ -155,7 +155,7 @@ def rastrigin_rotated(seed=0, dim=5):
 @family("ackley_rotated", {"continuous", "nonconvex", "multimodal", "nonseparable", "rotated"},
         "Shifted Ackley composed with a random rotation.")
 def ackley_rotated(seed=0, dim=5):
-    r = _rng("ackley_rotated", seed)
+    r = _rng(f"ackley_rotated-d{dim}", seed)  # dimension in the key: instances of different dimension are independent
     o = r.uniform(-5, 5, dim)
     Q = _haar_rotation(r, dim)
 
@@ -169,7 +169,7 @@ def ackley_rotated(seed=0, dim=5):
 @family("schwefel_1_2", {"continuous", "convex", "unimodal", "nonseparable", "ill_conditioned"},
         "Shifted Schwefel 1.2 (sum of squared prefix sums): convex, fully non-separable, ill-conditioned.")
 def schwefel_1_2(seed=0, dim=5):
-    o = _rng("schwefel_1_2", seed).uniform(-3, 3, dim)
+    o = _rng(f"schwefel_1_2-d{dim}", seed).uniform(-3, 3, dim)
     f = lambda x: float(np.sum(np.cumsum(x - o) ** 2))
     g = lambda x: np.cumsum(np.cumsum(x - o)[::-1])[::-1] * 2
     return Problem(_box(dim, -5, 5), f, name=f"schwefel_1_2-d{dim}-s{seed}", gradient=g, convex=True,
@@ -179,7 +179,7 @@ def schwefel_1_2(seed=0, dim=5):
 @family("bent_cigar_rotated", {"continuous", "convex", "unimodal", "nonseparable", "ill_conditioned", "rotated"},
         "Rotated bent cigar: one direction 1e6 times flatter than all others.")
 def bent_cigar_rotated(seed=0, dim=5):
-    r = _rng("bent_cigar_rotated", seed)
+    r = _rng(f"bent_cigar_rotated-d{dim}", seed)  # dimension in the key: instances of different dimension are independent
     o = r.uniform(-3, 3, dim)
     Q = _haar_rotation(r, dim)
     w = np.full(dim, 1e6)
@@ -188,6 +188,21 @@ def bent_cigar_rotated(seed=0, dim=5):
     g = lambda x: 2 * Q.T @ (w * (Q @ (x - o)))
     return Problem(_box(dim, -5, 5), f, name=f"bent_cigar_rotated-d{dim}-s{seed}", gradient=g, convex=True,
                    known_optimum=KnownOptimum(0.0, o, "analytic"))
+
+
+@family("griewank_rotated", {"continuous", "nonconvex", "multimodal", "nonseparable", "rotated"},
+        "Shifted, rotated Griewank: many shallow local minima on a quadratic bowl; product term couples coordinates.")
+def griewank_rotated(seed=0, dim=8):
+    r = _rng(f"griewank_rotated-d{dim}", seed)
+    o = r.uniform(-20, 20, dim)
+    Q = _haar_rotation(r, dim)
+    k = np.sqrt(np.arange(1, dim + 1))
+
+    def f(x):
+        z = Q @ (x - o)
+        return float(1.0 + np.sum(z ** 2) / 4000.0 - np.prod(np.cos(z / k)))
+    return Problem(_box(dim, -50, 50), f, name=f"griewank_rotated-d{dim}-s{seed}",
+                   known_optimum=KnownOptimum(0.0, o, "analytic (rotation preserves the minimiser at the shift)"))
 
 
 # ---------------------------------------------------------------------------

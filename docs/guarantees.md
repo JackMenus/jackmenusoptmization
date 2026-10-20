@@ -41,10 +41,13 @@ The following rules are enforced in `core/finalize.py` and are tested:
 * A global certificate is dropped when the problem's independent verifier rejects the point or raises.
 * A `linear=` declaration on user-written functions is never trusted for a certificate, however many spot checks
   pass: a declaration that is wrong only near the optimum passes random checks. Only `Problem.from_linear`, where
-  the functions are generated from the model, gives the MILP adapter a certificate. The MILP model is solved with
-  each constraint relaxed by its tolerance, so the statement is about the problem as defined. The adapter requires
-  at least 20 spot checks and honours `Budget.max_time`; a HiGHS time-out ends with termination `budget_time` and
-  no certificate.
+  the functions are generated from the model, gives the MILP adapter a certificate. For such a problem the adapter
+  solves the model with every constraint relaxed by its tolerance (the problem as defined), which gives a lower
+  bound; it then needs a point that verifies as feasible on re-evaluation (the relaxed optimum, or the strict model's
+  optimum, tightened inward if HiGHS's own 1e-7 tolerance leaves it just outside). The certificate states an absolute
+  objective tolerance (`certificate_tol` x (1 + |f|), default 1e-6) and is withheld when the verified point is further
+  than that from the bound. Spot checks are only run for `linear=` declarations on user-written functions (at least
+  20). `Budget.max_time` is honoured; a HiGHS time-out ends with termination `budget_time` and no certificate.
 * Statuses are `optimal_certified`, `feasible`, `feasible_discretized_only`, `infeasible_certified`,
   `no_feasible_found` and `error`. Only the first and fourth are certificates.
 

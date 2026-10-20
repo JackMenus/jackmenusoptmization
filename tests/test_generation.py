@@ -168,12 +168,14 @@ def test_v2_suite_has_fresh_seeds_and_test_only_families():
     held_out = {f for f, _ in s.test_only}
     assert held_out and held_out <= fam("test")
     assert not held_out & (fam("train") | fam("validation"))
+    elsewhere = {f for name, other in SUITES.items() if name != s.name for f, _ in other.families + other.test_only}
+    assert not held_out & elsewhere  # never seen by any earlier development run either
     assert s.test_status == "untouched"
 
 
 def test_rotated_families_have_verified_optimum_inside_the_box():
     from optiforge.benchmarks.problems import make_problem
-    for fam in ("rastrigin_rotated", "ackley_rotated", "schwefel_1_2", "bent_cigar_rotated"):
+    for fam in ("rastrigin_rotated", "ackley_rotated", "schwefel_1_2", "bent_cigar_rotated", "griewank_rotated"):
         for dim in (5, 10):
             p = make_problem(fam, 3, dim=dim)
             x = p.known_optimum.x

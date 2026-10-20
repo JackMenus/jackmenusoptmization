@@ -42,7 +42,8 @@ class _Env:
 
     def elite_factor(self, elite: float) -> np.ndarray | None:
         """Cholesky factor of the elite population covariance over the real coordinates (cached per generation)."""
-        key = (id(self.X), self.st["gen"], self.st.get("restarts", 0), round(float(elite), 6))
+        # keyed on the population's content (ids of freed arrays are reused, so they cannot identify a population)
+        key = (hash(self.X.tobytes()), hash(np.asarray(self.ranks).tobytes()), self.X.shape, round(float(elite), 6))
         cache = self.algo.__dict__.setdefault("_chol_cache", {})  # not in st: st must stay checkpoint-serialisable
         if key in cache:
             return cache[key]

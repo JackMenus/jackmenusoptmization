@@ -141,6 +141,6 @@ def test_paired_comparison_reports_effect_sizes_and_practical_ties():
     assert c["practical_ties"] == 20 and c["practical_wins"] == 0
     lo, hi = c["ci95_mean_diff"]
     assert lo <= c["mean_diff"] <= hi and abs(hi) < 1e-6
-    assert c["rank_biserial"] == -1.0
+    assert c["rank_biserial"] == 0.0  # 1e-10 differences are ties for the effect size too
     adj = holm_adjust({"x": 0.01, "y": 0.04, "z": None})
     assert adj == {"x": 0.02, "y": 0.04, "z": None}

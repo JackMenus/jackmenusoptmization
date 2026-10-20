@@ -222,7 +222,7 @@ def paired_comparison(rows: list[dict], a: str, b: str, min_effect: float = PRAC
         res["ci95_mean_diff"] = [float(np.percentile(means, 2.5)), float(np.percentile(means, 97.5))]
     else:
         res["ci95_mean_diff"] = None
-    nz = diff[np.abs(diff) > 1e-12]
+    nz = diff[np.abs(diff) > 1e-9]  # same zero threshold as the win/loss/tie counts
     if nz.size:
         ranks = stats.rankdata(np.abs(nz))
         res["rank_biserial"] = float((ranks[nz > 0].sum() - ranks[nz < 0].sum()) / ranks.sum())
