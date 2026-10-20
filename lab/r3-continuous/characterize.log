@@ -1,0 +1,18 @@
+{"suite": {"name": "continuous_general", "version": "2", "families": [["rastrigin", {"dim": 5}], ["rastrigin_rotated", {"dim": 5}], ["rastrigin_rotated", {"dim": 10}], ["ackley_rotated", {"dim": 5}], ["ackley_rotated", {"dim": 10}], ["ellipsoid", {"dim": 10, "log10_cond": 6}], ["schwefel_1_2", {"dim": 10}], ["rosenbrock", {"dim": 10}]], "test_only": [["bent_cigar_rotated", {"dim": 10}], ["styblinski_tang", {"dim": 8}]], "splits": {"train": [1010, 1011], "validation": [1020, 1021], "test": [1030, 1031, 1032]}, "description": "Separable and rotated multimodal, ill-conditioned and non-separable unimodal continuous functions, dimensions 5 and 10; test adds two held-out families (rotated bent cigar at dimension 10, Styblinski-Tang at dimension 8).", "test_status": "untouched"}, "splits_used": ["train", "validation"], "budget": 5000, "seeds": [0, 1, 2], "solvers": ["random_search", "cmaes", "de", "nelder_mead", "pattern_search", "multistart", "hybrid", "auto", "alg-dsl-ae8b1f11f2"], "git": "b72d9c12949d8c134cb1d37f5fda6dbddf2073a0", "src_dirty": true, "wall_s": 300.9, "python": "3.13.16 (main, Oct  1 2026, 15:40:24) [GCC 13.3.0]", "numpy": "2.5.3"}
+| family | random_search | cmaes | de | nelder_mead | pattern_search | multistart | hybrid | auto | alg-dsl-ae8b1f11f2 |
+|---|---|---|---|---|---|---|---|---|---|
+| ackley_rotated[dim=10] | 0.987 | 0.000 | 0.290 | 0.237 | 0.354 | 1.213 | 0.000 | 0.000 | 0.295 |
+| ackley_rotated[dim=5] | 1.039 | 0.000 | 0.000 | 0.204 | 0.197 | 1.232 | 0.000 | 0.000 | 0.155 |
+| ellipsoid[dim=10,log10_cond=6] | 1.011 | 0.000 | 0.071 | 0.000 | 0.004 | 0.000 | 0.000 | 0.000 | 0.112 |
+| rastrigin[dim=5] | 1.004 | 0.129 | 0.319 | 0.223 | 0.147 | 0.821 | 0.166 | 0.129 | 0.000 |
+| rastrigin_rotated[dim=10] | 1.024 | 0.198 | 0.718 | 0.201 | 0.236 | 0.602 | 0.178 | 0.178 | 0.797 |
+| rastrigin_rotated[dim=5] | 0.971 | 0.099 | 0.488 | 0.272 | 0.331 | 0.675 | 0.099 | 0.115 | 0.827 |
+| rosenbrock[dim=10] | 0.991 | 0.000 | 0.011 | 0.000 | 0.002 | 0.000 | 0.000 | 0.000 | 0.000 |
+| schwefel_1_2[dim=10] | 1.037 | 0.000 | 0.101 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.001 |
+| **mean** | 1.008 | 0.053 | 0.250 | 0.142 | 0.159 | 0.568 | 0.055 | 0.053 | 0.273 |
+alg-dsl-ae8b1f11f2 vs cmaes {'pairs': 96, 'mean_diff': 0.2201576218749902, 'wins': 12, 'losses': 83, 'ties': 1, 'p_value_a_better': 0.9999999999687351}
+alg-dsl-ae8b1f11f2 vs hybrid {'pairs': 96, 'mean_diff': 0.21813483791906826, 'wins': 12, 'losses': 84, 'ties': 0, 'p_value_a_better': 0.9999999998931737}
+alg-dsl-ae8b1f11f2 vs auto {'pairs': 96, 'mean_diff': 0.22070452309022262, 'wins': 11, 'losses': 84, 'ties': 1, 'p_value_a_better': 0.9999999999761205}
+auto vs cmaes {'pairs': 96, 'mean_diff': -0.0005469012152324376, 'wins': 28, 'losses': 1, 'ties': 67, 'p_value_a_better': 8.006962742570694e-07}
+auto vs hybrid {'pairs': 96, 'mean_diff': -0.002569685171154374, 'wins': 2, 'losses': 3, 'ties': 91, 'p_value_a_better': 0.9479099455569734}
+
