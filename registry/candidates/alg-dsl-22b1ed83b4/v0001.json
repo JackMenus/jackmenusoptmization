@@ -1,0 +1,83 @@
+{
+  "id": "alg-dsl-22b1ed83b4",
+  "version": 1,
+  "created": "2026-10-20T13:15:28+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g3-2",
+    "population": 20,
+    "offspring": 20,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "resample"
+    },
+    "stages": [
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "uniform_cx"
+            },
+            {
+              "op": "type_aware",
+              "sigma": 0.0197
+            }
+          ]
+        },
+        "survival": {
+          "op": "metropolis",
+          "t0": 0.0133,
+          "cooling": 0.9805
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [
+    "alg-dsl-f18700ed7f"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: removed stage 0",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:15:28+00:00",
+      "operation": "removed stage 0",
+      "parents": [
+        "alg-dsl-f18700ed7f"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 20,
+    "offspring": 20,
+    "stages.0.parent_selection.k": 4,
+    "stages.0.variation.children.1.sigma": 0.0197,
+    "stages.0.survival.t0": 0.0133,
+    "stages.0.survival.cooling": 0.9805
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

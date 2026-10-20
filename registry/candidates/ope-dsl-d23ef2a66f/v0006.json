@@ -1,0 +1,290 @@
+{
+  "id": "ope-dsl-d23ef2a66f",
+  "version": 6,
+  "created": "2026-10-20T13:18:35+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "evals_fraction",
+      "ge": 0.76
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_best1",
+          "F": 0.847,
+          "CR": 0.5088
+        },
+        {
+          "op": "type_aware",
+          "sigma": 0.0292
+        }
+      ]
+    },
+    "else": {
+      "op": "if",
+      "cond": {
+        "pred": "evals_fraction",
+        "ge": 0.87
+      },
+      "then": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "uniform_cx",
+            "p": 0.274
+          },
+          {
+            "op": "type_aware",
+            "sigma": 0.2532
+          }
+        ]
+      },
+      "else": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "uniform_cx",
+            "p": 0.191
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "bit_flip"
+                },
+                {
+                  "op": "bit_flip"
+                }
+              ],
+              "weights": [
+                0.32,
+                0.79
+              ]
+            },
+            "integer": {
+              "op": "repeat",
+              "n": 2,
+              "child": {
+                "op": "integer_step",
+                "max_step": 1
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parents": [
+    "ope-dsl-713f0c7749"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: perturbed de_best1.CR at then/children/0",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:18:35+00:00",
+      "operation": "perturbed de_best1.CR at then/children/0",
+      "parents": [
+        "ope-dsl-713f0c7749"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T13:18:35+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T13:18:36+00:00",
+      "operation": "updated",
+      "fields": [
+        "fingerprint"
+      ]
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T13:19:29+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 5,
+      "time": "2026-10-20T13:19:29+00:00",
+      "operation": "status -> retained",
+      "generation": 5
+    },
+    {
+      "version": 6,
+      "time": "2026-10-20T13:20:38+00:00",
+      "operation": "benchmarked",
+      "split": "validation"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 0.76,
+    "then.children.0.F": 0.847,
+    "then.children.0.CR": 0.5088,
+    "then.children.1.sigma": 0.0292,
+    "else.cond.ge": 0.87,
+    "else.then.children.0.p": 0.274,
+    "else.then.children.1.sigma": 0.2532,
+    "else.else.children.0.p": 0.191,
+    "else.else.children.1.integer.n": 2,
+    "else.else.children.1.integer.child.max_step": 1
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 16, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=77, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3117,
+    "seconds": 0.876
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 30,
+        "mean_score": 0.21066128216276445,
+        "median_score": 0.1488483268144285,
+        "std_score": 0.19881958819502177,
+        "iqr_score": 0.2883566691230656,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.23333333333333334,
+        "median_gap": 16.5,
+        "mean_runtime_s": 1.3329355973666073,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.2665871194733215,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "genetic",
+      "per_family": {
+        "knapsack_correlated": {
+          "ope-dsl-d23ef2a66f": 0.3886644782633233
+        },
+        "multi_knapsack": {
+          "ope-dsl-d23ef2a66f": 0.11087154570300638
+        },
+        "independent_set": {
+          "ope-dsl-d23ef2a66f": 0.1651059085841695
+        },
+        "integer_quadratic": {
+          "ope-dsl-d23ef2a66f": -2.66129150353755e-17
+        }
+      }
+    },
+    {
+      "split": "validation",
+      "budget": 5000,
+      "summary": {
+        "runs": 30,
+        "mean_score": 0.17362216232645322,
+        "median_score": 0.08845583066468796,
+        "std_score": 0.19308956424569074,
+        "iqr_score": 0.35156455862977604,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.36666666666666664,
+        "median_gap": 7.5,
+        "mean_runtime_s": 1.2285423999667424,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.2457084799933485,
+        "not_applicable_runs": 0
+      },
+      "problem_profile": {
+        "kind": "discrete",
+        "types": [
+          "binary",
+          "integer"
+        ],
+        "dims": [
+          6,
+          40,
+          50,
+          100
+        ],
+        "constrained": true,
+        "suite": "discrete_general"
+      },
+      "vs_best_baseline": {
+        "baseline": "genetic",
+        "pairs": 30,
+        "mean_diff": -0.08639084407618394,
+        "wins": 18,
+        "losses": 6,
+        "ties": 6,
+        "min_effect": 0.01,
+        "practical_wins": 18,
+        "practical_losses": 6,
+        "practical_ties": 6,
+        "median_diff": -0.0823728813559322,
+        "ci95_mean_diff": [
+          -0.14325512407807137,
+          -0.028939274896778406
+        ],
+        "rank_biserial": -0.6366666666666667,
+        "p_value_a_better": 0.0033914943653339967,
+        "p_value_adjusted": 0.012614008401827885,
+        "multiple_testing": "holm"
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite discrete_general"
+  ],
+  "status": "retained",
+  "fingerprint": "be34d48265afa1650bcd",
+  "train_score": 0.21066128216276445
+}

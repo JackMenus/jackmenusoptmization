@@ -1,0 +1,313 @@
+{
+  "id": "ope-dsl-105289af5d",
+  "version": 4,
+  "created": "2026-10-20T13:18:32+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "evals_fraction",
+      "ge": 0.21
+    },
+    "then": {
+      "op": "if",
+      "cond": {
+        "pred": "evals_fraction",
+        "ge": 0.58
+      },
+      "then": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "uniform_cx"
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "if",
+              "cond": {
+                "pred": "feasible_fraction",
+                "lt": 0.41
+              },
+              "then": {
+                "op": "bit_flip"
+              },
+              "else": {
+                "op": "bit_flip"
+              }
+            },
+            "integer": {
+              "op": "repeat",
+              "n": 2,
+              "child": {
+                "op": "gaussian",
+                "sigma": 0.0017,
+                "rate": 0.06
+              }
+            }
+          }
+        ]
+      },
+      "else": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_best1",
+            "F": 0.542,
+            "CR": 0.42
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "uniform_reset",
+              "rate": 0.43
+            },
+            "integer": {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "gaussian",
+                  "sigma": 0.0301
+                },
+                {
+                  "op": "uniform_reset"
+                }
+              ],
+              "weights": [
+                0.69,
+                0.61
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "else": {
+      "op": "if",
+      "cond": {
+        "pred": "evals_fraction",
+        "ge": 0.76
+      },
+      "then": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_best1",
+            "F": 0.847,
+            "CR": 0.578
+          },
+          {
+            "op": "type_aware",
+            "sigma": 0.0292
+          }
+        ]
+      },
+      "else": {
+        "op": "if",
+        "cond": {
+          "pred": "evals_fraction",
+          "ge": 0.87
+        },
+        "then": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "uniform_cx",
+              "p": 0.274
+            },
+            {
+              "op": "type_aware",
+              "sigma": 0.2532
+            }
+          ]
+        },
+        "else": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "uniform_cx",
+              "p": 0.191
+            },
+            {
+              "op": "per_type",
+              "binary": {
+                "op": "mix",
+                "children": [
+                  {
+                    "op": "bit_flip"
+                  },
+                  {
+                    "op": "bit_flip"
+                  }
+                ],
+                "weights": [
+                  0.32,
+                  0.79
+                ]
+              },
+              "integer": {
+                "op": "repeat",
+                "n": 2,
+                "child": {
+                  "op": "integer_step",
+                  "max_step": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "parents": [
+    "ope-dsl-713f0c7749"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: wrapped operator in a conditional with a new alternative branch",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:18:32+00:00",
+      "operation": "wrapped operator in a conditional with a new alternative branch",
+      "parents": [
+        "ope-dsl-713f0c7749"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T13:18:33+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T13:18:33+00:00",
+      "operation": "updated",
+      "fields": [
+        "fingerprint"
+      ]
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T13:19:29+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 0.21,
+    "then.cond.ge": 0.58,
+    "then.then.children.1.binary.cond.lt": 0.41,
+    "then.then.children.1.integer.n": 2,
+    "then.then.children.1.integer.child.sigma": 0.0017,
+    "then.then.children.1.integer.child.rate": 0.06,
+    "then.else.children.0.F": 0.542,
+    "then.else.children.0.CR": 0.42,
+    "then.else.children.1.binary.rate": 0.43,
+    "then.else.children.1.integer.children.0.sigma": 0.0301,
+    "else.cond.ge": 0.76,
+    "else.then.children.0.F": 0.847,
+    "else.then.children.0.CR": 0.578,
+    "else.then.children.1.sigma": 0.0292,
+    "else.else.cond.ge": 0.87,
+    "else.else.then.children.0.p": 0.274,
+    "else.else.then.children.1.sigma": 0.2532,
+    "else.else.else.children.0.p": 0.191,
+    "else.else.else.children.1.integer.n": 2,
+    "else.else.else.children.1.integer.child.max_step": 1
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 33, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.302s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=125, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3120,
+    "seconds": 1.054
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 30,
+        "mean_score": 0.2654626072675544,
+        "median_score": 0.2623899180078956,
+        "std_score": 0.2239490147692366,
+        "iqr_score": 0.4015327929255711,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.23333333333333334,
+        "median_gap": 21.0,
+        "mean_runtime_s": 1.3290552673667055,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.2658110534733411,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "genetic",
+      "per_family": {
+        "knapsack_correlated": {
+          "ope-dsl-105289af5d": 0.4892820046150855
+        },
+        "multi_knapsack": {
+          "ope-dsl-105289af5d": 0.22444579410871543
+        },
+        "independent_set": {
+          "ope-dsl-105289af5d": 0.12430323299888518
+        },
+        "integer_quadratic": {
+          "ope-dsl-105289af5d": -2.66129150353755e-17
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite discrete_general"
+  ],
+  "status": "validated",
+  "fingerprint": "103a57eea6c833eba9d0",
+  "train_score": 0.2654626072675544
+}

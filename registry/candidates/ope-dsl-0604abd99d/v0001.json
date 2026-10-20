@@ -1,0 +1,120 @@
+{
+  "id": "ope-dsl-0604abd99d",
+  "version": 1,
+  "created": "2026-10-20T13:18:37+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "evals_fraction",
+      "ge": 0.76
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_best1",
+          "F": 0.847,
+          "CR": 0.578
+        },
+        {
+          "op": "type_aware",
+          "sigma": 0.0292,
+          "adaptive": false
+        }
+      ]
+    },
+    "else": {
+      "op": "if",
+      "cond": {
+        "pred": "evals_fraction",
+        "ge": 0.87
+      },
+      "then": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "uniform_cx",
+            "p": 0.274
+          },
+          {
+            "op": "type_aware",
+            "sigma": 0.2532
+          }
+        ]
+      },
+      "else": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "uniform_cx",
+            "p": 0.191
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "bit_flip"
+                },
+                {
+                  "op": "bit_flip"
+                }
+              ],
+              "weights": [
+                0.32,
+                0.79
+              ]
+            },
+            "integer": {
+              "op": "repeat",
+              "n": 2,
+              "child": {
+                "op": "integer_step",
+                "max_step": 1
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parents": [
+    "ope-dsl-713f0c7749"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: perturbed type_aware.adaptive at then/children/1",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:18:37+00:00",
+      "operation": "perturbed type_aware.adaptive at then/children/1",
+      "parents": [
+        "ope-dsl-713f0c7749"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 0.76,
+    "then.children.0.F": 0.847,
+    "then.children.0.CR": 0.578,
+    "then.children.1.sigma": 0.0292,
+    "else.cond.ge": 0.87,
+    "else.then.children.0.p": 0.274,
+    "else.then.children.1.sigma": 0.2532,
+    "else.else.children.0.p": 0.191,
+    "else.else.children.1.integer.n": 2,
+    "else.else.children.1.integer.child.max_step": 1
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

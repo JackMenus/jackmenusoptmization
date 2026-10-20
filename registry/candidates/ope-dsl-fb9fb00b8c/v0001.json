@@ -1,0 +1,102 @@
+{
+  "id": "ope-dsl-fb9fb00b8c",
+  "version": 1,
+  "created": "2026-10-20T13:15:26+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "evals_fraction",
+      "ge": 0.87
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "de_best1",
+          "F": 0.746,
+          "CR": 0.307
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "uniform_reset"
+          },
+          "integer": {
+            "op": "uniform_reset",
+            "rate": 0.18
+          }
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "uniform_cx",
+          "p": 0.191
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "mix",
+            "children": [
+              {
+                "op": "bit_flip"
+              },
+              {
+                "op": "bit_flip"
+              }
+            ],
+            "weights": [
+              0.32,
+              0.79
+            ]
+          },
+          "integer": {
+            "op": "repeat",
+            "n": 2,
+            "child": {
+              "op": "type_aware",
+              "sigma": 0.0306
+            }
+          }
+        }
+      ]
+    }
+  },
+  "parents": [
+    "ope-dsl-a5299f0c28"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: replaced subtree at else/children/1/integer/child (integer_step -> type_aware)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:15:26+00:00",
+      "operation": "replaced subtree at else/children/1/integer/child (integer_step -> type_aware)",
+      "parents": [
+        "ope-dsl-a5299f0c28"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 0.87,
+    "then.children.0.F": 0.746,
+    "then.children.0.CR": 0.307,
+    "then.children.1.integer.rate": 0.18,
+    "else.children.0.p": 0.191,
+    "else.children.1.integer.n": 2,
+    "else.children.1.integer.child.sigma": 0.0306
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

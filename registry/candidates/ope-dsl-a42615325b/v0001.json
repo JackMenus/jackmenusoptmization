@@ -1,0 +1,90 @@
+{
+  "id": "ope-dsl-a42615325b",
+  "version": 1,
+  "created": "2026-10-20T13:12:16+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "mix",
+    "children": [
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_current_to_pbest",
+            "CR": 0.522
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "bit_flip"
+            },
+            "integer": {
+              "op": "uniform_reset"
+            }
+          }
+        ]
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_best1",
+            "F": 0.872,
+            "CR": 0.693
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "uniform_reset"
+            },
+            "integer": {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "gaussian"
+                },
+                {
+                  "op": "integer_step"
+                }
+              ],
+              "weights": [
+                0.54,
+                0.87
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "weights": [
+      0.5,
+      0.5
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:12:16+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.children.0.CR": 0.522,
+    "children.1.children.0.F": 0.872,
+    "children.1.children.0.CR": 0.693
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

@@ -1,0 +1,309 @@
+{
+  "id": "alg-dsl-93760c79e0",
+  "version": 5,
+  "created": "2026-10-20T13:14:13+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "grammar-g2-1",
+    "population": 10,
+    "offspring": 10,
+    "init": {
+      "op": "opposition"
+    },
+    "repair": {
+      "op": "reflect"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "best"
+        },
+        "variation": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "de_rand1",
+                  "CR": 0.443
+                },
+                {
+                  "op": "type_aware",
+                  "sigma": 0.2763
+                }
+              ]
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "de_current_to_pbest",
+                  "F": 0.709,
+                  "CR": 0.26,
+                  "p": 0.058
+                },
+                {
+                  "op": "per_type",
+                  "binary": {
+                    "op": "bit_flip",
+                    "rate": 0.35
+                  },
+                  "integer": {
+                    "op": "uniform_reset",
+                    "rate": 0.31
+                  }
+                }
+              ]
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "survival": {
+          "op": "metropolis",
+          "t0": 0.1068,
+          "cooling": 0.9928
+        },
+        "step": {
+          "op": "one_fifth",
+          "factor": 1.37,
+          "target": 0.22
+        },
+        "until": {
+          "pred": "evals_fraction",
+          "ge": 0.3
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 2
+        },
+        "variation": {
+          "op": "if",
+          "cond": {
+            "pred": "success_rate",
+            "lt": 0.1
+          },
+          "then": {
+            "op": "seq",
+            "children": [
+              {
+                "op": "uniform_cx"
+              },
+              {
+                "op": "per_type",
+                "binary": {
+                  "op": "bit_flip"
+                },
+                "integer": {
+                  "op": "integer_step"
+                }
+              }
+            ]
+          },
+          "else": {
+            "op": "seq",
+            "children": [
+              {
+                "op": "de_best1",
+                "F": 0.36,
+                "CR": 0.057
+              },
+              {
+                "op": "per_type",
+                "binary": {
+                  "op": "if",
+                  "cond": {
+                    "pred": "success_rate",
+                    "lt": 0.21
+                  },
+                  "then": {
+                    "op": "bit_flip"
+                  },
+                  "else": {
+                    "op": "bit_flip"
+                  }
+                },
+                "integer": {
+                  "op": "uniform_reset"
+                }
+              }
+            ]
+          }
+        },
+        "survival": {
+          "op": "comma"
+        },
+        "step": {
+          "op": "decay",
+          "rate": 0.9813,
+          "floor": 0.001
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random composition from the algorithm grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:14:13+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T13:14:14+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T13:14:14+00:00",
+      "operation": "updated",
+      "fields": [
+        "fingerprint"
+      ]
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T13:15:22+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 5,
+      "time": "2026-10-20T13:15:22+00:00",
+      "operation": "status -> discarded",
+      "generation": 2
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 10,
+    "offspring": 10,
+    "stages.0.variation.children.0.children.0.CR": 0.443,
+    "stages.0.variation.children.0.children.1.sigma": 0.2763,
+    "stages.0.variation.children.1.children.0.F": 0.709,
+    "stages.0.variation.children.1.children.0.CR": 0.26,
+    "stages.0.variation.children.1.children.0.p": 0.058,
+    "stages.0.variation.children.1.children.1.binary.rate": 0.35,
+    "stages.0.variation.children.1.children.1.integer.rate": 0.31,
+    "stages.0.survival.t0": 0.1068,
+    "stages.0.survival.cooling": 0.9928,
+    "stages.0.step.factor": 1.37,
+    "stages.0.step.target": 0.22,
+    "stages.0.until.ge": 0.3,
+    "stages.1.parent_selection.k": 2,
+    "stages.1.variation.cond.lt": 0.1,
+    "stages.1.variation.else.children.0.F": 0.36,
+    "stages.1.variation.else.children.0.CR": 0.057,
+    "stages.1.variation.else.children.1.binary.cond.lt": 0.21,
+    "stages.1.step.rate": 0.9813,
+    "stages.1.step.floor": 0.001
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 22, 'stages': 2, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=86, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3118,
+    "seconds": 1.056
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 30,
+        "mean_score": 0.6141341393896318,
+        "median_score": 0.7002079002079002,
+        "std_score": 0.3599047243248544,
+        "iqr_score": 0.5657875592842432,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.16666666666666666,
+        "median_gap": 52.5,
+        "mean_runtime_s": 1.0117542455999682,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.20235084911999365,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "genetic",
+      "per_family": {
+        "knapsack_correlated": {
+          "alg-dsl-93760c79e0": 0.9311830702859973
+        },
+        "multi_knapsack": {
+          "alg-dsl-93760c79e0": 0.6786618078752911
+        },
+        "independent_set": {
+          "alg-dsl-93760c79e0": 0.526384243775548
+        },
+        "integer_quadratic": {
+          "alg-dsl-93760c79e0": 0.0032585047253250988
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite discrete_general"
+  ],
+  "status": "discarded",
+  "fingerprint": "0ff1759a537ad42ed850",
+  "train_score": 0.6141341393896318
+}

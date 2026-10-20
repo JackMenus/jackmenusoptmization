@@ -260,7 +260,7 @@ def test_discrete_general_v2_uses_fresh_seeds_and_a_held_out_family():
                 other_seeds |= set(split)
     assert not other_seeds & {x for v in s.splits.values() for x in v}
     assert not {f for f, _ in s.test_only} & (other_fams | {f for f, _ in s.families})
-    assert s.test_status == "untouched"
+    assert s.test_status.startswith("historical")  # test split run once in round 10
     for split in ("train", "validation", "test"):
         for inst in s.instances(split):
             assert inst.make().known_optimum is not None

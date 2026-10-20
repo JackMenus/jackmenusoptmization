@@ -1,0 +1,188 @@
+{
+  "id": "ope-dsl-703e7956a2",
+  "version": 4,
+  "created": "2026-10-20T13:12:18+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "mix",
+    "children": [
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "copy"
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "uniform_reset"
+                },
+                {
+                  "op": "bit_flip"
+                }
+              ],
+              "weights": [
+                0.86,
+                0.51
+              ]
+            },
+            "integer": {
+              "op": "gaussian"
+            }
+          }
+        ]
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "copy"
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "bit_flip"
+            },
+            "integer": {
+              "op": "gaussian",
+              "sigma": 0.0235
+            }
+          }
+        ]
+      }
+    ],
+    "weights": [
+      0.5,
+      0.5
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:12:18+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T13:12:19+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T13:12:19+00:00",
+      "operation": "updated",
+      "fields": [
+        "fingerprint"
+      ]
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T13:13:21+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    }
+  ],
+  "compatible_kinds": [
+    "discrete"
+  ],
+  "hyperparameters": {
+    "children.1.children.1.integer.sigma": 0.0235
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 13, 'stages': 1, 'types_changed': ['binary', 'integer']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=77, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3116,
+    "seconds": 0.925
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 30,
+        "mean_score": 0.46324271285724716,
+        "median_score": 0.464177737059093,
+        "std_score": 0.34172089526552485,
+        "iqr_score": 0.6051947489392742,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.2,
+        "median_gap": 49.5,
+        "mean_runtime_s": 0.8762039575333802,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.17524079150667604,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "genetic",
+      "per_family": {
+        "knapsack_correlated": {
+          "ope-dsl-703e7956a2": 0.7912115696934353
+        },
+        "multi_knapsack": {
+          "ope-dsl-703e7956a2": 0.35471201538617264
+        },
+        "independent_set": {
+          "ope-dsl-703e7956a2": 0.3790784095131921
+        },
+        "integer_quadratic": {
+          "ope-dsl-703e7956a2": -2.66129150353755e-17
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite discrete_general"
+  ],
+  "status": "validated",
+  "fingerprint": "bb5ee156fb258db2fa7a",
+  "train_score": 0.46324271285724716
+}

@@ -125,7 +125,9 @@ SUITES: dict[str, Suite] = {
         "optima (dynamic programming, MILP with HiGHS at gap 0, enumeration); test adds a held-out family "
         "(weighted set cover) that no other suite uses.",
         version="2",
-        test_only=[("set_cover", {"n_sets": 40, "n_elements": 30})]),
+        test_only=[("set_cover", {"n_sets": 40, "n_elements": 30})],
+        test_status="historical: test split run once in round 10 (2026-10-20, lab/r10-develop-discrete); "
+                    "regression/diagnostic use only"),
 }
 
 

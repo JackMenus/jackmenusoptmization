@@ -1,0 +1,158 @@
+{
+  "id": "ope-dsl-9b4f534eaf",
+  "version": 5,
+  "created": "2026-10-20T13:12:14+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "de_best1"
+      },
+      {
+        "op": "per_type",
+        "binary": {
+          "op": "uniform_reset"
+        },
+        "integer": {
+          "op": "gaussian",
+          "sigma": 0.1927
+        }
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:12:14+00:00",
+      "operation": "created",
+      "parents": []
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T13:12:15+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T13:12:15+00:00",
+      "operation": "updated",
+      "fields": [
+        "fingerprint"
+      ]
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T13:13:21+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 5,
+      "time": "2026-10-20T13:13:21+00:00",
+      "operation": "status -> discarded",
+      "generation": 0
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.1.integer.sigma": 0.1927
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 5, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=115, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3117,
+    "seconds": 0.976
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 30,
+        "mean_score": 0.4914325578830547,
+        "median_score": 0.5714804063860668,
+        "std_score": 0.3267570543728033,
+        "iqr_score": 0.5411479261967993,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.2,
+        "median_gap": 42.5,
+        "mean_runtime_s": 1.031798927099923,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.2063597854199846,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "genetic",
+      "per_family": {
+        "knapsack_correlated": {
+          "ope-dsl-9b4f534eaf": 0.7785603880183349
+        },
+        "multi_knapsack": {
+          "ope-dsl-9b4f534eaf": 0.5237878327765968
+        },
+        "independent_set": {
+          "ope-dsl-9b4f534eaf": 0.3762541806020067
+        },
+        "integer_quadratic": {
+          "ope-dsl-9b4f534eaf": -2.66129150353755e-17
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite discrete_general"
+  ],
+  "status": "discarded",
+  "fingerprint": "6e193f9ab7ad5acb0e8d",
+  "train_score": 0.4914325578830547
+}

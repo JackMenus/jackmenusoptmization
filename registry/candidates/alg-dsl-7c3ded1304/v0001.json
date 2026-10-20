@@ -1,0 +1,113 @@
+{
+  "id": "alg-dsl-7c3ded1304",
+  "version": 1,
+  "created": "2026-10-20T13:13:29+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g1-4",
+    "population": 20,
+    "offspring": 20,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "project"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "copy"
+                },
+                {
+                  "op": "type_aware",
+                  "sigma": 0.0145
+                }
+              ]
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "de_best1",
+                  "CR": 0.844
+                },
+                {
+                  "op": "type_aware",
+                  "sigma": 0.1718
+                }
+              ]
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "one_fifth",
+          "factor": 1.45,
+          "target": 0.26
+        }
+      }
+    ],
+    "restart": null,
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.1,
+      "step0": 0.02
+    }
+  },
+  "parents": [
+    "alg-dsl-8ab3e4db4f"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: added final pattern-search refinement (10% of budget)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:13:29+00:00",
+      "operation": "added final pattern-search refinement (10% of budget)",
+      "parents": [
+        "alg-dsl-8ab3e4db4f"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 20,
+    "offspring": 20,
+    "stages.0.parent_selection.k": 4,
+    "stages.0.variation.children.0.children.1.sigma": 0.0145,
+    "stages.0.variation.children.1.children.0.CR": 0.844,
+    "stages.0.variation.children.1.children.1.sigma": 0.1718,
+    "stages.0.step.factor": 1.45,
+    "stages.0.step.target": 0.26,
+    "refine.evals_fraction": 0.1,
+    "refine.step0": 0.02
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

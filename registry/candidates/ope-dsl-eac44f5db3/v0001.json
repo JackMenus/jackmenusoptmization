@@ -1,0 +1,131 @@
+{
+  "id": "ope-dsl-eac44f5db3",
+  "version": 1,
+  "created": "2026-10-20T13:18:36+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "success_rate",
+      "lt": 0.15
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "uniform_cx"
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "mix",
+            "children": [
+              {
+                "op": "uniform_reset"
+              },
+              {
+                "op": "uniform_reset"
+              }
+            ],
+            "weights": [
+              0.64,
+              0.75
+            ]
+          },
+          "integer": {
+            "op": "integer_step"
+          }
+        }
+      ]
+    },
+    "else": {
+      "op": "if",
+      "cond": {
+        "pred": "evals_fraction",
+        "ge": 0.87
+      },
+      "then": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "uniform_cx",
+            "p": 0.274
+          },
+          {
+            "op": "type_aware",
+            "sigma": 0.2532
+          }
+        ]
+      },
+      "else": {
+        "op": "seq",
+        "children": [
+          {
+            "op": "uniform_cx",
+            "p": 0.191
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "bit_flip"
+                },
+                {
+                  "op": "bit_flip"
+                }
+              ],
+              "weights": [
+                0.32,
+                0.79
+              ]
+            },
+            "integer": {
+              "op": "repeat",
+              "n": 2,
+              "child": {
+                "op": "integer_step",
+                "max_step": 1
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parents": [
+    "ope-dsl-58a7ed97aa"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: wrapped operator in a conditional with a new alternative branch",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:18:36+00:00",
+      "operation": "wrapped operator in a conditional with a new alternative branch",
+      "parents": [
+        "ope-dsl-58a7ed97aa"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.lt": 0.15,
+    "else.cond.ge": 0.87,
+    "else.then.children.0.p": 0.274,
+    "else.then.children.1.sigma": 0.2532,
+    "else.else.children.0.p": 0.191,
+    "else.else.children.1.integer.n": 2,
+    "else.else.children.1.integer.child.max_step": 1
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

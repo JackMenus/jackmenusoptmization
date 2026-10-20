@@ -1,0 +1,193 @@
+{
+  "id": "alg-dsl-22b1ed83b4",
+  "version": 5,
+  "created": "2026-10-20T13:15:28+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g3-2",
+    "population": 20,
+    "offspring": 20,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "resample"
+    },
+    "stages": [
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "uniform_cx"
+            },
+            {
+              "op": "type_aware",
+              "sigma": 0.0197
+            }
+          ]
+        },
+        "survival": {
+          "op": "metropolis",
+          "t0": 0.0133,
+          "cooling": 0.9805
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [
+    "alg-dsl-f18700ed7f"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: removed stage 0",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:15:28+00:00",
+      "operation": "removed stage 0",
+      "parents": [
+        "alg-dsl-f18700ed7f"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T13:15:29+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T13:15:30+00:00",
+      "operation": "updated",
+      "fields": [
+        "fingerprint"
+      ]
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T13:16:57+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 5,
+      "time": "2026-10-20T13:16:57+00:00",
+      "operation": "status -> discarded",
+      "generation": 3
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 20,
+    "offspring": 20,
+    "stages.0.parent_selection.k": 4,
+    "stages.0.variation.children.1.sigma": 0.0197,
+    "stages.0.survival.t0": 0.0133,
+    "stages.0.survival.cooling": 0.9805
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 3, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=172, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3119,
+    "seconds": 0.951
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 30,
+        "mean_score": 0.25945012329946965,
+        "median_score": 0.16868796332141006,
+        "std_score": 0.23566092147105624,
+        "iqr_score": 0.38426676492262346,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.2,
+        "median_gap": 19.0,
+        "mean_runtime_s": 1.102495179233453,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.2204990358466906,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "genetic",
+      "per_family": {
+        "knapsack_correlated": {
+          "alg-dsl-22b1ed83b4": 0.4805812985571587
+        },
+        "multi_knapsack": {
+          "alg-dsl-22b1ed83b4": 0.1611853426460168
+        },
+        "independent_set": {
+          "alg-dsl-22b1ed83b4": 0.1520066889632107
+        },
+        "integer_quadratic": {
+          "alg-dsl-22b1ed83b4": 0.022895987773803333
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite discrete_general"
+  ],
+  "status": "discarded",
+  "fingerprint": "44f90799354dd613ce17",
+  "train_score": 0.25945012329946965
+}

@@ -1,0 +1,255 @@
+{
+  "id": "alg-dsl-93661f22ec",
+  "version": 5,
+  "created": "2026-10-20T13:14:19+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g2-3",
+    "population": 10,
+    "offspring": 10,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "resample"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "de_current_to_pbest",
+              "F": 1.11,
+              "CR": 0.597
+            },
+            {
+              "op": "per_type",
+              "binary": {
+                "op": "uniform_reset"
+              },
+              "integer": {
+                "op": "mix",
+                "children": [
+                  {
+                    "op": "uniform_reset"
+                  },
+                  {
+                    "op": "gaussian",
+                    "sigma": 0.2749,
+                    "rate": 0.58
+                  }
+                ],
+                "weights": [
+                  0.72,
+                  0.43
+                ]
+              }
+            }
+          ]
+        },
+        "survival": {
+          "op": "threshold",
+          "tau": 0.0719
+        },
+        "step": {
+          "op": "one_fifth",
+          "factor": 1.43,
+          "target": 0.11
+        },
+        "until": {
+          "pred": "evals_fraction",
+          "ge": 0.33
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "uniform_cx"
+            },
+            {
+              "op": "type_aware",
+              "sigma": 0.0197
+            }
+          ]
+        },
+        "survival": {
+          "op": "metropolis",
+          "t0": 0.0133,
+          "cooling": 0.9805
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [
+    "alg-dsl-f18700ed7f"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: population/offspring -> 10",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:14:19+00:00",
+      "operation": "population/offspring -> 10",
+      "parents": [
+        "alg-dsl-f18700ed7f"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T13:14:20+00:00",
+      "operation": "validated"
+    },
+    {
+      "version": 3,
+      "time": "2026-10-20T13:14:20+00:00",
+      "operation": "updated",
+      "fields": [
+        "fingerprint"
+      ]
+    },
+    {
+      "version": 4,
+      "time": "2026-10-20T13:15:22+00:00",
+      "operation": "benchmarked",
+      "split": "train"
+    },
+    {
+      "version": 5,
+      "time": "2026-10-20T13:15:22+00:00",
+      "operation": "status -> discarded",
+      "generation": 2
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 10,
+    "offspring": 10,
+    "stages.0.parent_selection.k": 4,
+    "stages.0.variation.children.0.F": 1.11,
+    "stages.0.variation.children.0.CR": 0.597,
+    "stages.0.variation.children.1.integer.children.1.sigma": 0.2749,
+    "stages.0.variation.children.1.integer.children.1.rate": 0.58,
+    "stages.0.survival.tau": 0.0719,
+    "stages.0.step.factor": 1.43,
+    "stages.0.step.target": 0.11,
+    "stages.0.until.ge": 0.33,
+    "stages.1.parent_selection.k": 4,
+    "stages.1.variation.children.1.sigma": 0.0197,
+    "stages.1.survival.t0": 0.0133,
+    "stages.1.survival.cooling": 0.9805
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 10, 'stages': 2, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=138, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3104,
+    "seconds": 1.124
+  },
+  "benchmarks": [
+    {
+      "split": "train",
+      "budget": 5000,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "summary": {
+        "runs": 30,
+        "mean_score": 0.3416370218296201,
+        "median_score": 0.2251905751905752,
+        "std_score": 0.32561733774503726,
+        "iqr_score": 0.6309277987244089,
+        "feasibility_rate": 1.0,
+        "failure_rate": 0.0,
+        "solved_rate": 0.26666666666666666,
+        "median_gap": 24.5,
+        "mean_runtime_s": 1.1867378157333102,
+        "mean_evaluations": 5000.0,
+        "runtime_per_eval_ms": 0.23734756314666206,
+        "not_applicable_runs": 0
+      },
+      "reference_baseline": "genetic",
+      "per_family": {
+        "knapsack_correlated": {
+          "alg-dsl-93661f22ec": 0.6810604350470602
+        },
+        "multi_knapsack": {
+          "alg-dsl-93661f22ec": 0.17506832675372
+        },
+        "independent_set": {
+          "alg-dsl-93661f22ec": 0.17099591230026012
+        },
+        "integer_quadratic": {
+          "alg-dsl-93661f22ec": -2.66129150353755e-17
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "benchmarked only on suite discrete_general"
+  ],
+  "status": "discarded",
+  "fingerprint": "a2905d2c178fa4c35902",
+  "train_score": 0.3416370218296201
+}

@@ -1,0 +1,80 @@
+{
+  "id": "ope-dsl-7c7354551c",
+  "version": 1,
+  "created": "2026-10-20T13:12:19+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "stagnation",
+      "ge": 19
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "copy"
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "repeat",
+            "n": 3,
+            "child": {
+              "op": "uniform_reset"
+            }
+          },
+          "integer": {
+            "op": "gaussian",
+            "rate": 0.23
+          }
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "uniform_cx"
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "bit_flip"
+          },
+          "integer": {
+            "op": "gaussian",
+            "sigma": 0.0022
+          }
+        }
+      ]
+    }
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:12:19+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 19,
+    "then.children.1.binary.n": 3,
+    "then.children.1.integer.rate": 0.23,
+    "else.children.1.integer.sigma": 0.0022
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

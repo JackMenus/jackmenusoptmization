@@ -1,0 +1,67 @@
+{
+  "id": "ope-dsl-a84052842b",
+  "version": 1,
+  "created": "2026-10-20T13:12:11+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "seq",
+    "children": [
+      {
+        "op": "de_rand1",
+        "F": 0.806
+      },
+      {
+        "op": "per_type",
+        "binary": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "uniform_reset",
+              "rate": 0.57
+            },
+            {
+              "op": "prob",
+              "p": 0.28,
+              "child": {
+                "op": "bit_flip",
+                "rate": 0.44
+              }
+            }
+          ]
+        },
+        "integer": {
+          "op": "gaussian",
+          "sigma": 0.1932
+        }
+      }
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:12:11+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.F": 0.806,
+    "children.1.binary.children.0.rate": 0.57,
+    "children.1.binary.children.1.p": 0.28,
+    "children.1.binary.children.1.child.rate": 0.44,
+    "children.1.integer.sigma": 0.1932
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

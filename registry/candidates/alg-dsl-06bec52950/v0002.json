@@ -1,0 +1,163 @@
+{
+  "id": "alg-dsl-06bec52950",
+  "version": 2,
+  "created": "2026-10-20T13:14:15+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g2-0",
+    "population": 20,
+    "offspring": 20,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "project"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "mix",
+          "children": [
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "copy"
+                },
+                {
+                  "op": "type_aware",
+                  "sigma": 0.0145
+                }
+              ]
+            },
+            {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "de_best1",
+                  "CR": 0.844,
+                  "F": 0.5662
+                },
+                {
+                  "op": "type_aware",
+                  "sigma": 0.1718
+                }
+              ]
+            }
+          ],
+          "weights": [
+            0.5,
+            0.5
+          ]
+        },
+        "survival": {
+          "op": "pairwise"
+        },
+        "step": {
+          "op": "one_fifth",
+          "factor": 1.45,
+          "target": 0.26
+        }
+      }
+    ],
+    "restart": null,
+    "refine": {
+      "op": "pattern",
+      "evals_fraction": 0.1,
+      "step0": 0.02
+    }
+  },
+  "parents": [
+    "alg-dsl-18a02c0ff4"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: stage 0: perturbed de_best1.F at children/1/children/0",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:14:15+00:00",
+      "operation": "stage 0: perturbed de_best1.F at children/1/children/0",
+      "parents": [
+        "alg-dsl-18a02c0ff4"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T13:14:16+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 20,
+    "offspring": 20,
+    "stages.0.parent_selection.k": 4,
+    "stages.0.variation.children.0.children.1.sigma": 0.0145,
+    "stages.0.variation.children.1.children.0.CR": 0.844,
+    "stages.0.variation.children.1.children.0.F": 0.5662,
+    "stages.0.variation.children.1.children.1.sigma": 0.1718,
+    "stages.0.step.factor": 1.45,
+    "stages.0.step.target": 0.26,
+    "refine.evals_fraction": 0.1,
+    "refine.step0": 0.02
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 7, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.303s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=133, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3120,
+    "seconds": 0.899
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite discrete_general"
+  ],
+  "status": "validated"
+}

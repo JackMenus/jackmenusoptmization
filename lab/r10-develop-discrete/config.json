@@ -1,0 +1,43 @@
+{
+  "kind": "develop",
+  "runs_dir": "runs",
+  "development": {
+    "suite": "discrete_general",
+    "run_budget": 5000,
+    "run_seeds": [
+      0,
+      1,
+      2
+    ],
+    "test_run_seeds": [
+      500,
+      501,
+      502,
+      503,
+      504
+    ],
+    "generations": 6,
+    "proposals_per_generation": 10,
+    "retain": 4,
+    "total_evaluations": 34000000,
+    "test_share": 0.25,
+    "max_wall_time": 9000,
+    "alpha": 0.05,
+    "min_effect": 0.01,
+    "multiple_testing": "holm",
+    "fingerprint_budget": 200,
+    "baselines": [
+      "random_search",
+      "simulated_annealing",
+      "genetic",
+      "tabu",
+      "greedy_ls"
+    ],
+    "code_generation": true,
+    "llm": null,
+    "max_model_calls": 0,
+    "registry": "registry",
+    "seed": 20261021
+  },
+  "_source": "/home/claude/dev/optiforge/lab/r10-develop-discrete/develop_discrete_general.yaml"
+}

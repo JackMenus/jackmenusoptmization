@@ -1,0 +1,145 @@
+{
+  "id": "alg-dsl-93661f22ec",
+  "version": 1,
+  "created": "2026-10-20T13:14:19+00:00",
+  "kind": "algorithm",
+  "representation": "dsl",
+  "source": {
+    "dsl_version": 1,
+    "kind": "algorithm",
+    "name": "evo-g2-3",
+    "population": 10,
+    "offspring": 10,
+    "init": {
+      "op": "uniform"
+    },
+    "repair": {
+      "op": "resample"
+    },
+    "stages": [
+      {
+        "name": "stage0",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "de_current_to_pbest",
+              "F": 1.11,
+              "CR": 0.597
+            },
+            {
+              "op": "per_type",
+              "binary": {
+                "op": "uniform_reset"
+              },
+              "integer": {
+                "op": "mix",
+                "children": [
+                  {
+                    "op": "uniform_reset"
+                  },
+                  {
+                    "op": "gaussian",
+                    "sigma": 0.2749,
+                    "rate": 0.58
+                  }
+                ],
+                "weights": [
+                  0.72,
+                  0.43
+                ]
+              }
+            }
+          ]
+        },
+        "survival": {
+          "op": "threshold",
+          "tau": 0.0719
+        },
+        "step": {
+          "op": "one_fifth",
+          "factor": 1.43,
+          "target": 0.11
+        },
+        "until": {
+          "pred": "evals_fraction",
+          "ge": 0.33
+        }
+      },
+      {
+        "name": "stage1",
+        "parent_selection": {
+          "op": "tournament",
+          "k": 4
+        },
+        "variation": {
+          "op": "seq",
+          "children": [
+            {
+              "op": "uniform_cx"
+            },
+            {
+              "op": "type_aware",
+              "sigma": 0.0197
+            }
+          ]
+        },
+        "survival": {
+          "op": "metropolis",
+          "t0": 0.0133,
+          "cooling": 0.9805
+        },
+        "step": {
+          "op": "constant"
+        }
+      }
+    ],
+    "restart": null,
+    "refine": null
+  },
+  "parents": [
+    "alg-dsl-f18700ed7f"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained candidate: population/offspring -> 10",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:14:19+00:00",
+      "operation": "population/offspring -> 10",
+      "parents": [
+        "alg-dsl-f18700ed7f"
+      ]
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "population": 10,
+    "offspring": 10,
+    "stages.0.parent_selection.k": 4,
+    "stages.0.variation.children.0.F": 1.11,
+    "stages.0.variation.children.0.CR": 0.597,
+    "stages.0.variation.children.1.integer.children.1.sigma": 0.2749,
+    "stages.0.variation.children.1.integer.children.1.rate": 0.58,
+    "stages.0.survival.tau": 0.0719,
+    "stages.0.step.factor": 1.43,
+    "stages.0.step.target": 0.11,
+    "stages.0.until.ge": 0.33,
+    "stages.1.parent_selection.k": 4,
+    "stages.1.variation.children.1.sigma": 0.0197,
+    "stages.1.survival.t0": 0.0133,
+    "stages.1.survival.cooling": 0.9805
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

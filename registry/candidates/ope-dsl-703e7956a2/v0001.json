@@ -1,0 +1,84 @@
+{
+  "id": "ope-dsl-703e7956a2",
+  "version": 1,
+  "created": "2026-10-20T13:12:18+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "mix",
+    "children": [
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "copy"
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "mix",
+              "children": [
+                {
+                  "op": "uniform_reset"
+                },
+                {
+                  "op": "bit_flip"
+                }
+              ],
+              "weights": [
+                0.86,
+                0.51
+              ]
+            },
+            "integer": {
+              "op": "gaussian"
+            }
+          }
+        ]
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "copy"
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "bit_flip"
+            },
+            "integer": {
+              "op": "gaussian",
+              "sigma": 0.0235
+            }
+          }
+        ]
+      }
+    ],
+    "weights": [
+      0.5,
+      0.5
+    ]
+  },
+  "parents": [],
+  "provider": "grammar",
+  "rationale": "random draw from the typed operator grammar",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:12:18+00:00",
+      "operation": "created",
+      "parents": []
+    }
+  ],
+  "compatible_kinds": [
+    "discrete"
+  ],
+  "hyperparameters": {
+    "children.1.children.1.integer.sigma": 0.0235
+  },
+  "validation": null,
+  "benchmarks": [],
+  "limitations": [],
+  "status": "proposed"
+}

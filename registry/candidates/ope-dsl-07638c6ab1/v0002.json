@@ -1,0 +1,154 @@
+{
+  "id": "ope-dsl-07638c6ab1",
+  "version": 2,
+  "created": "2026-10-20T13:13:26+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "mix",
+    "children": [
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "de_current_to_pbest",
+            "F": 0.119,
+            "CR": 0.881,
+            "p": 0.298
+          },
+          {
+            "op": "type_aware",
+            "sigma": 0.0122
+          }
+        ]
+      },
+      {
+        "op": "seq",
+        "children": [
+          {
+            "op": "copy"
+          },
+          {
+            "op": "per_type",
+            "binary": {
+              "op": "seq",
+              "children": [
+                {
+                  "op": "bit_flip"
+                },
+                {
+                  "op": "prob",
+                  "p": 0.2,
+                  "child": {
+                    "op": "bit_flip",
+                    "rate": 0.26
+                  }
+                }
+              ]
+            },
+            "integer": {
+              "op": "if",
+              "cond": {
+                "pred": "diversity",
+                "lt": 0.139
+              },
+              "then": {
+                "op": "integer_step",
+                "rate": 0.21
+              },
+              "else": {
+                "op": "uniform_reset"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "weights": [
+      0.5,
+      0.5
+    ]
+  },
+  "parents": [
+    "ope-dsl-2daf27238f"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: replaced subtree at children/0/children/0 (de_rand1 -> de_current_to_pbest)",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:13:26+00:00",
+      "operation": "replaced subtree at children/0/children/0 (de_rand1 -> de_current_to_pbest)",
+      "parents": [
+        "ope-dsl-2daf27238f"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T13:13:28+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "children.0.children.0.F": 0.119,
+    "children.0.children.0.CR": 0.881,
+    "children.0.children.0.p": 0.298,
+    "children.0.children.1.sigma": 0.0122,
+    "children.1.children.1.binary.children.1.p": 0.2,
+    "children.1.children.1.binary.children.1.child.rate": 0.26,
+    "children.1.children.1.integer.cond.lt": 0.139,
+    "children.1.children.1.integer.then.rate": 0.21
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 14, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.304s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=114, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3116,
+    "seconds": 1.044
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite discrete_general"
+  ],
+  "status": "validated"
+}

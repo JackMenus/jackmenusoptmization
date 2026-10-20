@@ -1,0 +1,144 @@
+{
+  "id": "ope-dsl-3d1699e693",
+  "version": 2,
+  "created": "2026-10-20T13:17:01+00:00",
+  "kind": "operator",
+  "representation": "dsl",
+  "source": {
+    "op": "if",
+    "cond": {
+      "pred": "evals_fraction",
+      "ge": 0.87
+    },
+    "then": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "uniform_cx",
+          "p": 0.274
+        },
+        {
+          "op": "type_aware",
+          "sigma": 0.2532
+        }
+      ]
+    },
+    "else": {
+      "op": "seq",
+      "children": [
+        {
+          "op": "uniform_cx",
+          "p": 0.191
+        },
+        {
+          "op": "per_type",
+          "binary": {
+            "op": "mix",
+            "children": [
+              {
+                "op": "bit_flip"
+              },
+              {
+                "op": "bit_flip"
+              }
+            ],
+            "weights": [
+              0.32,
+              0.79
+            ]
+          },
+          "integer": {
+            "op": "repeat",
+            "n": 2,
+            "child": {
+              "op": "integer_step",
+              "max_step": 1,
+              "rate": 0.3
+            }
+          }
+        }
+      ]
+    }
+  },
+  "parents": [
+    "ope-dsl-58a7ed97aa"
+  ],
+  "provider": "evolution",
+  "rationale": "edit of retained operator: perturbed integer_step.rate at else/children/1/integer/child",
+  "history": [
+    {
+      "version": 1,
+      "time": "2026-10-20T13:17:01+00:00",
+      "operation": "perturbed integer_step.rate at else/children/1/integer/child",
+      "parents": [
+        "ope-dsl-58a7ed97aa"
+      ]
+    },
+    {
+      "version": 2,
+      "time": "2026-10-20T13:17:02+00:00",
+      "operation": "validated"
+    }
+  ],
+  "compatible_kinds": [
+    "continuous",
+    "discrete",
+    "mixed"
+  ],
+  "hyperparameters": {
+    "cond.ge": 0.87,
+    "then.children.0.p": 0.274,
+    "then.children.1.sigma": 0.2532,
+    "else.children.0.p": 0.191,
+    "else.children.1.integer.n": 2,
+    "else.children.1.integer.child.max_step": 1,
+    "else.children.1.integer.child.rate": 0.3
+  },
+  "validation": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "interface",
+        "passed": true,
+        "details": "static type check ok {'nodes': 12, 'stages': 1, 'types_changed': ['binary', 'categorical', 'integer', 'permutation', 'real']}"
+      },
+      {
+        "name": "bounds_and_types",
+        "passed": true,
+        "details": "out-of-domain evaluations=0, raw code outputs outside domain=0, termination=budget_evaluations []"
+      },
+      {
+        "name": "numerical_validity",
+        "passed": true,
+        "details": "non-finite offspring=0; NaN-region run: termination=budget_evaluations, objective=0.0"
+      },
+      {
+        "name": "constraint_handling",
+        "passed": true,
+        "details": "status=feasible, max_violation=0.0, termination=budget_evaluations"
+      },
+      {
+        "name": "reproducibility",
+        "passed": true,
+        "details": "identical history/result for repeated seed"
+      },
+      {
+        "name": "termination",
+        "passed": true,
+        "details": "evaluations 600/600; time-limited run stopped after 0.305s (limit 0.3s, reason budget_time)"
+      },
+      {
+        "name": "failure_handling",
+        "passed": true,
+        "details": "objective errors absorbed=65, termination=budget_evaluations"
+      }
+    ],
+    "evaluations": 3119,
+    "seconds": 0.988
+  },
+  "benchmarks": [],
+  "limitations": [
+    "benchmarked only on suite discrete_general"
+  ],
+  "status": "validated"
+}
