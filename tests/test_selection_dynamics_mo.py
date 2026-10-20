@@ -36,11 +36,14 @@ def test_mode_restricts_strategy():
     assert select_by_rules(p, Budget(5000), mode="global").solver == "cmaes"
 
 
-def _champion(reg, pairs, p_value, kind="continuous", dims=(5,)):
-    rec = reg.add(kind="algorithm", representation="dsl", source={"name": f"c{pairs}{p_value}"}, provider="test")
+def _champion(reg, pairs, p_value, kind="continuous", dims=(5,), legacy=False):
+    rec = reg.add(kind="algorithm", representation="dsl", source={"name": f"c{pairs}{p_value}{legacy}"}, provider="test")
+    comp = {"pairs": pairs, "p_value_a_better": p_value, "baseline": "cmaes", "mean_diff": -0.2}
+    if not legacy:
+        comp.update(p_value_adjusted=p_value, ci95_mean_diff=[-0.3, -0.1], min_effect=0.01)
     entry = {"split": "validation", "budget": 3000, "summary": {"mean_score": 0.1},
              "problem_profile": {"kind": kind, "types": ["real"], "dims": list(dims), "constrained": False},
-             "vs_best_baseline": {"pairs": pairs, "p_value_a_better": p_value, "baseline": "cmaes", "mean_diff": -0.2}}
+             "vs_best_baseline": comp}
     reg.update(rec["id"], status="champion", benchmarks_append=entry)
     return rec["id"]
 
@@ -51,6 +54,7 @@ def test_evidence_requires_enough_significant_runs(tmp_path):
     base = select_by_rules(p, Budget(3000))
     _champion(reg, pairs=6, p_value=0.001)
     _champion(reg, pairs=20, p_value=0.3)
+    _champion(reg, pairs=40, p_value=1e-6, legacy=True)  # raw p only (pre-2026-10-20 record): not used
     kept = EvidenceSelector(reg).refine(p, Budget(3000), base)
     assert kept.solver == base.solver and kept.source == "rules"
     cid = _champion(reg, pairs=20, p_value=0.001)

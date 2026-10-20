@@ -172,3 +172,29 @@ def test_code_operator_restarts_are_capped():
     op.close()
     assert op.stats["starts"] == SandboxedCodeOperator.MAX_RESTARTS + 1
     assert "candidate disabled" in msgs[-1]
+
+
+BENIGN = "def mutate(x, info, rng):\n    return [v + 1 for v in x]\n"
+
+
+def test_forked_child_cannot_use_or_kill_parent_sandbox():
+    import multiprocessing as mp
+    sb = SandboxProcess(BENIGN)
+    try:
+        def child(q):
+            try:
+                sb.call([0.5], {}, 0)
+                q.put("call succeeded")
+            except RuntimeError as exc:
+                q.put("refused" if "inherited" in str(exc) else f"other error: {exc}")
+            sb.close()
+            sb.kill()
+        q = mp.get_context("fork").Queue()
+        pr = mp.get_context("fork").Process(target=child, args=(q,))
+        pr.start()
+        pr.join(20)
+        assert q.get(timeout=5) == "refused"
+        assert sb.proc.poll() is None  # the parent's worker survived the child's close/kill
+        assert sb.call([0.5], {}, 0) == {"ok": True, "y": [1.5]}
+    finally:
+        sb.close()

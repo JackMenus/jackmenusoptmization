@@ -189,3 +189,19 @@ def test_noisy_reports_repeat_statistics():
     p = Problem(sp, lambda x: float(x[0] ** 2 + 0.01 * rng.normal()), noisy=True)
     r = get_solver("cmaes").solve(p, Budget(600), seed=0)
     assert r.noise is not None and r.noise["verification_repeats"] >= 2
+
+
+def test_noisy_feasibility_requires_every_verification_repeat():
+    from optiforge.core.constraints import ineq
+    calls = {"n": 0}
+
+    def g(x):  # feasible except on every 4th call: a final lucky repeat must not decide feasibility
+        calls["n"] += 1
+        return 1.0 if calls["n"] % 4 == 0 else -1.0
+    sp = Space([Real("x", -1, 1)])
+    p = Problem(sp, lambda x: float(x[0] ** 2), noisy=True, constraints=[ineq(g, "flaky")])
+    r = get_solver("random_search").solve(p, Budget(max_evaluations=30), seed=0)
+    assert r.noise["verification_repeats"] == 5
+    assert r.noise["feasible_repeats"] < 5
+    assert not r.feasible
+    assert any("feasible in" in m for m in r.messages)

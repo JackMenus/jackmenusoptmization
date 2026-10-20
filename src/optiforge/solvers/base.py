@@ -15,7 +15,7 @@ from ..core.errors import BudgetExhausted, SearchCancelled, UnsupportedProblemEr
 from ..core.evaluator import Evaluator
 from ..core.finalize import finalize
 from ..core.problem import Problem
-from ..core.result import OptimizationResult
+from ..core.result import Guarantee, OptimizationResult
 
 log = logging.getLogger("optiforge.solvers")
 
@@ -180,7 +180,11 @@ class IterativeSolver(Solver):
             ctx.rng.bit_generator.state = payload["rng"]
             ctx.evaluator.restore(payload["evaluator"])
             ctx.stagnation.restore(payload["stagnation"])
+            ctx.guarantee_hints = [Guarantee(**g) for g in payload.get("guarantee_hints", [])]
+            ctx.diagnostics.update(payload.get("diagnostics", {}))
             ctx.messages.append(f"resumed from checkpoint at iteration {it}")
+            if payload.get("reason"):  # the checkpointed iteration had already terminated the search
+                return payload["reason"]
         else:
             state = self.initialize(ctx)
             ctx.stagnation.update(ctx.evaluator.best)
@@ -193,7 +197,9 @@ class IterativeSolver(Solver):
             if ckpt is not None and ckpt.due(it):
                 ckpt.save({"solver": self.name, "version": self.version, "iteration": it, "state": state,
                            "rng": ctx.rng.bit_generator.state, "evaluator": ctx.evaluator.snapshot(),
-                           "stagnation": ctx.stagnation.state(), "params": self.params})
+                           "stagnation": ctx.stagnation.state(), "params": self.params, "reason": reason,
+                           "guarantee_hints": [dict(vars(g)) for g in ctx.guarantee_hints],
+                           "diagnostics": dict(ctx.diagnostics)})
             if reason:
                 return reason
         return "completed"

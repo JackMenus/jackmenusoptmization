@@ -76,6 +76,18 @@
   identical). Validation evidence (`lab/r9-exchange`): tabu improves (mean -0.18, CI below zero), SA does not; both
   remain behind `genetic`. Not yet confirmed on test.
 
+### Fixes from the audit list (round 10, parallel branch)
+* Noisy problems: the reported point counts as feasible only if all 5 verification repeats are valid and feasible
+  (it was the last repeat only); the violation report uses the worst repeat; `noise.feasible_repeats` is reported.
+* Resuming from a checkpoint written at the terminating iteration returns that termination immediately (it used to
+  iterate again: pattern_search 136 vs 132 evaluations); guarantee hints and diagnostics are checkpointed.
+* Sandbox objects inherited by a `fork` child (benchmark worker pools) are detached in the child: it can no longer
+  send requests to, or kill on garbage collection, the parent's sandbox worker (before the fix a child's request
+  succeeded). `close()` also closes the worker's pipes.
+* **Behaviour change.** The evidence selector ignores champions whose validation record has no multiplicity-adjusted
+  p-value or CI (selections made before 2026-10-20, including the 0.1.0 mixed champion `ope-pyt-c4d678ee14`); they
+  stay in the registry and can be re-selected under the current rule.
+
 ### Fixes from the audit list (round 8)
 * The evaluator passes user code the exact in-domain point: discrete coordinates within 1e-9 of an integer are
   rounded and reals within 1e-9 of a bound are clipped (recorded points too). Portfolio benchmark: 1190/1190 runs
