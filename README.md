@@ -24,6 +24,7 @@ Linux x86_64 using the exact versions in `requirements-lock.txt`. A clean virtua
 file and the package installed into it during delivery.
 
 ```sh
+git clone https://github.com/JackMenus/jackmenusoptmization.git optiforge && cd optiforge
 python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements-lock.txt      # numpy 2.5.3, scipy 1.18.1, PyYAML 6.0.1, click 8.5.0, pytest 9.1.1
 pip install -e .                          # installs the `optiforge` command
@@ -107,3 +108,7 @@ OPTIFORGE_REQUIRE_ISOLATION=1 python3 -m pytest -q   # fail instead of skipping 
 
 Read `DELIVERY_REPORT.md` for the 0.1.0 delivery, `CHANGELOG.md` for every change since, and `WORK_STATE.md` for the
 current state of development (rounds, open issues, next tasks).
+
+## License
+
+MIT, see [LICENSE](LICENSE).
