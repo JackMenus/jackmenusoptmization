@@ -38,11 +38,12 @@ def characteristics(problem: Problem, budget: Budget, eval_cost_s: float | None 
 
 
 def select_by_rules(problem: Problem, budget: Budget, eval_cost_s: float | None = None,
-                    mode: str = "auto", exhaustive_limit: int = 200_000, ga: str = "genetic") -> SolverPlan:
+                    mode: str = "auto", exhaustive_limit: int = 200_000, ga: str = "host_ga") -> SolverPlan:
     """``mode``: ``auto`` | ``local`` | ``global`` | ``hybrid`` (restricts the strategy).
 
     ``ga`` is the evolutionary solver used by the discrete-constrained and mixed rules (R10, R12, R13):
-    ``genetic`` (generational) or ``host_ga`` ((mu+lambda)); see lab/r15-host-vs-genetic.
+    ``host_ga`` ((mu+lambda), the default since round 16, lab/r16-host-confirm) or ``genetic`` (generational, the
+    0.1.0 choice; still better on mixed_constrained in round 16).
     """
     if ga not in ("genetic", "host_ga"):
         raise ValueError(f"ga must be 'genetic' or 'host_ga', not {ga!r}")

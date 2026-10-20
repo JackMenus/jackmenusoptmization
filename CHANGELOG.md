@@ -69,6 +69,14 @@
 * Expensive exact optima are cached per process, and the benchmark runner builds every instance once before forking.
 * `integer_quadratic` enumerates in chunks (same optimum and tie-breaking, bounded memory).
 
+### Rule selection uses host_ga (rounds 15-16)
+* **Behaviour change.** `select_by_rules(..., ga="host_ga")` is the new default for rules R10 (constrained
+  discrete), R12 (mixed with permutations) and R13 (mixed hybrid's global stage); `ga="genetic"` restores 0.1.0.
+  Pre-registered confirmation on 55 fresh instances (`lab/r16-host-confirm`): host_ga beat genetic (mean -0.042,
+  CI [-0.065, -0.020]) and the new rules beat the old ones (mean -0.022, CI [-0.042, -0.003]).
+* Known regression: on `mixed_constrained` the new rules are worse (score 0.079 vs 0.017); also slightly worse on
+  set_cover and independent_set. The benchmark runner passes `auto` parameters to the rules.
+
 ### Host control baseline (round 14)
 * Ablation on development instances (`lab/r14-ablation`): the multi-knapsack advantage of the round-10 candidates
   comes from the operator language's (mu+lambda) host, not from the generated operators (the default operator in the

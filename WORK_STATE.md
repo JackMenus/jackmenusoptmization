@@ -2,7 +2,7 @@
 
 Recovery file for continued development. Check it against `git log` and `git status` before resuming.
 
-Last updated: 2026-10-20, after round 14 (session of the project thread "optiforge 自主研发迭代").
+Last updated: 2026-10-20, after round 16 (session of the project thread "optiforge 自主研发迭代").
 
 ## Goal and priorities
 
@@ -54,6 +54,8 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 | 12 | (this commit) | suite `discrete_general_v3`; pre-registered confirmation of the round-10 candidates | neither confirmed vs genetic (Holm p 0.071; CIs include 0); both better only on multi_knapsack (`lab/r12-confirm-discrete`) |
 | 13 | (this commit) | pre-registered multi-knapsack hypothesis on 20 new instances (4 sizes) | supported for both candidates (CI below 0; ~0.6-1.0 pp smaller relative gap); family-specific (`lab/r13-mkp`) |
 | 14 | (this commit) | ablation of the multi-knapsack gain; new baseline `host_ga`, added to the loop's default baselines | the gain is the host's plus-survival, not the generated operator (`lab/r14-ablation`) |
+| 15 | `528d966` | development-data comparison host_ga vs genetic; rules option `ga` | host_ga better (mean -0.055, CI [-0.077, -0.034]) (`lab/r15-host-vs-genetic`) |
+| 16 | (this commit) | pre-registered confirmation on 55 fresh instances; rule default `ga=host_ga` | H1 and H2 confirmed; regression on mixed_constrained (0.079 vs 0.017) (`lab/r16-host-confirm`) |
 
 ## Audit findings still open
 
@@ -73,9 +75,8 @@ exist), tool/connector/device setup. The repository lives only in the project fo
 
 ## Next tasks (directly executable)
 
-1. Round 14 showed the round-13 gain is the host (plus-survival), now available as `host_ga`. Next: compare
-   `host_ga` with `genetic` across discrete and mixed families on development instances; if it is broadly better,
-   pre-register a test on fresh instances before changing any default (selection rules use `genetic`).
+1. Investigate the round-16 regression of host_ga on `mixed_constrained` (and set_cover / independent_set) on
+   development instances: repair (`project`) vs the GA's feasibility handling, population size, restarts.
 2. Mixed suite v2: the 0.1.0 mixed champion does not transfer to discrete problems (round 8) and its record
    predates the current selection rule (now ignored by the evidence selector). Re-evaluate it on new mixed instances.
 3. Selection: count the feature-probe cost of `auto`; compare it with `hybrid` / `genetic` with practical thresholds.
