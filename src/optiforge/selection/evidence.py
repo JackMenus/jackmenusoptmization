@@ -49,14 +49,19 @@ class EvidenceSelector:
         comp = entry.get("vs_best_baseline", {})
         if comp.get("pairs", 0) < self.min_runs:
             return False, f"only {comp.get('pairs', 0)} paired runs (< {self.min_runs})"
-        p = comp.get("p_value_adjusted", comp.get("p_value_a_better"))  # multiplicity-adjusted when recorded
+        p = comp.get("p_value_adjusted")
         ci = comp.get("ci95_mean_diff")
-        if ci is not None and not ci[1] < 0:
+        if p is None or ci is None:
+            # selections recorded before 2026-10-20 have neither a multiplicity-adjusted p-value nor a CI; they do
+            # not meet the current rule, so they are not used until the selection is re-run
+            return False, ("evidence predates the multiplicity-corrected selection rule (no adjusted p-value or CI); "
+                           "re-run selection to use this champion")
+        if not ci[1] < 0:
             return False, f"validation CI of the paired score difference {ci} does not exclude zero"
-        me = comp.get("min_effect", 0.01)  # records from before 2026-10-20 carry no threshold: use the default
+        me = comp.get("min_effect", 0.01)
         if comp.get("mean_diff") is None or comp["mean_diff"] > -me:
             return False, f"validation mean improvement {comp.get('mean_diff')} is smaller than {me}"
-        if p is None or p >= self.alpha:
+        if p >= self.alpha:
             return False, f"validation p-value {p} not below {self.alpha}"
         return True, (f"champion beat baseline '{comp.get('baseline')}' on a validation split "
                       f"({comp['pairs']} paired runs, p={p:.3g}, mean score diff {comp.get('mean_diff'):+.3f})")

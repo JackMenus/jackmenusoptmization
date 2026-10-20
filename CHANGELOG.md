@@ -84,6 +84,9 @@
 * Sandbox objects inherited by a `fork` child (benchmark worker pools) are detached in the child: it can no longer
   send requests to, or kill on garbage collection, the parent's sandbox worker (before the fix a child's request
   succeeded). `close()` also closes the worker's pipes.
+* **Behaviour change.** The evidence selector ignores champions whose validation record has no multiplicity-adjusted
+  p-value or CI (selections made before 2026-10-20, including the 0.1.0 mixed champion `ope-pyt-c4d678ee14`); they
+  stay in the registry and can be re-selected under the current rule.
 
 ### Fixes from the audit list (round 8)
 * The evaluator passes user code the exact in-domain point: discrete coordinates within 1e-9 of an integer are
