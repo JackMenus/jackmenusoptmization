@@ -141,15 +141,47 @@ class SLSQP(_ScipyLocal):
 
     def _local(self, ctx, x0):
         sp, p = ctx.space, ctx.problem
+        # Objective and constraints are always obtained through the evaluator (one counted, budget- and time-gated,
+        # cancellable evaluation per distinct point); SciPy's separate objective/constraint calls at the same point
+        # share that evaluation through a small cache.
+        cache: dict[bytes, object] = {}
+        shapes: dict[int, int] = {}
+
+        def at(z):
+            x = sp.project(z)
+            key = x.tobytes()
+            ev = cache.get(key)
+            if ev is None:
+                ev = ctx.evaluate(x)
+                if len(cache) > 256:
+                    cache.clear()
+                cache[key] = ev
+            return ev
+
+        def fun(z):
+            ev = at(z)
+            return ev.fmin if ev.valid else BIG
+
+        def con(z, k, sign):
+            ev = at(z)
+            if ev.raw_constraints is not None and len(ev.raw_constraints) == len(p.constraints):
+                v = np.asarray(ev.raw_constraints[k], dtype=float)
+                shapes[k] = v.size
+                return sign * v
+            # failed evaluation: report a large violation of the right shape
+            return np.full(shapes.get(k, 1), -BIG if sign < 0 else BIG)
+
         cons = []
-        for c in p.constraints:
-            if c.kind == "ineq":  # SciPy convention: fun(x) >= 0
-                cons.append({"type": "ineq", "fun": (lambda z, c=c: -p.call_constraint(c, sp.project(z)))})
-            else:
-                cons.append({"type": "eq", "fun": (lambda z, c=c: p.call_constraint(c, sp.project(z)))})
+        for k, c in enumerate(p.constraints):
+            sign = -1.0 if c.kind == "ineq" else 1.0  # SciPy convention for inequalities: fun(x) >= 0
+            d = {"type": c.kind, "fun": (lambda z, k=k, sign=sign: con(z, k, sign))}
+            if c.gradient is not None and p.input_format == "vector":
+                # a declared Jacobian spares the finite-difference evaluations (each of which is a counted evaluation)
+                d["jac"] = (lambda z, c=c, sign=sign: sign * np.atleast_2d(np.asarray(c.gradient(sp.project(z)), dtype=float)))
+            cons.append(d)
         jac = (lambda z: ctx.evaluator.gradient(sp.project(z))) if p.gradient is not None else None
         maxiter = max(10, ctx.evaluator.remaining())
-        return optimize.minimize(self._fun(ctx, None), x0, method="SLSQP", jac=jac, bounds=list(zip(sp.lower, sp.upper)),
+        return optimize.minimize(fun, x0, method="SLSQP", jac=jac, bounds=list(zip(sp.lower, sp.upper)),
                                  constraints=cons, options={"maxiter": maxiter, "ftol": self.params["tol"]})
 
     def _hints(self, ctx, res) -> None:

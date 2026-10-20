@@ -166,3 +166,45 @@ def test_categorical_roundtrip_distinguishes_equal_but_different_choices(choices
     sp = Space([Categorical("c", choices)])
     out = sp.decode(sp.encode({"c": value}))["c"]
     assert out == value and type(out) is type(value)
+
+
+def test_slsqp_constraint_calls_go_through_the_evaluator():
+    calls = {"f": 0, "c": 0}
+
+    def f(x):
+        calls["f"] += 1
+        return float(np.sum((x - 1.0) ** 2))
+
+    def c(x):
+        calls["c"] += 1
+        return float(np.sum(x) - 1.0)
+    p = Problem(Space([Real(f"x{i}", -2, 2) for i in range(5)]), f, constraints=[ineq(c, "sum")])
+    r = get_solver("slsqp").solve(p, Budget(500), seed=0)
+    assert r.feasible
+    # every constraint call belongs to a counted evaluation (+1 for verification)
+    assert calls["c"] == calls["f"] == r.n_evaluations + r.n_verification_evaluations
+
+
+def test_slsqp_respects_evaluation_budget_with_constraints():
+    calls = {"c": 0}
+
+    def c(x):
+        calls["c"] += 1
+        return float(x[0] ** 2 + x[1] ** 2 - 1.0)
+    p = Problem(Space([Real("x", -2, 2), Real("y", -2, 2)]), lambda x: float(x[0] + x[1]), constraints=[ineq(c, "disk")])
+    r = get_solver("slsqp").solve(p, Budget(7), seed=0)
+    assert r.n_evaluations <= 7 and calls["c"] <= 7 + r.n_verification_evaluations
+
+
+def test_slsqp_uses_declared_constraint_jacobian():
+    calls = {"c": 0}
+
+    def c(x):
+        calls["c"] += 1
+        return float(np.sum(x) - 1.0)
+    p = Problem(Space([Real(f"x{i}", -2, 2) for i in range(5)]), lambda x: float(np.sum((x - 1.0) ** 2)),
+                gradient=lambda x: 2 * (np.asarray(x) - 1.0),
+                constraints=[ineq(c, "sum", gradient=lambda x: np.ones((1, 5)))])
+    r = get_solver("slsqp").solve(p, Budget(500), seed=0)
+    assert r.feasible and r.objective == pytest.approx(0.8 * 5 * 0.0 + 5 * 0.8 ** 2, rel=1e-6)
+    assert r.n_evaluations < 40

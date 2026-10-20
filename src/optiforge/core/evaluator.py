@@ -35,6 +35,8 @@ class Evaluation:
     domain_ok: bool = True
     error: str | None = None
     index: int = -1
+    # raw constraint function values (one array per constraint), for solvers that need g(x) itself
+    raw_constraints: list | None = None
 
     @property
     def valid(self) -> bool:
@@ -153,10 +155,12 @@ class Evaluator:
             ev = Evaluation(x, f, math.inf, np.zeros(0), math.inf, False, True, "objective non-finite", idx)
             self._record(ev)
             return ev
-        viols = []
+        viols, raws = [], []
         try:
             for c in p.constraints:
-                viols.append(c.violation(p.call_constraint(c, x)))
+                raw = p.call_constraint(c, x)
+                raws.append(raw)
+                viols.append(c.violation(raw))
             v = np.concatenate(viols) if viols else np.zeros(0)
         except Exception as exc:
             self.stats.n_errors += 1
@@ -171,7 +175,7 @@ class Evaluator:
             return ev
         tv = float(v.sum())
         feasible = bool(tv == 0.0)
-        ev = Evaluation(x, f, p.to_internal(f), v, tv, feasible, True, None, idx)
+        ev = Evaluation(x, f, p.to_internal(f), v, tv, feasible, True, None, idx, raws)
         if feasible:
             self.stats.n_feasible += 1
         self._record(ev)

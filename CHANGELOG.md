@@ -32,3 +32,12 @@
 * A constraint that raises while `finalize` builds the per-constraint report no longer crashes `solve()`.
 * `lbfgsb` no longer makes the convexity-conditional statement for maximisation problems.
 * `Space.encode` distinguishes categorical choices that compare equal but differ in type (`1` and `True`).
+
+### Accounting
+* `slsqp` (and `multistart`/`hybrid`, which use it) obtains constraint values only through the evaluator, so every
+  constraint call is counted, budget- and time-gated and cancellable. On the portfolio benchmark this raises the
+  reported evaluation counts of SLSQP runs on constrained problems about fivefold (finite-difference constraint
+  Jacobians were previously free); objectives and feasibility are unchanged. A `gradient=` on a constraint is now
+  passed to SLSQP as its Jacobian.
+* `finalize` takes per-constraint violations from the verification evaluation instead of calling the constraints
+  again.

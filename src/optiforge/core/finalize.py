@@ -91,7 +91,7 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
         objective = float(np.mean(vals))
         feasible = bool(last.feasible)
         try:
-            viol = _named_violations(p, best.x)
+            viol = _named_violations(p, best.x, last.raw_constraints)
             max_v = float(max(viol.values())) if viol else 0.0
         except Exception as exc:  # a constraint that raises here must not lose the result
             messages.append(f"per-constraint violation report failed: {type(exc).__name__}: {exc}")
@@ -211,11 +211,13 @@ def finalize(ctx: SearchContext, solver_name: str, solver_version: str, terminat
     )
 
 
-def _named_violations(p, x: np.ndarray) -> dict[str, float]:
-    """Per-constraint violation amounts recomputed from the original constraint functions."""
+def _named_violations(p, x: np.ndarray, raw: list | None = None) -> dict[str, float]:
+    """Per-constraint violation amounts from the verification evaluation (recomputed only if it kept no values)."""
     out: dict[str, float] = {}
-    for c in p.constraints:
-        v = c.violation(p.call_constraint(c, x))
+    if raw is None or len(raw) != len(p.constraints):
+        raw = [p.call_constraint(c, x) for c in p.constraints]
+    for c, r in zip(p.constraints, raw):
+        v = c.violation(r)
         if v.size == 1:
             out[c.name] = float(v[0])
         else:
