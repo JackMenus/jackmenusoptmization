@@ -286,14 +286,18 @@ def differential(target, r1, r2, r3, space: Space, rng, F: float = 0.5, CR: floa
 # neighbourhoods (for local search / tabu)
 # ---------------------------------------------------------------------------
 
-def neighborhood(x, space: Space, max_values_per_var: int = 6, rng=None):
+def neighborhood(x, space: Space, max_values_per_var: int = 6, rng=None, exchange: bool = False):
     """Enumerate single-change neighbours as (move, y).
 
     move = ("set", i, value) for scalar coordinates (integers: +-1 steps;
     categorical: every other category up to ``max_values_per_var``; binary:
     flip; real: +-5% of the range) or ("swap", i, j) for permutation pairs.
+    With ``exchange=True`` also ("exchange", i, j): binary i goes 1 -> 0 and binary j goes 0 -> 1 in one move
+    (keeps the number of selected items, e.g. swapping a heavy knapsack item for a light one).
     """
     x = np.asarray(x, dtype=float)
+    if exchange:
+        yield from binary_exchanges(x, space)
     for i in range(space.dim):
         c = space.codes[i]
         if c == 4:
@@ -324,6 +328,30 @@ def neighborhood(x, space: Space, max_values_per_var: int = 6, rng=None):
                 y = x.copy()
                 y[s.start + a], y[s.start + b] = y[s.start + b], y[s.start + a]
                 yield ("swap", s.start + a, s.start + b), y
+
+
+def binary_exchanges(x, space: Space):
+    """All ("exchange", i, j) moves: binary coordinate i from 1 to 0 and binary coordinate j from 0 to 1."""
+    x = np.asarray(x, dtype=float)
+    ones = np.flatnonzero(space.bin_mask & (x == 1))
+    zeros = np.flatnonzero(space.bin_mask & (x == 0))
+    for i in ones:
+        for j in zeros:
+            y = x.copy()
+            y[i], y[j] = 0.0, 1.0
+            yield ("exchange", int(i), int(j)), y
+
+
+def random_exchange(x, space: Space, rng) -> np.ndarray | None:
+    """One random binary exchange (1 -> 0 and 0 -> 1), or None if no such pair exists."""
+    x = np.asarray(x, dtype=float)
+    ones = np.flatnonzero(space.bin_mask & (x == 1))
+    zeros = np.flatnonzero(space.bin_mask & (x == 0))
+    if not len(ones) or not len(zeros):
+        return None
+    y = x.copy()
+    y[rng.choice(ones)], y[rng.choice(zeros)] = 0.0, 1.0
+    return y
 
 
 def random_neighbor(x, space: Space, rng) -> np.ndarray:

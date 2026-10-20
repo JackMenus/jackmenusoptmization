@@ -1,0 +1,412 @@
+{
+ "meta": {
+  "suite": {
+   "name": "discrete_general",
+   "version": "2",
+   "families": [
+    [
+     "knapsack_correlated",
+     {
+      "n": 50
+     }
+    ],
+    [
+     "knapsack_correlated",
+     {
+      "n": 100
+     }
+    ],
+    [
+     "multi_knapsack",
+     {
+      "n": 40,
+      "m": 5
+     }
+    ],
+    [
+     "independent_set",
+     {
+      "n": 40
+     }
+    ],
+    [
+     "integer_quadratic",
+     {
+      "n": 6,
+      "radius": 7
+     }
+    ]
+   ],
+   "test_only": [
+    [
+     "set_cover",
+     {
+      "n_sets": 40,
+      "n_elements": 30
+     }
+    ]
+   ],
+   "splits": {
+    "train": [
+     2010,
+     2011
+    ],
+    "validation": [
+     2020,
+     2021
+    ],
+    "test": [
+     2030,
+     2031,
+     2032
+    ]
+   },
+   "description": "Correlated and multidimensional knapsacks, weighted independent set and an integer quadratic, with exact optima (dynamic programming, MILP with HiGHS at gap 0, enumeration); test adds a held-out family (weighted set cover) that no other suite uses.",
+   "test_status": "untouched"
+  },
+  "split": "validation",
+  "budget": 5000,
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "wall_s": 42.6,
+  "git": "5ac59a63c9420bd89984fe67256226e4c8f8411b",
+  "src_dirty": true
+ },
+ "summary": {
+  "random_search": {
+   "runs": 50,
+   "mean_score": 1.2059474516993456,
+   "median_score": 1.0,
+   "std_score": 0.4308669368536928,
+   "iqr_score": 0.22149534629769663,
+   "feasibility_rate": 0.8,
+   "failure_rate": 0.0,
+   "solved_rate": 0.0,
+   "median_gap": 79.5,
+   "mean_runtime_s": 0.274898679580001,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.05497973591600021,
+   "not_applicable_runs": 0
+  },
+  "genetic": {
+   "runs": 50,
+   "mean_score": 0.2572007051266749,
+   "median_score": 0.28226950354609925,
+   "std_score": 0.18007284194253662,
+   "iqr_score": 0.2740282766878512,
+   "feasibility_rate": 1.0,
+   "failure_rate": 0.0,
+   "solved_rate": 0.2,
+   "median_gap": 20.5,
+   "mean_runtime_s": 0.6998780672599605,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.1399756134519921,
+   "not_applicable_runs": 0
+  },
+  "tabu": {
+   "runs": 50,
+   "mean_score": 0.6857626626838311,
+   "median_score": 0.40276497695852537,
+   "std_score": 0.6624771156537292,
+   "iqr_score": 1.1578848600558764,
+   "feasibility_rate": 1.0,
+   "failure_rate": 0.0,
+   "solved_rate": 0.1,
+   "median_gap": 50.0,
+   "mean_runtime_s": 0.2910905954600275,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.058218119092005506,
+   "not_applicable_runs": 0
+  },
+  "tabu+exchange": {
+   "runs": 50,
+   "mean_score": 0.5030422507532851,
+   "median_score": 0.41034482758620694,
+   "std_score": 0.4384771227169944,
+   "iqr_score": 0.8407590862094027,
+   "feasibility_rate": 1.0,
+   "failure_rate": 0.0,
+   "solved_rate": 0.14,
+   "median_gap": 40.0,
+   "mean_runtime_s": 0.3608677013399938,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.07217354026799876,
+   "not_applicable_runs": 0
+  },
+  "simulated_annealing": {
+   "runs": 50,
+   "mean_score": 0.7703372429257219,
+   "median_score": 0.9010989010989011,
+   "std_score": 0.39740591276976767,
+   "iqr_score": 0.36536643026004734,
+   "feasibility_rate": 0.98,
+   "failure_rate": 0.0,
+   "solved_rate": 0.12244897959183673,
+   "median_gap": 64.0,
+   "mean_runtime_s": 0.6706665933000658,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.13413331866001318,
+   "not_applicable_runs": 0
+  },
+  "sa+exchange": {
+   "runs": 50,
+   "mean_score": 0.7355459466290776,
+   "median_score": 0.8504052121404735,
+   "std_score": 0.3951171616135653,
+   "iqr_score": 0.45326730419462,
+   "feasibility_rate": 0.98,
+   "failure_rate": 0.0,
+   "solved_rate": 0.04081632653061224,
+   "median_gap": 65.0,
+   "mean_runtime_s": 0.5816142411599139,
+   "mean_evaluations": 5000.0,
+   "runtime_per_eval_ms": 0.11632284823198279,
+   "not_applicable_runs": 0
+  }
+ },
+ "by_family": {
+  "knapsack_correlated[n=50]": {
+   "random_search": {
+    "mean_score": 0.9603809523809523,
+    "solved": 0.0,
+    "mean_gap": 44.0
+   },
+   "genetic": {
+    "mean_score": 0.32571428571428573,
+    "solved": 0.0,
+    "mean_gap": 14.8
+   },
+   "tabu": {
+    "mean_score": 1.592,
+    "solved": 0.0,
+    "mean_gap": 74.6
+   },
+   "tabu+exchange": {
+    "mean_score": 0.9838095238095239,
+    "solved": 0.0,
+    "mean_gap": 45.0
+   },
+   "simulated_annealing": {
+    "mean_score": 0.8939047619047619,
+    "solved": 0.0,
+    "mean_gap": 41.0
+   },
+   "sa+exchange": {
+    "mean_score": 0.9257142857142856,
+    "solved": 0.0,
+    "mean_gap": 42.4
+   }
+  },
+  "knapsack_correlated[n=100]": {
+   "random_search": {
+    "mean_score": 1.0056915306915308,
+    "solved": 0.0,
+    "mean_gap": 125.2
+   },
+   "genetic": {
+    "mean_score": 0.4423853923853923,
+    "solved": 0.0,
+    "mean_gap": 55.1
+   },
+   "tabu": {
+    "mean_score": 1.2774864024864026,
+    "solved": 0.0,
+    "mean_gap": 159.5
+   },
+   "tabu+exchange": {
+    "mean_score": 0.963053613053613,
+    "solved": 0.0,
+    "mean_gap": 120.2
+   },
+   "simulated_annealing": {
+    "mean_score": 0.9941919191919194,
+    "solved": 0.0,
+    "mean_gap": 123.9
+   },
+   "sa+exchange": {
+    "mean_score": 0.9578865578865579,
+    "solved": 0.0,
+    "mean_gap": 119.3
+   }
+  },
+  "multi_knapsack[m=5,n=40]": {
+   "random_search": {
+    "mean_score": 1.0278404576513585,
+    "solved": 0.0,
+    "mean_gap": 185.8
+   },
+   "genetic": {
+    "mean_score": 0.34057524233275066,
+    "solved": 0.0,
+    "mean_gap": 60.2
+   },
+   "tabu": {
+    "mean_score": 0.34302558398220245,
+    "solved": 0.0,
+    "mean_gap": 65.3
+   },
+   "tabu+exchange": {
+    "mean_score": 0.4372477355792149,
+    "solved": 0.0,
+    "mean_gap": 78.0
+   },
+   "simulated_annealing": {
+    "mean_score": 0.9559415223263942,
+    "solved": 0.0,
+    "mean_gap": 169.9
+   },
+   "sa+exchange": {
+    "mean_score": 0.9113236929922136,
+    "solved": 0.0,
+    "mean_gap": 162.8
+   }
+  },
+  "independent_set[n=40]": {
+   "random_search": {
+    "mean_score": 2.0,
+    "solved": 0.0,
+    "mean_gap": NaN
+   },
+   "genetic": {
+    "mean_score": 0.17732860520094562,
+    "solved": 0.0,
+    "mean_gap": 16.3
+   },
+   "tabu": {
+    "mean_score": 0.14990543735224585,
+    "solved": 0.0,
+    "mean_gap": 13.9
+   },
+   "tabu+exchange": {
+    "mean_score": 0.06470449172576831,
+    "solved": 0.2,
+    "mean_gap": 5.9
+   },
+   "simulated_annealing": {
+    "mean_score": 0.9046572104018912,
+    "solved": 0.0,
+    "mean_gap": NaN
+   },
+   "sa+exchange": {
+    "mean_score": 0.7634042553191489,
+    "solved": 0.0,
+    "mean_gap": NaN
+   }
+  },
+  "integer_quadratic[n=6,radius=7]": {
+   "random_search": {
+    "mean_score": 1.035824317772886,
+    "solved": 0.0,
+    "mean_gap": 21.978197221743056
+   },
+   "genetic": {
+    "mean_score": 2.6930571946757847e-17,
+    "solved": 1.0,
+    "mean_gap": 6.661338147750939e-16
+   },
+   "tabu": {
+    "mean_score": 0.06639588959830547,
+    "solved": 0.5,
+    "mean_gap": 1.2959425147984187
+   },
+   "tabu+exchange": {
+    "mean_score": 0.06639588959830547,
+    "solved": 0.5,
+    "mean_gap": 1.2959425147984187
+   },
+   "simulated_annealing": {
+    "mean_score": 0.10299080080364331,
+    "solved": 0.6,
+    "mean_gap": 1.964412110121647
+   },
+   "sa+exchange": {
+    "mean_score": 0.1194009412331822,
+    "solved": 0.2,
+    "mean_gap": 2.1942383071923337
+   }
+  }
+ },
+ "primary": {
+  "tabu+exchange vs tabu": {
+   "pairs": 50,
+   "mean_diff": -0.1827204119305461,
+   "wins": 28,
+   "losses": 10,
+   "ties": 12,
+   "min_effect": 0.01,
+   "practical_wins": 28,
+   "practical_losses": 10,
+   "practical_ties": 12,
+   "median_diff": -0.05990783410138251,
+   "ci95_mean_diff": [
+    -0.2803316137559219,
+    -0.0951920318320225
+   ],
+   "rank_biserial": -0.6464237516869096,
+   "p_value_a_better": 0.00038952116310023686,
+   "p_holm": 0.0007790423262004737
+  },
+  "sa+exchange vs simulated_annealing": {
+   "pairs": 50,
+   "mean_diff": -0.034791296296644326,
+   "wins": 22,
+   "losses": 25,
+   "ties": 3,
+   "min_effect": 0.01,
+   "practical_wins": 22,
+   "practical_losses": 23,
+   "practical_ties": 5,
+   "median_diff": 0.0034482758620689724,
+   "ci95_mean_diff": [
+    -0.12340723004819486,
+    0.04881099598270418
+   ],
+   "rank_biserial": -0.12854609929078015,
+   "p_value_a_better": 0.25576986589973916,
+   "p_holm": 0.25576986589973916
+  }
+ },
+ "secondary": {
+  "tabu+exchange vs genetic": {
+   "pairs": 50,
+   "mean_diff": 0.24584154562661026,
+   "wins": 11,
+   "losses": 33,
+   "ties": 6,
+   "min_effect": 0.01,
+   "practical_wins": 11,
+   "practical_losses": 33,
+   "practical_ties": 6,
+   "median_diff": 0.10860328627017113,
+   "ci95_mean_diff": [
+    0.15001250087075224,
+    0.345519383238074
+   ],
+   "rank_biserial": 0.7535353535353535,
+   "p_value_a_better": 0.9999887617226683
+  },
+  "sa+exchange vs genetic": {
+   "pairs": 50,
+   "mean_diff": 0.4783452415024027,
+   "wins": 0,
+   "losses": 48,
+   "ties": 2,
+   "min_effect": 0.01,
+   "practical_wins": 0,
+   "practical_losses": 48,
+   "practical_ties": 2,
+   "median_diff": 0.53010878010878,
+   "ci95_mean_diff": [
+    0.39872393927252675,
+    0.5619602357898879
+   ],
+   "rank_biserial": 1.0,
+   "p_value_a_better": 0.9999999995862398
+  }
+ }
+}

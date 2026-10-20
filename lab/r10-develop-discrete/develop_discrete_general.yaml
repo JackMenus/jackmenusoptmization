@@ -1,0 +1,23 @@
+kind: develop
+runs_dir: runs
+development:
+  suite: discrete_general           # v2: train 2010,2011 | validation 2020,2021 | test 2030-2032 + test-only set_cover
+  run_budget: 5000                  # matched objective-evaluation budget for every solver and candidate
+  run_seeds: [0, 1, 2]              # solver seeds for train and validation
+  test_run_seeds: [500, 501, 502, 503, 504]   # fresh solver seeds for the single test pass
+  generations: 6
+  proposals_per_generation: 10
+  retain: 4
+  total_evaluations: 34000000
+  test_share: 0.25
+  max_wall_time: 9000
+  alpha: 0.05
+  min_effect: 0.01
+  multiple_testing: holm
+  fingerprint_budget: 200
+  baselines: [random_search, simulated_annealing, genetic, tabu, greedy_ls]
+  code_generation: true
+  llm: null
+  max_model_calls: 0
+  registry: registry
+  seed: 20261021

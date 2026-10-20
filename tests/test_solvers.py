@@ -165,3 +165,27 @@ def test_time_budget():
     p = Problem(sp, lambda x: (time.sleep(0.002), float(x[0] ** 2))[1])
     r = get_solver("de").solve(p, Budget(10**6, max_time=0.3), seed=0)
     assert r.termination_reason == "budget_time" and r.runtime_s < 1.0
+
+
+def test_binary_exchange_moves_keep_the_number_of_ones():
+    from optiforge.core.space import Binary, Space
+    from optiforge.operators import primitives as P
+    sp = Space([Binary(f"b{i}") for i in range(6)])
+    x = np.array([1, 0, 1, 0, 0, 1], float)
+    moves = list(P.binary_exchanges(x, sp))
+    assert len(moves) == 3 * 3
+    assert all(y.sum() == 3 and y[m[1]] == 0 and y[m[2]] == 1 for m, y in moves)
+    assert len(list(P.neighborhood(x, sp, exchange=True))) == 9 + 6
+    rng = np.random.default_rng(0)
+    assert P.random_exchange(x, sp, rng).sum() == 3
+    assert P.random_exchange(np.ones(6), sp, rng) is None
+
+
+def test_tabu_exchange_is_opt_in_and_reproducible():
+    from optiforge.benchmarks.problems import make_problem
+    p = make_problem("knapsack_correlated", 0, n=30)
+    a = get_solver("tabu").solve(p, Budget(max_evaluations=800), seed=3)
+    b = get_solver("tabu", exchange=True).solve(p, Budget(max_evaluations=800), seed=3)
+    c = get_solver("tabu", exchange=True).solve(p, Budget(max_evaluations=800), seed=3)
+    assert b.objective == c.objective and np.array_equal(b.x, c.x)
+    assert b.feasible and a.feasible

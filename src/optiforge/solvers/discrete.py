@@ -127,7 +127,8 @@ class SimulatedAnnealing(IterativeSolver):
 
     @classmethod
     def default_params(cls) -> dict:
-        return {"t0": None, "cooling": 0.995, "moves_per_iter": 20, "penalty": 1e4, "reheat_after": 50, "sigma": 0.1}
+        return {"t0": None, "cooling": 0.995, "moves_per_iter": 20, "penalty": 1e4, "reheat_after": 50, "sigma": 0.1,
+                "exchange_prob": 0.0}
 
     def initialize(self, ctx):
         sp = ctx.space
@@ -149,6 +150,10 @@ class SimulatedAnnealing(IterativeSolver):
         sp = ctx.space
         if sp.real_mask.any() and ctx.rng.random() < 0.5:
             return ctx.repair(P.gaussian(x, sp, ctx.rng, sigma=self.params["sigma"], rate=None))
+        if self.params["exchange_prob"] > 0 and ctx.rng.random() < self.params["exchange_prob"]:
+            y = P.random_exchange(x, sp, ctx.rng)
+            if y is not None:
+                return ctx.repair(y)
         return ctx.repair(P.random_neighbor(x, sp, ctx.rng))
 
     def iterate(self, ctx, st):
@@ -182,7 +187,7 @@ class TabuSearch(IterativeSolver):
 
     @classmethod
     def default_params(cls) -> dict:
-        return {"tenure": 7, "sample": 40}
+        return {"tenure": 7, "sample": 40, "exchange": False}
 
     def initialize(self, ctx):
         x = ctx.warm_start[0].copy() if ctx.warm_start else ctx.space.sample(ctx.rng)
@@ -192,24 +197,34 @@ class TabuSearch(IterativeSolver):
     def iterate(self, ctx, st):
         sp = ctx.space
         st["it"] += 1
+        k = self.params["sample"]
         moves = list(P.neighborhood(st["x"], sp, max_values_per_var=4, rng=ctx.rng))
-        if len(moves) > self.params["sample"]:
-            pick = ctx.rng.choice(len(moves), size=self.params["sample"], replace=False)
+        swaps = list(P.binary_exchanges(st["x"], sp)) if self.params["exchange"] else []
+        if swaps:  # half of the sample from exchanges, so they do not crowd out the single moves
+            k_x = min(len(swaps), k // 2)
+            swaps = [swaps[i] for i in ctx.rng.choice(len(swaps), size=k_x, replace=False)]
+            k -= k_x
+        if len(moves) > k:
+            pick = ctx.rng.choice(len(moves), size=k, replace=False)
             moves = [moves[i] for i in pick]
+        moves += swaps
         best = None
         inc = ctx.evaluator.best.rank_key() if ctx.evaluator.best else (3, math.inf)
         for move, y in moves:
-            attr = str(move[1]) if move[0] == "set" else f"{move[1]}-{move[2]}"
+            # tabu attributes: the changed coordinate(s); an exchange touches two coordinates
+            attrs = ([str(move[1])] if move[0] == "set" else [str(move[1]), str(move[2])] if move[0] == "exchange"
+                     else [f"{move[1]}-{move[2]}"])
             ev = ctx.evaluate(y)
             k = ev.rank_key()
-            is_tabu = st["tabu"].get(attr, 0) > st["it"]
+            is_tabu = any(st["tabu"].get(a, 0) > st["it"] for a in attrs)
             if is_tabu and not k < inc:
                 continue
             if best is None or k < best[0]:
-                best = (k, y, attr)
+                best = (k, y, attrs)
         if best is not None:
             st["x"], st["key"] = best[1], list(best[0])
-            st["tabu"][best[2]] = st["it"] + self.params["tenure"]
+            for a in best[2]:
+                st["tabu"][a] = st["it"] + self.params["tenure"]
         st["tabu"] = {a: t for a, t in st["tabu"].items() if t > st["it"]}
         return None
 

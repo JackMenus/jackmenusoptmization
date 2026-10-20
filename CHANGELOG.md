@@ -69,6 +69,13 @@
 * Expensive exact optima are cached per process, and the benchmark runner builds every instance once before forking.
 * `integer_quadratic` enumerates in chunks (same optimum and tie-breaking, bounded memory).
 
+### Exchange moves for binary problems (round 9)
+* `operators.primitives.binary_exchanges` / `random_exchange` (one 1 -> 0 plus one 0 -> 1); `neighborhood(...,
+  exchange=True)`. Opt-in parameters `tabu(exchange=True)` (half of the sampled neighbourhood from exchanges, both
+  coordinates become tabu) and `simulated_annealing(exchange_prob=...)`. Defaults unchanged (portfolio 1190/1190
+  identical). Validation evidence (`lab/r9-exchange`): tabu improves (mean -0.18, CI below zero), SA does not; both
+  remain behind `genetic`. Not yet confirmed on test.
+
 ### Fixes from the audit list (round 8)
 * The evaluator passes user code the exact in-domain point: discrete coordinates within 1e-9 of an integer are
   rounded and reals within 1e-9 of a bound are clipped (recorded points too). Portfolio benchmark: 1190/1190 runs
